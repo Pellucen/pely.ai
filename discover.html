@@ -341,7 +341,7 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
       <!-- Slide 3: The Problem + Solution -->
       <div class="intro-slide" id="intro-slide-3">
         <div class="intro-slide-inner">
-          <p class="intro-body">When employees don&rsquo;t feel protected, they don&rsquo;t adopt.</p>
+          <p class="intro-body">At Pely.ai, we make AI integration simple.</p>
           <p class="intro-body" style="margin-top:20px;">At Pely.ai, we build hyper-personalised AI agents for your employees. And put the keys in their hands.</p>
         </div>
       </div>
@@ -349,31 +349,31 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
       <!-- Slide 4: The Reframe -->
       <div class="intro-slide" id="intro-slide-4">
         <div class="intro-slide-inner">
-          <p class="intro-body">So instead of feeling intimidated by AI, your team feels empowered to champion it.</p>
+          <p class="intro-body">We build beautiful, custom-branded desktop apps.</p>
         </div>
       </div>
 
       <!-- Slide 5: The Result -->
       <div class="intro-slide" id="intro-slide-5">
         <div class="intro-slide-inner">
-          <p class="intro-body">The result? Hyper integration is incentivised on the individual level, and company productivity reaps the benefits.</p>
+          <p class="intro-body">TComplete with all of the AI-integrated workflow tools you need.</p>
         </div>
       </div>
 
       <!-- Slide 6: Three Arrows -->
       <div class="intro-slide" id="intro-slide-6">
         <div class="intro-slide-inner">
-          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> We build the tools</p>
-          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Your company owns the data they work with</p>
-          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Your employees own the keys</p>
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Simple</p>
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Beautiful</p>
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Practical</p>
         </div>
       </div>
 
       <!-- Slide 7: CTA -->
       <div class="intro-slide" id="intro-slide-7">
         <div class="intro-slide-inner">
-          <h1 class="shimmer-text" style="font-size:30px;line-height:1.3;">This is the Pely.ai Model</h1>
-          <p style="font-family:'DM Sans',sans-serif;font-size:16px;color:#7A7A84;margin-top:12px;">Take 3 minutes to discover what it could do for your team.</p>
+          <h1 class="shimmer-text" style="font-size:30px;line-height:1.3;">From AI powered outreach tools to intelligent content creation - at pely.ai we can build it.</h1>
+          <p style="font-family:'DM Sans',sans-serif;font-size:16px;color:#7A7A84;margin-top:12px;">Take 3 minutes to discover what AI could do for you.</p>
           <button id="intro-cta" onclick="startDiscovery()">Start Discovery &rarr;</button>
         </div>
       </div>
@@ -590,7 +590,7 @@ async function sendDiscoveryEmail(fields) {
     var resp = await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: 'discover@pely.ai', subject: fullSubject, fields: allFields })
+      body: JSON.stringify({ to: 'info@pellucen.co.uk', subject: fullSubject, fields: allFields })
     });
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     return true;

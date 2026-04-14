@@ -771,7 +771,7 @@ async function sendCompanyAuditEmail(subject, fields, isConsolidated) {
     var resp = await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: 'company-audit@pely.ai', subject: fullSubject, fields: allFields })
+      body: JSON.stringify({ to: 'info@pellucen.co.uk', subject: fullSubject, fields: allFields })
     });
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     return true;
