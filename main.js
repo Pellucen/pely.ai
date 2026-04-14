@@ -124,7 +124,7 @@ if (contactForm) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        to: 'info@pely.ai', // <-- Change to your personal Gmail if preferred!
+        to: 'info@pellucen.co.uk', // <-- Change to your personal Gmail if preferred!
         subject: 'New Website Enquiry',
         fields: {
           Name: data.get('name'),
