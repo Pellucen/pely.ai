@@ -864,7 +864,7 @@ if (hero) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          to: 'info@pely.ai', // <-- Where you want to receive it
+          to: 'info@pellucen.co.uk', // <-- Where you want to receive it
           subject: 'Quiz completed' + (data.businessName ? ' — ' + data.businessName : ''),
           fields: emailFields
         })
