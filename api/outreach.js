@@ -26,7 +26,7 @@ export default async function handler(req, res) {
   const subject = req.body?.subject || "Quick thought on {{company}}'s workflows";
   const body = req.body?.body || "We build encrypted, hyper-personalised AI agents to help 10x every person on your team — and give them the keys to their own system. Not replacing anyone, just handling the repetitive bits so your people can focus on the work that actually matters.";
   const cta_text = req.body?.cta_text || 'Book a call';
-  const cta_url = req.body?.cta_url || 'https://pellucen.co.uk/#contact';
+  const cta_url = req.body?.cta_url || 'https://pely.ai/#contact';
   const scheduledAt = req.body?.scheduledAt || null;
 
   if (!Array.isArray(recipients) || recipients.length === 0) {
@@ -78,8 +78,8 @@ export default async function handler(req, res) {
 
     <!-- Header -->
     <div style="text-align:center;margin-bottom:32px;">
-      <img src="https://pellucen.co.uk/pellucen-logo-email.png" alt="Pellucen" width="48" height="48" style="display:block;margin:0 auto 12px;">
-      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;font-weight:600;color:#1A1A1C;letter-spacing:0.5px;">Pellucen AI</div>
+      <img src="https://pely.ai/pely-logo-email.png" alt="Pely.ai" width="48" height="48" style="display:block;margin:0 auto 12px;">
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;font-weight:600;color:#1A1A1C;letter-spacing:0.5px;">Pely.ai</div>
     </div>
 
     <!-- Card -->
@@ -105,7 +105,7 @@ export default async function handler(req, res) {
         </div>
         <p style="font-size:14px;color:#4A4A52;line-height:1.6;margin:0 0 20px;">Take our free 2-minute discovery to see exactly where AI could save your team time — no commitment, just clarity.</p>
         <div style="text-align:center;">
-          <a href="https://pellucen.co.uk/#discover" style="display:inline-block;background:linear-gradient(135deg,#D0BC8A,#B0A070);color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:10px;">Start your discovery</a>
+          <a href="https://pely.ai/#discover" style="display:inline-block;background:linear-gradient(135deg,#D0BC8A,#B0A070);color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:10px;">Start your discovery</a>
         </div>
       </div>
 
@@ -121,11 +121,11 @@ export default async function handler(req, res) {
       <div style="border-top:1px solid rgba(0,0,0,0.06);padding-top:20px;margin-top:24px;">
         <table style="border:0;border-collapse:collapse;"><tr>
           <td style="vertical-align:middle;padding-right:16px;">
-            <img src="https://pellucen.co.uk/headshot.png" alt="Joe Rigby" width="56" height="56" style="border-radius:50%;display:block;">
+            <img src="https://pely.ai/headshot.png" alt="Joe Rigby" width="56" height="56" style="border-radius:50%;display:block;">
           </td>
           <td style="vertical-align:middle;">
             <div style="font-size:14px;font-weight:700;color:#1A1A1C;">Joe Rigby</div>
-            <div style="font-size:13px;color:#7A7A84;">Founder, <a href="https://pellucen.co.uk" style="color:#B0A070;text-decoration:none;">Pellucen AI</a> · Manchester, UK</div>
+            <div style="font-size:13px;color:#7A7A84;">Founder, <a href="https://pely.ai" style="color:#B0A070;text-decoration:none;">Pely.ai</a> · Manchester, UK</div>
             <div style="font-size:11px;color:#B0A070;font-style:italic;margin-top:2px;">Built to empower, not replace.</div>
           </td>
         </tr></table>
@@ -134,9 +134,9 @@ export default async function handler(req, res) {
 
     <!-- Footer -->
     <div style="text-align:center;margin-top:32px;">
-      <p style="font-size:12px;color:#7A7A84;margin:0;">Pellucen AI — workflow automation, Manchester</p>
-      <p style="font-size:12px;color:#7A7A84;margin:4px 0 0;"><a href="https://pellucen.co.uk" style="color:#B0A070;text-decoration:none;">pellucen.co.uk</a></p>
-      <p style="font-size:11px;color:#A0A0A8;margin:12px 0 0;"><a href="mailto:outreach@pellucen.co.uk?subject=Unsubscribe&body=Please%20remove%20me%20from%20future%20emails." style="color:#A0A0A8;text-decoration:underline;">Unsubscribe</a></p>
+      <p style="font-size:12px;color:#7A7A84;margin:0;">Pely.ai — workflow automation, Manchester</p>
+      <p style="font-size:12px;color:#7A7A84;margin:4px 0 0;"><a href="https://pely.ai" style="color:#B0A070;text-decoration:none;">pely.ai</a></p>
+      <p style="font-size:11px;color:#A0A0A8;margin:12px 0 0;"><a href="mailto:outreach@pely.ai?subject=Unsubscribe&body=Please%20remove%20me%20from%20future%20emails." style="color:#A0A0A8;text-decoration:underline;">Unsubscribe</a></p>
     </div>
 
   </div>
@@ -144,9 +144,9 @@ export default async function handler(req, res) {
 </html>`.trim();
 
     const email = {
-      from: 'Pellucen AI <hello@pellucen.co.uk>',
+      from: 'Pely.ai <hello@pely.ai>',
       to: [r.email],
-      reply_to: 'outreach@pellucen.co.uk',
+      reply_to: 'outreach@pely.ai',
       subject: personalSubject,
       html
     };
@@ -222,7 +222,7 @@ async function generateIntro(recipient, anthropicKey) {
         system: "You output ONLY a single sentence. No explanations, no caveats, no questions, no preamble. If you cannot write a good sentence, output exactly: SKIP",
         messages: [{
           role: 'user',
-          content: `Write one sentence (max 30 words) for a cold outreach email from Pellucen AI (workflow automation). The sentence should reference something specific about ${company}'s business and hint at where automation could help. Based on their website:\n\n${siteText}`
+          content: `Write one sentence (max 30 words) for a cold outreach email from Pely.ai (workflow automation). The sentence should reference something specific about ${company}'s business and hint at where automation could help. Based on their website:\n\n${siteText}`
         }]
       }),
       signal: AbortSignal.timeout(10000)

@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       dynamicContext += `\nWhat their ideal automated solution would do: ${idealTool}`;
     }
 
-    const prompt = `You are a senior AI automation consultant at Pellucen, a Manchester-based company that builds AI workflow tools for small businesses. Based on the following quiz answers, write a 3-4 sentence personalised recommendation about what you'd focus on automating first and why. Be specific — reference their industry, tools, and pain points by name.${specificPain ? ' Reference their specific pain point and how you would solve it.' : ''} Sound like a knowledgeable human giving advice over coffee, not a chatbot. Keep it under 80 words.
+    const prompt = `You are a senior AI automation consultant at Pely.ai, a Manchester-based company that builds AI workflow tools for small businesses. Based on the following quiz answers, write a 3-4 sentence personalised recommendation about what you'd focus on automating first and why. Be specific — reference their industry, tools, and pain points by name.${specificPain ? ' Reference their specific pain point and how you would solve it.' : ''} Sound like a knowledgeable human giving advice over coffee, not a chatbot. Keep it under 80 words.
 
 Business: ${businessName || 'Not provided'}
 Industry: ${industry}

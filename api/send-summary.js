@@ -26,8 +26,8 @@ export default async function handler(req, res) {
 
     <!-- Header -->
     <div style="text-align:center;margin-bottom:32px;">
-      <img src="https://pellucen.co.uk/pellucen-logo-email.png" alt="Pellucen" width="48" height="48" style="display:block;margin:0 auto 12px;">
-      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;font-weight:600;color:#1A1A1C;letter-spacing:0.5px;">Pellucen AI</div>
+      <img src="https://pely.ai/pely-logo-email.png" alt="Pely.ai" width="48" height="48" style="display:block;margin:0 auto 12px;">
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;font-weight:600;color:#1A1A1C;letter-spacing:0.5px;">Pely.ai</div>
     </div>
 
     <!-- Card -->
@@ -72,15 +72,15 @@ export default async function handler(req, res) {
       <div style="border-top:1px solid rgba(0,0,0,0.06);padding-top:20px;">
         <h2 style="font-size:16px;font-weight:700;color:#1A1A1C;margin:0 0 8px;">What happens next</h2>
         <p style="font-size:14px;color:#4A4A52;line-height:1.6;margin:0 0 16px;">We'll review your results and be in touch within 24 hours with a personalised recommendation for ${companyName}.</p>
-        <a href="https://pellucen.co.uk/#contact" style="display:inline-block;background:linear-gradient(135deg,#D0BC8A,#B0A070);color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:10px;">Book a call</a>
+        <a href="https://pely.ai/#contact" style="display:inline-block;background:linear-gradient(135deg,#D0BC8A,#B0A070);color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:10px;">Book a call</a>
       </div>
 
     </div>
 
     <!-- Footer -->
     <div style="text-align:center;margin-top:32px;">
-      <p style="font-size:12px;color:#7A7A84;margin:0;">Pellucen AI — workflow automation, Manchester</p>
-      <p style="font-size:12px;color:#7A7A84;margin:4px 0 0;"><a href="https://pellucen.co.uk" style="color:#B0A070;text-decoration:none;">pellucen.co.uk</a></p>
+      <p style="font-size:12px;color:#7A7A84;margin:0;">Pely.ai — workflow automation, Manchester</p>
+      <p style="font-size:12px;color:#7A7A84;margin:4px 0 0;"><a href="https://pely.ai" style="color:#B0A070;text-decoration:none;">pely.ai</a></p>
     </div>
 
   </div>
@@ -95,9 +95,9 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'Pellucen AI <hello@pellucen.co.uk>',
+        from: 'Pely.ai <hello@pely.ai>',
         to: [to],
-        reply_to: 'info@pellucen.co.uk',
+        reply_to: 'info@pely.ai',
         subject: 'Your discovery results',
         html: html
       })

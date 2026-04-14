@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Discover — Pellucen</title>
-<meta name="description" content="See how Pellucen's hyper-personalised AI agents could transform your team's productivity. Take 3 minutes to discover your automation potential.">
-<meta property="og:title" content="Discover what AI could do for your team — Pellucen">
-<meta property="og:description" content="95% of AI projects fail. Pellucen is different. Take 3 minutes to see what hyper-personalised AI agents could save your team.">
+<title>Discover — Pely.ai</title>
+<meta name="description" content="See how Pely.ai's hyper-personalised AI agents could transform your team's productivity. Take 3 minutes to discover your automation potential.">
+<meta property="og:title" content="Discover what AI could do for your team — Pely.ai">
+<meta property="og:description" content="95% of AI projects fail. Pely.ai is different. Take 3 minutes to see what hyper-personalised AI agents could save your team.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://pellucen.co.uk/discover">
-<meta property="og:image" content="https://pellucen.co.uk/og-image.png">
+<meta property="og:url" content="https://pely.ai/discover">
+<meta property="og:image" content="https://pely.ai/og-image.png">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#F8F6F2">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -293,13 +293,13 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
 
 <!-- Nav -->
 <nav class="disc-nav">
-  <a href="https://pellucen.co.uk" class="disc-nav-left">
+  <a href="https://pely.ai" class="disc-nav-left">
     <svg width="28" height="28" viewBox="0 0 200 200" fill="none">
       <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(0 100 100)" stroke="#D0BC8A" stroke-width="5" fill="#D0BC8A" fill-opacity="0.09"/>
       <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(60 100 100)" stroke="#94B0C0" stroke-width="5" fill="#94B0C0" fill-opacity="0.09"/>
       <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(120 100 100)" stroke="#C49484" stroke-width="5" fill="#C49484" fill-opacity="0.09"/>
     </svg>
-    <span>Pellucen</span>
+    <span>Pely.ai</span>
   </a>
 </nav>
 
@@ -342,7 +342,7 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
       <div class="intro-slide" id="intro-slide-3">
         <div class="intro-slide-inner">
           <p class="intro-body">When employees don&rsquo;t feel protected, they don&rsquo;t adopt.</p>
-          <p class="intro-body" style="margin-top:20px;">At Pellucen, we build hyper-personalised AI agents for your employees. And put the keys in their hands.</p>
+          <p class="intro-body" style="margin-top:20px;">At Pely.ai, we build hyper-personalised AI agents for your employees. And put the keys in their hands.</p>
         </div>
       </div>
 
@@ -372,7 +372,7 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
       <!-- Slide 7: CTA -->
       <div class="intro-slide" id="intro-slide-7">
         <div class="intro-slide-inner">
-          <h1 class="shimmer-text" style="font-size:30px;line-height:1.3;">This is the Pellucen Model</h1>
+          <h1 class="shimmer-text" style="font-size:30px;line-height:1.3;">This is the Pely.ai Model</h1>
           <p style="font-family:'DM Sans',sans-serif;font-size:16px;color:#7A7A84;margin-top:12px;">Take 3 minutes to discover what it could do for your team.</p>
           <button id="intro-cta" onclick="startDiscovery()">Start Discovery &rarr;</button>
         </div>
@@ -395,7 +395,7 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
 
 <!-- Footer -->
 <div class="disc-footer">
-  <a href="https://pellucen.co.uk">pellucen.co.uk</a> &mdash; AI workflow automation, Manchester
+  <a href="https://pely.ai">pely.ai</a> &mdash; AI workflow automation, Manchester
 </div>
 
 <!-- Chatbot widget -->
@@ -403,7 +403,7 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
   <div class="chatbot-header">
     <div class="chatbot-header-dot"></div>
     <div>
-      <div class="chatbot-header-text">Pellucen AI</div>
+      <div class="chatbot-header-text">Pely.ai</div>
       <div class="chatbot-header-sub">Ask us anything about our services</div>
     </div>
   </div>
@@ -415,7 +415,7 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
     </button>
   </div>
 </div>
-<button class="chatbot-fab" id="chatbot-fab" aria-label="Chat with Pellucen AI">
+<button class="chatbot-fab" id="chatbot-fab" aria-label="Chat with Pely.ai">
   <svg class="chatbot-fab-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
   <svg class="chatbot-fab-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
 </button>
@@ -590,7 +590,7 @@ async function sendDiscoveryEmail(fields) {
     var resp = await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: 'discover@pellucen.co.uk', subject: fullSubject, fields: allFields })
+      body: JSON.stringify({ to: 'discover@pely.ai', subject: fullSubject, fields: allFields })
     });
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     return true;
@@ -1429,9 +1429,9 @@ function buildDone() {
     '<h2 style="font-family:Outfit,sans-serif;font-size:28px;font-weight:700;color:#1A1A1C;margin:0 0 12px;">Discovery complete</h2>' +
     '<p style="font-family:DM Sans,sans-serif;font-size:16px;color:#4A4A52;margin:0 0 20px;max-width:420px;margin-left:auto;margin-right:auto;">Thank you, ' + name + '. We\u2019ll review your results and be in touch within 24 hours with a personalised recommendation for ' + company + '.</p>' +
     '<p style="font-family:Outfit,sans-serif;font-size:16px;font-weight:600;color:#D0BC8A;margin:0 0 24px;">Your team could save up to \u00a3' + costSavedYear.toLocaleString() + ' per year.</p>' +
-    '<a href="https://pellucen.co.uk/#contact" class="disc-btn disc-btn-gold" style="display:block;text-decoration:none;text-align:center;max-width:320px;margin:0 auto;">Book a Call &rarr;</a>' +
-    '<a href="https://pellucen.co.uk/#contact" style="display:block;text-decoration:none;text-align:center;max-width:320px;margin:12px auto 0;padding:12px 24px;border-radius:12px;border:1px solid rgba(208,188,138,0.3);background:transparent;font-family:Outfit,sans-serif;font-size:14px;font-weight:600;color:#B0A070;">Book an Audit — from \u00a3400</a>' +
-    '<p style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;margin-top:12px;">Or email us at info@pellucen.co.uk</p>' +
+    '<a href="https://pely.ai/#contact" class="disc-btn disc-btn-gold" style="display:block;text-decoration:none;text-align:center;max-width:320px;margin:0 auto;">Book a Call &rarr;</a>' +
+    '<a href="https://pely.ai/#contact" style="display:block;text-decoration:none;text-align:center;max-width:320px;margin:12px auto 0;padding:12px 24px;border-radius:12px;border:1px solid rgba(208,188,138,0.3);background:transparent;font-family:Outfit,sans-serif;font-size:14px;font-weight:600;color:#B0A070;">Book an Audit — from \u00a3400</a>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;margin-top:12px;">Or email us at info@pely.ai</p>' +
     '<p style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;margin-top:32px;">We build the tools. Your company owns the data. Your employees own the keys.</p>' +
   '</div>';
 }

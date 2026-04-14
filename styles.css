@@ -1316,11 +1316,11 @@ nav.scrolled { background: rgba(248,246,242,0.7); backdrop-filter: blur(24px); -
 }
 
 /* THE PELLUCEN MODEL */
-.pellucen-model {
+.pely-model {
   padding: 120px 0; background: var(--shell-warm);
   text-align: center; position: relative; overflow: hidden;
 }
-.pellucen-model .section-label {
+.pely-model .section-label {
   font-size: 16px; letter-spacing: 4px;
   background: linear-gradient(90deg, var(--text-dim) 0%, var(--text-dim) 40%, var(--gold) 50%, var(--crystal) 55%, var(--text-dim) 60%, var(--text-dim) 100%);
   background-size: 200% 100%;
@@ -1719,7 +1719,7 @@ body { animation: pageIn 0.6s ease forwards; }
     z-index: 300;
   }
   .chatbot-fab::after {
-    content: 'Ask Pellucen AI';
+    content: 'Ask Pely.ai';
     color: var(--text-light);
   }
   .chatbot-fab.open::after {

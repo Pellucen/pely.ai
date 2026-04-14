@@ -41,8 +41,8 @@ export default async function handler(req, res) {
   <div style="max-width:640px;margin:0 auto;padding:32px 16px;">
 
     <div style="text-align:center;margin-bottom:24px;">
-      <img src="https://pellucen.co.uk/pellucen-logo-email.png" alt="Pellucen" width="40" height="40" style="display:block;margin:0 auto 8px;">
-      <div style="font-size:13px;font-weight:600;color:#1A1A1C;letter-spacing:0.5px;">Pellucen AI</div>
+      <img src="https://pely.ai/pely-logo-email.png" alt="Pely.ai" width="40" height="40" style="display:block;margin:0 auto 8px;">
+      <div style="font-size:13px;font-weight:600;color:#1A1A1C;letter-spacing:0.5px;">Pely.ai</div>
     </div>
 
     <div style="background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid rgba(0,0,0,0.06);">
@@ -55,7 +55,7 @@ export default async function handler(req, res) {
     </div>
 
     <div style="text-align:center;margin-top:24px;">
-      <p style="font-size:11px;color:#7A7A84;margin:0;">Pellucen AI internal — do not forward</p>
+      <p style="font-size:11px;color:#7A7A84;margin:0;">Pely.ai internal — do not forward</p>
     </div>
 
   </div>
@@ -70,7 +70,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'Pellucen AI <notifications@pellucen.co.uk>',
+        from: 'Pely.ai <notifications@pely.ai>',
         to: [to],
         subject: subject,
         html: html

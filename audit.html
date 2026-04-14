@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Workflow Audit — Pellucen</title>
+<title>Workflow Audit — Pely.ai</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#F8F6F2">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -246,13 +246,13 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
 
 <!-- Nav -->
 <nav class="audit-nav">
-  <a href="https://pellucen.co.uk" class="audit-nav-left">
+  <a href="https://pely.ai" class="audit-nav-left">
     <svg width="28" height="28" viewBox="0 0 200 200" fill="none">
       <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(0 100 100)" stroke="#D0BC8A" stroke-width="5" fill="#D0BC8A" fill-opacity="0.09"/>
       <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(60 100 100)" stroke="#94B0C0" stroke-width="5" fill="#94B0C0" fill-opacity="0.09"/>
       <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(120 100 100)" stroke="#C49484" stroke-width="5" fill="#C49484" fill-opacity="0.09"/>
     </svg>
-    <span>Pellucen</span>
+    <span>Pely.ai</span>
   </a>
   <div class="audit-nav-pill" id="nav-audit-id"></div>
 </nav>
@@ -288,7 +288,7 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
       <!-- Slide 2: Three pillars -->
       <div class="intro-slide" id="intro-slide-2">
         <div class="intro-slide-inner">
-          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Pellucen builds the system</p>
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Pely.ai builds the system</p>
           <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Your company owns the data you work with</p>
           <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> You hold the key to the tools</p>
         </div>
@@ -313,12 +313,12 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
       <!-- Slide 5: CTA -->
       <div class="intro-slide" id="intro-slide-5">
         <div class="intro-slide-inner">
-          <h1 class="shimmer-text" style="font-size:30px;line-height:1.3;">This is the Pellucen Model</h1>
+          <h1 class="shimmer-text" style="font-size:30px;line-height:1.3;">This is the Pely.ai Model</h1>
           <button id="intro-cta" onclick="startAudit()">Start My Audit &rarr;</button>
           <div style="margin-top:32px; padding-top:24px; border-top:1px solid rgba(0,0,0,0.06);">
             <p class="intro-dim" style="margin:0 0 8px;">Your company has signed a confidentiality agreement covering this audit.</p>
             <p class="intro-dim" style="margin:0 0 12px;">We&rsquo;ve also signed a terms of collaboration agreement &mdash; we&rsquo;ll never share the specifics of your workflows, only general patterns that help us build better tools.</p>
-            <p class="intro-dim" style="margin:0; font-size:12px;">Want to see either agreement? Ask your manager or email info@pellucen.co.uk.</p>
+            <p class="intro-dim" style="margin:0; font-size:12px;">Want to see either agreement? Ask your manager or email info@pely.ai.</p>
           </div>
         </div>
       </div>
@@ -343,7 +343,7 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
 
 <!-- Footer -->
 <div class="audit-footer">
-  <a href="https://pellucen.co.uk">pellucen.co.uk</a> &mdash; AI workflow automation, Manchester
+  <a href="https://pely.ai">pely.ai</a> &mdash; AI workflow automation, Manchester
 </div>
 
 <!-- Chatbot widget -->
@@ -351,7 +351,7 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
   <div class="chatbot-header">
     <div class="chatbot-header-dot"></div>
     <div>
-      <div class="chatbot-header-text">Pellucen AI</div>
+      <div class="chatbot-header-text">Pely.ai</div>
       <div class="chatbot-header-sub">Ask us anything about our services</div>
     </div>
   </div>
@@ -363,7 +363,7 @@ body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
     </button>
   </div>
 </div>
-<button class="chatbot-fab" id="chatbot-fab" aria-label="Chat with Pellucen AI">
+<button class="chatbot-fab" id="chatbot-fab" aria-label="Chat with Pely.ai">
   <svg class="chatbot-fab-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
   <svg class="chatbot-fab-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
 </button>
@@ -566,7 +566,7 @@ async function sendAuditEmail(subject, fields, isConsolidated) {
     var resp = await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: 'audit@pellucen.co.uk', subject: fullSubject, fields: allFields })
+      body: JSON.stringify({ to: 'audit@pely.ai', subject: fullSubject, fields: allFields })
     });
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     return true;

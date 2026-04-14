@@ -840,7 +840,7 @@ if (hero) {
       if (data.specificPain) formData.append('Specific Pain Point', data.specificPain);
       if (data.idealTool) formData.append('Ideal Solution', data.idealTool);
       formData.append('Completed At', new Date().toLocaleString('en-GB'));
-      fetch('https://formsubmit.co/ajax/quiz@pellucen.co.uk', {
+      fetch('https://formsubmit.co/ajax/quiz@pely.ai', {
         method: 'POST',
         body: formData
       });
@@ -904,7 +904,7 @@ if (hero) {
     var hoursPerWeek = answers['4'] || 15;
     var bizName = (answers['5'] || '').trim();
 
-    var context = 'You are helping qualify a prospect for Pellucen, an AI automation company.\n\n' +
+    var context = 'You are helping qualify a prospect for Pely.ai, an AI automation company.\n\n' +
       'Here\'s what we know:\n' +
       '- Industry: ' + industry + '\n' +
       '- Team size: ' + teamSize + '\n' +
@@ -1024,7 +1024,7 @@ if (hero) {
       document.getElementById('qr-cs-title').textContent = cs.title;
       document.getElementById('qr-cs-summary').textContent = cs.summary;
       document.getElementById('qr-cs-metric').textContent = cs.metric;
-      document.getElementById('qr-cs-link').href = (isStandalone ? 'https://pellucen.co.uk/' : '') + cs.anchor;
+      document.getElementById('qr-cs-link').href = (isStandalone ? 'https://pely.ai/' : '') + cs.anchor;
 
       // Timeline estimate
       var toolCount = tools.indexOf('nothing') !== -1 ? 0 : tools.length;
@@ -1117,7 +1117,7 @@ if (hero) {
 
       // Save to localStorage
       try {
-        localStorage.setItem('pellucen_quiz', JSON.stringify({
+        localStorage.setItem('pely_quiz', JSON.stringify({
           timestamp: Date.now(),
           businessName: bizName,
           industry: industry,
@@ -1318,7 +1318,7 @@ if (hero) {
   // ── localStorage: returning user banner ──
 
   try {
-    var saved = JSON.parse(localStorage.getItem('pellucen_quiz'));
+    var saved = JSON.parse(localStorage.getItem('pely_quiz'));
     if (saved && saved.timestamp) {
       var age = Date.now() - saved.timestamp;
       var sevenDays = 7 * 24 * 60 * 60 * 1000;
@@ -1347,7 +1347,7 @@ if (hero) {
         document.getElementById('quiz-banner-retake').addEventListener('click', function (ev) {
           ev.preventDefault();
           banner.classList.remove('visible');
-          try { localStorage.removeItem('pellucen_quiz'); } catch (ex) { /* noop */ }
+          try { localStorage.removeItem('pely_quiz'); } catch (ex) { /* noop */ }
         });
       }
     }
@@ -1393,7 +1393,7 @@ if (hero) {
     var toolKeys = industryTools[industry] || industryTools.other;
     var toolExamples = toolKeys.map(function (k) { return industryToolLabels[k] || k; }).join(', ');
 
-    return 'You are a friendly AI assistant on the Pellucen website — a Manchester-based company that builds AI workflow automations for small businesses.\n\n' +
+    return 'You are a friendly AI assistant on the Pely.ai website — a Manchester-based company that builds AI workflow automations for small businesses.\n\n' +
       'The user just completed part of our automation quiz. Here is what we know:\n' +
       '- Industry: ' + industry + '\n' +
       '- Team size: ' + teamSize + '\n' +
@@ -1732,7 +1732,7 @@ if (hero) {
     document.getElementById('qr-cs-title').textContent = cs.title;
     document.getElementById('qr-cs-summary').textContent = cs.summary;
     document.getElementById('qr-cs-metric').textContent = cs.metric;
-    document.getElementById('qr-cs-link').href = (isStandalone ? 'https://pellucen.co.uk/' : '') + cs.anchor;
+    document.getElementById('qr-cs-link').href = (isStandalone ? 'https://pely.ai/' : '') + cs.anchor;
 
     // Timeline estimate
     var toolCount = tools.indexOf('nothing') !== -1 ? 0 : tools.length;
@@ -1823,7 +1823,7 @@ if (hero) {
 
     // Save to localStorage
     try {
-      localStorage.setItem('pellucen_quiz', JSON.stringify({
+      localStorage.setItem('pely_quiz', JSON.stringify({
         timestamp: Date.now(),
         businessName: bizName,
         industry: industry,
@@ -1950,7 +1950,7 @@ if (hero) {
     shareBtn.addEventListener('click', function () {
       var url = window.location.origin + '/quiz#auto-quiz';
       var shareData = {
-        title: 'My AI Automation Report — Pellucen',
+        title: 'My AI Automation Report — Pely.ai',
         text: 'I just found out how much time AI automation could save my team. Take the quiz and see yours:',
         url: url
       };
@@ -2050,7 +2050,7 @@ if (hero) {
       inputEl.focus();
       if (!greeted) {
         greeted = true;
-        addBubble('ai', 'Hi! I\u2019m the Pellucen assistant. I can answer questions about our services, pricing, process, or anything else on the site. What can I help with?');
+        addBubble('ai', 'Hi! I\u2019m the Pely.ai assistant. I can answer questions about our services, pricing, process, or anything else on the site. What can I help with?');
       }
     }
   });
@@ -2104,14 +2104,14 @@ if (hero) {
         addBubble('ai', data.text);
         history.push({ role: 'assistant', content: data.text });
       } else {
-        addBubble('ai', 'Sorry, I had trouble with that. You can reach us at info@pellucen.co.uk or through the contact form.');
+        addBubble('ai', 'Sorry, I had trouble with that. You can reach us at info@pely.ai or through the contact form.');
       }
     })
     .catch(function () {
       removeTyping();
       waiting = false;
       sendBtn.disabled = false;
-      addBubble('ai', 'Sorry, I\u2019m having trouble connecting right now. You can reach us at info@pellucen.co.uk or through the contact form.');
+      addBubble('ai', 'Sorry, I\u2019m having trouble connecting right now. You can reach us at info@pely.ai or through the contact form.');
     });
   }
 
@@ -2152,7 +2152,7 @@ if (hero) {
   var banner = document.getElementById('cookie-banner');
   if (!banner) return;
 
-  var consent = localStorage.getItem('pellucen_cookie_consent');
+  var consent = localStorage.getItem('pely_cookie_consent');
   if (!consent) {
     banner.hidden = false;
   }
@@ -2162,17 +2162,17 @@ if (hero) {
 
   if (acceptBtn) {
     acceptBtn.addEventListener('click', function () {
-      localStorage.setItem('pellucen_cookie_consent', 'accepted');
+      localStorage.setItem('pely_cookie_consent', 'accepted');
       banner.hidden = true;
     });
   }
 
   if (declineBtn) {
     declineBtn.addEventListener('click', function () {
-      localStorage.setItem('pellucen_cookie_consent', 'declined');
+      localStorage.setItem('pely_cookie_consent', 'declined');
       banner.hidden = true;
       // Remove Plausible script if already loaded
-      var plausible = document.querySelector('script[data-domain="pellucen.co.uk"]');
+      var plausible = document.querySelector('script[data-domain="pely.ai"]');
       if (plausible) plausible.remove();
     });
   }

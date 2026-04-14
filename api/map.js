@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     }
     workflow = workflow.trim().slice(0, 2000);
 
-    const systemPrompt = `You are a senior AI automation consultant at Pellucen, a Manchester-based company that builds AI workflow tools for small businesses. The user will describe a business workflow. Parse it into discrete steps and analyse which can be automated.
+    const systemPrompt = `You are a senior AI automation consultant at Pely.ai, a Manchester-based company that builds AI workflow tools for small businesses. The user will describe a business workflow. Parse it into discrete steps and analyse which can be automated.
 
 Return ONLY valid JSON (no markdown fences, no commentary) in this exact structure:
 
@@ -45,7 +45,7 @@ Return ONLY valid JSON (no markdown fences, no commentary) in this exact structu
   },
   "recommendation": {
     "service": "AI Workflow Automation",
-    "description": "One sentence on what Pellucen would build",
+    "description": "One sentence on what Pely.ai would build",
     "quick_win": "The single easiest step to automate first"
   }
 }
