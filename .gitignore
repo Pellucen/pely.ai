@@ -1,0 +1,13 @@
+.vercel
+.env*
+.DS_Store
+.vscode/
+WORKFLOW-MAPPER-REFERENCE.md
+AUTOMATION-QUIZ-REFERENCE.md
+FUTURE-REQUIRED-UPGRADES.md
+backups-*/
+recovered/
+redundant/
+*.txt
+
+.claude/

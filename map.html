@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workflow Mapper — Pellucen</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="canonical" href="https://pellucen.co.uk/map">
+<meta property="og:title" content="Map your workflow — see what AI can automate">
+<meta property="og:description" content="Describe a daily workflow in plain English and get a visual flowchart showing which steps AI can handle.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pellucen.co.uk/map">
+<meta property="og:image" content="https://pellucen.co.uk/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Map your workflow — see what AI can automate">
+<meta name="twitter:description" content="Describe a daily workflow and get a visual automation map.">
+<meta name="description" content="Describe a business workflow in plain English. Pellucen's AI maps each step and shows you what can be automated, how much time you'd save, and where to start.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F8F6F2">
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-xqBqrFytfJUsaE7CxdEYX.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://plausible.io">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { background: var(--shell); overflow-x: hidden; }
+  .map-standalone-nav {
+    padding: 20px 40px; display: flex; align-items: center; gap: 12px;
+    text-decoration: none; color: var(--text-dark); position: relative; z-index: 10;
+  }
+  .map-standalone-nav span {
+    font-family: 'Outfit'; font-weight: 500; font-size: 20px; letter-spacing: -0.3px;
+  }
+  .map-page {
+    padding-top: 40px; min-height: calc(100vh - 70px); display: flex; align-items: flex-start;
+    justify-content: center; position: relative; overflow: hidden;
+  }
+  .map-page .container { width: 100%; position: relative; z-index: 2; }
+  .map-page-orb {
+    position: absolute; border-radius: 50%; pointer-events: none; filter: blur(100px);
+  }
+  .map-page-orb-1 {
+    width: 500px; height: 500px; background: var(--gold);
+    top: -10%; left: -8%; opacity: 0.25;
+    animation: mapOrbFloat 18s ease-in-out infinite;
+  }
+  .map-page-orb-2 {
+    width: 450px; height: 450px; background: var(--crystal);
+    bottom: -5%; right: -10%; opacity: 0.25;
+    animation: mapOrbFloat 18s ease-in-out infinite -6s;
+  }
+  .map-page-orb-3 {
+    width: 380px; height: 380px; background: var(--sand);
+    top: 55%; left: 55%; opacity: 0.2;
+    animation: mapOrbFloat 18s ease-in-out infinite -12s;
+  }
+  @keyframes mapOrbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(40px, -50px) scale(1.08); }
+    50% { transform: translate(-20px, 30px) scale(0.95); }
+    75% { transform: translate(30px, 20px) scale(1.04); }
+  }
+
+  /* INPUT CARD */
+  .map-input-card {
+    max-width: 640px; margin: 0 auto 48px;
+    background: var(--glass-light); border: 1px solid var(--glass-light-border);
+    border-radius: 20px; padding: 48px 40px;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  }
+  .map-input-card h2 {
+    font-size: 28px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 8px; text-align: center;
+  }
+  .map-input-card .map-subtitle {
+    font-size: 15px; color: var(--text-dim); text-align: center; margin-bottom: 28px; line-height: 1.5;
+  }
+  .map-chips {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; justify-content: center;
+  }
+  .map-chip {
+    font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
+    padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.08);
+    background: var(--shell); color: var(--text-body); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .map-chip:hover { border-color: var(--gold); color: var(--gold-deep); }
+  .map-textarea {
+    width: 100%; min-height: 120px; padding: 16px; border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.08); background: white; resize: vertical;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6;
+    color: var(--text-dark); transition: border-color 0.2s;
+  }
+  .map-textarea:focus { outline: none; border-color: var(--gold); }
+  .map-textarea::placeholder { color: var(--text-dim); }
+  .map-submit {
+    display: block; width: 100%; margin-top: 16px; padding: 14px 36px;
+    border-radius: 12px; border: none; background: var(--ink); color: var(--text-light);
+    font-family: 'Outfit'; font-weight: 500; font-size: 16px; cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s, opacity 0.2s;
+  }
+  .map-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+  .map-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* LOADING */
+  .map-loading { display: none; text-align: center; padding: 60px 20px; }
+  .map-loading.active { display: block; }
+  .map-loading-dots { display: inline-flex; gap: 6px; margin-bottom: 16px; }
+  .map-loading-dots span {
+    width: 10px; height: 10px; border-radius: 50%; background: var(--gold);
+    animation: mapDotPulse 1.4s ease-in-out infinite;
+  }
+  .map-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .map-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes mapDotPulse {
+    0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1.1); }
+  }
+  .map-loading-text {
+    font-family: 'Outfit'; font-size: 15px; color: var(--text-dim);
+  }
+  .map-shimmer-bar {
+    height: 16px; border-radius: 8px; margin: 12px auto;
+    max-width: 300px; background: linear-gradient(90deg, var(--shell-warm) 25%, white 50%, var(--shell-warm) 75%);
+    background-size: 200% 100%; animation: shimmerSlide 1.5s ease-in-out infinite;
+  }
+  @keyframes shimmerSlide {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ERROR */
+  .map-error {
+    display: none; max-width: 640px; margin: 0 auto 32px;
+    background: #FEF2F2; border: 1px solid #FECACA; border-radius: 12px;
+    padding: 16px 20px; color: #991B1B; font-size: 14px; text-align: center;
+  }
+  .map-error.active { display: block; }
+
+  /* RESULT AREA */
+  .map-result { display: none; max-width: 900px; margin: 0 auto; }
+  .map-result.active { display: block; }
+
+  .map-result-header {
+    text-align: center; margin-bottom: 40px;
+  }
+  .map-result-header h2 {
+    font-size: 28px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 4px;
+  }
+  .map-result-header .map-workflow-name {
+    font-size: 15px; color: var(--text-dim);
+  }
+
+  /* STATS BAR */
+  .map-stats {
+    display: flex; gap: 1px; border-radius: 16px; overflow: hidden;
+    background: rgba(0,0,0,0.06); margin-bottom: 12px;
+  }
+  .map-stat {
+    flex: 1; padding: 20px 16px; background: white; text-align: center;
+  }
+  .map-stat-number {
+    font-family: 'Outfit'; font-size: 32px; font-weight: 600; letter-spacing: -1px;
+    color: var(--text-dark);
+  }
+  .map-stat-number.gold { color: var(--gold-deep); }
+  .map-stat-label {
+    font-size: 13px; color: var(--text-dim); margin-top: 2px;
+  }
+
+  /* PERCENTAGE BAR */
+  .map-pct-bar-wrap {
+    margin-bottom: 40px; padding: 0 4px;
+  }
+  .map-pct-bar-track {
+    height: 8px; border-radius: 4px; background: rgba(0,0,0,0.06); overflow: hidden;
+  }
+  .map-pct-bar-fill {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-deep));
+    width: 0%; transition: width 1.2s ease;
+  }
+  .map-pct-label {
+    text-align: right; font-family: 'Outfit'; font-size: 13px;
+    color: var(--gold-deep); font-weight: 500; margin-top: 6px;
+  }
+
+  /* STANDALONE FOOTER */
+  .map-standalone-footer {
+    text-align: center; padding: 32px 20px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text-dim);
+  }
+  .map-standalone-footer a { color: var(--gold-deep); text-decoration: none; }
+  .map-standalone-footer a:hover { text-decoration: underline; }
+
+  /* QUICK WIN */
+  .map-quick-win {
+    background: linear-gradient(135deg, rgba(208,188,138,0.1), rgba(208,188,138,0.05));
+    border: 1px solid rgba(208,188,138,0.3); border-radius: 16px;
+    padding: 24px 28px; margin-bottom: 24px;
+  }
+  .map-quick-win-label {
+    font-family: 'Outfit'; font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--gold-deep); margin-bottom: 8px;
+  }
+  .map-quick-win-text {
+    font-size: 15px; color: var(--text-body); line-height: 1.5;
+  }
+
+  /* RECOMMENDATION CARD */
+  .map-recommendation {
+    background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px;
+    padding: 24px 28px; margin-bottom: 32px;
+  }
+  .map-rec-service {
+    font-family: 'Outfit'; font-size: 18px; font-weight: 600; margin-bottom: 6px;
+  }
+  .map-rec-desc {
+    font-size: 15px; color: var(--text-body); line-height: 1.5;
+  }
+
+  /* LEAD CAPTURE */
+  .map-lead-capture {
+    background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px;
+    padding: 28px; margin-bottom: 32px; text-align: center;
+  }
+  .map-lead-capture h3 {
+    font-size: 18px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.3px;
+  }
+  .map-lead-capture .map-lead-sub {
+    font-size: 14px; color: var(--text-dim); margin-bottom: 20px; line-height: 1.5;
+  }
+  .map-lead-fields {
+    display: flex; gap: 10px; max-width: 480px; margin: 0 auto 12px;
+  }
+  .map-lead-fields input {
+    flex: 1; padding: 12px 14px; border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.08); background: var(--shell);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-dark);
+    transition: border-color 0.2s;
+  }
+  .map-lead-fields input:focus { outline: none; border-color: var(--gold); }
+  .map-lead-fields input::placeholder { color: var(--text-dim); }
+  .map-lead-send {
+    padding: 12px 28px; border-radius: 10px; border: none;
+    background: var(--gold); color: var(--ink); font-family: 'Outfit';
+    font-weight: 500; font-size: 14px; cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .map-lead-send:hover { opacity: 0.85; transform: translateY(-1px); }
+  .map-lead-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .map-lead-sent {
+    font-size: 14px; color: var(--gold-deep); font-weight: 500; margin-top: 8px; display: none;
+  }
+  @media (max-width: 600px) {
+    .map-lead-fields { flex-direction: column; }
+  }
+
+  /* CTA */
+  .map-cta-bar {
+    text-align: center; margin-bottom: 24px;
+  }
+  .map-cta-bar .hero-cta { opacity: 1; }
+  .map-restart {
+    display: inline-block; margin-top: 12px;
+    font-family: 'Outfit'; font-size: 14px; font-weight: 500;
+    color: var(--text-dim); cursor: pointer; background: none; border: none;
+    transition: color 0.2s;
+  }
+  .map-restart:hover { color: var(--text-dark); }
+
+  @media (max-width: 600px) {
+    .map-input-card { padding: 32px 20px; }
+    .map-stats { flex-direction: column; }
+    .map-stat { padding: 14px 16px; }
+    .map-stat-number { font-size: 26px; }
+    .map-page { padding-top: 20px; }
+    .map-standalone-nav { padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<a href="https://pellucen.co.uk" class="map-standalone-nav">
+  <svg width="36" height="36" viewBox="0 0 200 200">
+    <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(0 100 100)" stroke="#D0BC8A" stroke-width="5" fill="#D0BC8A" fill-opacity="0.09"/>
+    <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(60 100 100)" stroke="#94B0C0" stroke-width="5" fill="#94B0C0" fill-opacity="0.09"/>
+    <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(120 100 100)" stroke="#C49484" stroke-width="5" fill="#C49484" fill-opacity="0.09"/>
+  </svg>
+  <span>Pellucen</span>
+</a>
+
+<section class="map-page">
+  <div class="map-page-orb map-page-orb-1" aria-hidden="true"></div>
+  <div class="map-page-orb map-page-orb-2" aria-hidden="true"></div>
+  <div class="map-page-orb map-page-orb-3" aria-hidden="true"></div>
+  <div class="container">
+    <div class="section-label reveal">Workflow Mapper</div>
+
+    <!-- INPUT -->
+    <div class="map-input-card" id="map-input-card">
+      <h2>Map your workflow</h2>
+      <p class="map-subtitle">Describe a daily workflow in plain English. We'll break it into steps and show you what AI can automate.</p>
+      <div class="map-chips">
+        <button class="map-chip" data-workflow="When a customer places an order on Shopify, I manually check stock in a spreadsheet, send a confirmation email, create a shipping label, update the spreadsheet, and notify the warehouse via Slack.">E-commerce order flow</button>
+        <button class="map-chip" data-workflow="A new client signs a proposal. I create their folder in Google Drive, add them to our CRM, send a welcome email with onboarding docs, schedule a kick-off call, and assign tasks to team members in Asana.">Client onboarding</button>
+        <button class="map-chip" data-workflow="Every Friday I pull data from three different tools into a spreadsheet, create charts, write a summary, format it into a PDF report, email it to stakeholders, and post highlights in the team Slack channel.">Weekly reporting</button>
+      </div>
+      <textarea class="map-textarea" id="map-input" placeholder="e.g. When a lead fills in our contact form, I copy their details into a spreadsheet, send them a welcome email, create a task in Trello, and notify the sales team on Slack..."></textarea>
+      <button class="map-submit" id="map-submit">Map my workflow</button>
+    </div>
+
+    <!-- LOADING -->
+    <div class="map-loading" id="map-loading">
+      <div class="map-loading-dots"><span></span><span></span><span></span></div>
+      <div class="map-loading-text">Analysing your workflow...</div>
+      <div class="map-shimmer-bar" style="max-width:260px;"></div>
+      <div class="map-shimmer-bar" style="max-width:200px;"></div>
+    </div>
+
+    <!-- ERROR -->
+    <div class="map-error" id="map-error"></div>
+
+    <!-- RESULT -->
+    <div class="map-result" id="map-result">
+      <div class="map-result-header">
+        <h2>Your Workflow Map</h2>
+        <div class="map-workflow-name" id="map-workflow-name"></div>
+      </div>
+
+      <!-- Stats bar -->
+      <div class="map-stats">
+        <div class="map-stat">
+          <div class="map-stat-number" id="map-stat-total">0</div>
+          <div class="map-stat-label">Total steps</div>
+        </div>
+        <div class="map-stat">
+          <div class="map-stat-number gold" id="map-stat-auto">0</div>
+          <div class="map-stat-label">Automatable</div>
+        </div>
+        <div class="map-stat">
+          <div class="map-stat-number gold" id="map-stat-saved">0</div>
+          <div class="map-stat-label">Minutes saved</div>
+        </div>
+      </div>
+      <div class="map-pct-bar-wrap">
+        <div class="map-pct-bar-track">
+          <div class="map-pct-bar-fill" id="map-pct-fill"></div>
+        </div>
+        <div class="map-pct-label" id="map-pct-label">0% automatable</div>
+      </div>
+
+      <!-- Flowchart -->
+      <div class="flow-chart" id="flow-chart"></div>
+
+      <!-- Quick win -->
+      <div class="map-quick-win" id="map-quick-win">
+        <div class="map-quick-win-label">Quick win</div>
+        <div class="map-quick-win-text" id="map-quick-win-text"></div>
+      </div>
+
+      <!-- Recommendation -->
+      <div class="map-recommendation" id="map-recommendation">
+        <div class="map-rec-service" id="map-rec-service"></div>
+        <div class="map-rec-desc" id="map-rec-desc"></div>
+      </div>
+
+      <!-- Lead capture -->
+      <div class="map-lead-capture" id="map-lead-capture">
+        <h3>Get your results by email</h3>
+        <p class="map-lead-sub">We'll save your workflow map so we can reference it if you get in touch.</p>
+        <div class="map-lead-fields">
+          <input type="text" id="map-lead-name" placeholder="Business name" autocomplete="organization">
+          <input type="email" id="map-lead-email" placeholder="Email address" autocomplete="email">
+          <button class="map-lead-send" id="map-lead-send">Send</button>
+        </div>
+        <div class="map-lead-sent" id="map-lead-sent">Sent — check your inbox.</div>
+      </div>
+
+      <!-- CTA -->
+      <div class="map-cta-bar">
+        <a href="https://pellucen.co.uk/#contact" class="hero-cta">Book your free discovery call</a>
+        <br>
+        <button class="map-restart" id="map-restart">Map another workflow</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="map-standalone-footer">
+  <a href="https://pellucen.co.uk">pellucen.co.uk</a> &mdash; AI workflow automation, Manchester
+</div>
+
+<!-- Chatbot widget -->
+<div class="chatbot-panel" id="chatbot-panel">
+  <div class="chatbot-header">
+    <div class="chatbot-header-dot"></div>
+    <div>
+      <div class="chatbot-header-text">Pellucen AI</div>
+      <div class="chatbot-header-sub">Ask us anything about our services</div>
+    </div>
+  </div>
+  <div class="chatbot-messages" id="chatbot-messages"></div>
+  <div class="chatbot-input-bar">
+    <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Ask a question..." autocomplete="off">
+    <button class="chatbot-send" id="chatbot-send" aria-label="Send">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+<button class="chatbot-fab" id="chatbot-fab" aria-label="Chat with Pellucen AI">
+  <svg class="chatbot-fab-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+  <svg class="chatbot-fab-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+
+<!-- Cookie consent banner -->
+<div class="cookie-banner" id="cookie-banner" hidden>
+  <p>We use privacy-friendly analytics (Plausible) to understand how people use this site. No personal data is collected or shared.</p>
+  <div class="cookie-actions">
+    <button class="cookie-accept" id="cookie-accept">Got it</button>
+    <button class="cookie-decline" id="cookie-decline">No thanks</button>
+  </div>
+</div>
+
+<script src="main.js"></script>
+<script>
+(function() {
+  const inputCard = document.getElementById('map-input-card');
+  const textarea  = document.getElementById('map-input');
+  const submitBtn = document.getElementById('map-submit');
+  const loading   = document.getElementById('map-loading');
+  const errorEl   = document.getElementById('map-error');
+  const resultEl  = document.getElementById('map-result');
+  let lastResultData = null;
+  let lastWorkflowInput = '';
+
+  // Quick-start chips
+  document.querySelectorAll('.map-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      textarea.value = chip.dataset.workflow;
+      textarea.focus();
+    });
+  });
+
+  // Submit
+  submitBtn.addEventListener('click', handleSubmit);
+  textarea.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleSubmit();
+  });
+
+  async function handleSubmit() {
+    const workflow = textarea.value.trim();
+    if (!workflow) return;
+
+    lastWorkflowInput = workflow;
+    submitBtn.disabled = true;
+    errorEl.classList.remove('active');
+    inputCard.style.display = 'none';
+    loading.classList.add('active');
+    resultEl.classList.remove('active');
+
+    try {
+      const res = await fetch('/api/map', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ workflow })
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Something went wrong');
+      }
+
+      const data = await res.json();
+      lastResultData = data;
+      loading.classList.remove('active');
+      renderResult(data);
+
+    } catch (err) {
+      loading.classList.remove('active');
+      errorEl.textContent = err.message || 'Failed to analyse workflow. Please try again.';
+      errorEl.classList.add('active');
+      inputCard.style.display = '';
+      submitBtn.disabled = false;
+    }
+  }
+
+  function renderResult(data) {
+    // Workflow name
+    document.getElementById('map-workflow-name').textContent = data.workflow_name || '';
+
+    // Stats — count-up animation
+    const summary = data.summary || {};
+    animateCount('map-stat-total', summary.total_steps || data.steps.length);
+    animateCount('map-stat-auto', summary.automatable_steps || data.steps.filter(s => s.automatable).length);
+    animateCount('map-stat-saved', summary.saveable_time_minutes || 0);
+
+    // Percentage bar
+    const total = summary.total_steps || data.steps.length;
+    const auto = summary.automatable_steps || data.steps.filter(s => s.automatable).length;
+    const pct = total > 0 ? Math.round((auto / total) * 100) : 0;
+    setTimeout(() => {
+      document.getElementById('map-pct-fill').style.width = pct + '%';
+      document.getElementById('map-pct-label').textContent = pct + '% automatable';
+    }, 300);
+
+    // Flowchart
+    renderFlowchart(data.steps, data.approval_points || []);
+
+    // Quick win
+    if (data.recommendation && data.recommendation.quick_win) {
+      document.getElementById('map-quick-win-text').textContent = data.recommendation.quick_win;
+      document.getElementById('map-quick-win').style.display = '';
+    } else {
+      document.getElementById('map-quick-win').style.display = 'none';
+    }
+
+    // Recommendation
+    if (data.recommendation) {
+      document.getElementById('map-rec-service').textContent = data.recommendation.service || 'AI Workflow Automation';
+      document.getElementById('map-rec-desc').textContent = data.recommendation.description || '';
+    }
+
+    resultEl.classList.add('active');
+  }
+
+  function renderFlowchart(steps, approvalPointsArr) {
+    const chart = document.getElementById('flow-chart');
+    chart.innerHTML = '';
+
+    // Build approval point lookup
+    const approvalPoints = {};
+    (approvalPointsArr || []).forEach(ap => { approvalPoints[ap.after_step] = ap.reason; });
+
+    steps.forEach((step, i) => {
+      const card = document.createElement('div');
+      card.className = 'flow-step' + (step.automatable ? ' flow-step--auto' : ' flow-step--manual');
+      card.style.animationDelay = (i * 0.1) + 's';
+
+      card.innerHTML =
+        '<div class="flow-step-badge">' + step.number + '</div>' +
+        '<div class="flow-step-title">' + escapeHtml(step.title) + '</div>' +
+        '<div class="flow-step-desc">' + escapeHtml(step.description) + '</div>' +
+        '<div class="flow-step-meta">' +
+          '<span class="flow-step-time">' + step.time_minutes + ' min</span>' +
+          '<span class="flow-step-tag">' + (step.automatable ? 'Automatable' : 'Manual') + '</span>' +
+        '</div>' +
+        (step.automatable
+          ? '<div class="flow-step-method">' + escapeHtml(step.automation_method) + '</div>'
+          : '');
+
+      chart.appendChild(card);
+
+      // Approval checkpoint after this step
+      var stepNum = step.number || i + 1;
+      if (approvalPoints[stepNum]) {
+        const checkpoint = document.createElement('div');
+        checkpoint.style.cssText = 'display:flex;align-items:center;gap:10px;margin:12px 0;padding:10px 14px;background:rgba(148,176,192,0.1);border-left:3px solid #94B0C0;border-radius:0 10px 10px 0;animation:flowStepReveal 0.5s ease forwards;animation-delay:' + ((i + 0.5) * 0.1) + 's;opacity:0;';
+        checkpoint.innerHTML =
+          '<span style="font-size:16px;">&#9995;</span>' +
+          '<div><div style="font-family:Outfit,sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#94B0C0;">Employee approval</div>' +
+          '<div style="font-family:DM Sans,sans-serif;font-size:13px;color:#4A4A52;margin-top:2px;">' + escapeHtml(approvalPoints[stepNum]) + '</div></div>';
+        chart.appendChild(checkpoint);
+      }
+    });
+  }
+
+  function animateCount(id, target) {
+    const el = document.getElementById(id);
+    const duration = 800;
+    const start = performance.now();
+    target = parseInt(target, 10) || 0;
+
+    function tick(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  // Lead capture email
+  document.getElementById('map-lead-send').addEventListener('click', function() {
+    const name = document.getElementById('map-lead-name').value.trim();
+    const email = document.getElementById('map-lead-email').value.trim();
+    if (!email) return;
+
+    this.disabled = true;
+    try {
+      var formData = new FormData();
+      formData.append('_subject', 'Workflow mapped' + (name ? ' — ' + name : ''));
+      formData.append('_captcha', 'false');
+      formData.append('_template', 'table');
+      formData.append('Business Name', name || 'Not provided');
+      formData.append('Email', email);
+      formData.append('Workflow Input', lastWorkflowInput);
+      if (lastResultData) {
+        formData.append('Workflow Name', lastResultData.workflow_name || '');
+        var s = lastResultData.summary || {};
+        formData.append('Total Steps', s.total_steps || '');
+        formData.append('Automatable Steps', s.automatable_steps || '');
+        formData.append('Total Minutes', s.total_time_minutes || '');
+        formData.append('Minutes Saveable', s.saveable_time_minutes || '');
+        var steps = (lastResultData.steps || []).map(function(st) {
+          return st.number + '. ' + st.title + (st.automatable ? ' [AUTO]' : ' [MANUAL]') + ' (' + st.time_minutes + ' min)';
+        }).join('\n');
+        formData.append('Steps Breakdown', steps);
+        if (lastResultData.recommendation) {
+          formData.append('Recommended Service', lastResultData.recommendation.service || '');
+          formData.append('Quick Win', lastResultData.recommendation.quick_win || '');
+        }
+      }
+      formData.append('Completed At', new Date().toLocaleString('en-GB'));
+      fetch('https://formsubmit.co/ajax/map@pellucen.co.uk', {
+        method: 'POST',
+        body: formData
+      });
+    } catch (e) { /* silent fail */ }
+
+    document.getElementById('map-lead-sent').style.display = 'block';
+    document.getElementById('map-lead-send').textContent = 'Sent';
+  });
+
+  // Restart
+  document.getElementById('map-restart').addEventListener('click', () => {
+    resultEl.classList.remove('active');
+    inputCard.style.display = '';
+    submitBtn.disabled = false;
+    errorEl.classList.remove('active');
+    document.getElementById('map-pct-fill').style.width = '0%';
+    document.getElementById('map-lead-name').value = '';
+    document.getElementById('map-lead-email').value = '';
+    document.getElementById('map-lead-sent').style.display = 'none';
+    document.getElementById('map-lead-send').disabled = false;
+    document.getElementById('map-lead-send').textContent = 'Send';
+    lastResultData = null;
+    lastWorkflowInput = '';
+    textarea.value = '';
+    textarea.focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+</body>
+</html>

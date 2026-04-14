@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Pellucen Orb Spin Animation</title>
+<style>
+  * { margin: 0; padding: 0; }
+  body { background: #0C0C0E; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+  canvas { display: block; }
+  .controls {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 12px; z-index: 10;
+  }
+  .controls button {
+    padding: 8px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08); color: #E8E8EC;
+    font-family: sans-serif; font-size: 13px; cursor: pointer;
+  }
+  .controls button:hover { background: rgba(255,255,255,0.15); }
+</style>
+</head>
+<body>
+
+<canvas id="canvas" width="800" height="800"></canvas>
+
+<div class="controls">
+  <button onclick="restart()">Restart</button>
+  <button onclick="togglePause()">Pause / Play</button>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const W = 800, H = 800;
+const cx = W / 2, cy = H / 2;
+
+// Animation: 6 seconds total
+// 0-2s: slow spin
+// 2-4s: speed up
+// 4-5s: fast spin
+// 5-6s: decelerate back to zero
+const DURATION = 6000;
+
+let startTime = null;
+let paused = false;
+let pauseTime = 0;
+
+// Brand mark: three rounded rects at 0°, 60°, 120°
+const colors = [
+  { stroke: '#D0BC8A', fill: 'rgba(208,188,138,0.09)' },  // gold
+  { stroke: '#94B0C0', fill: 'rgba(148,176,192,0.09)' },  // crystal
+  { stroke: '#C49484', fill: 'rgba(196,148,132,0.09)' }    // sand
+];
+const angles = [0, 60, 120];
+
+function drawRoundedRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function easeInOut(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+function getSpeed(t) {
+  // t is 0..1 over the full duration
+  // Returns angular velocity multiplier
+  if (t < 0.33) {
+    // Slow phase → accelerating
+    return easeInOut(t / 0.33) * 0.3 + 0.05;
+  } else if (t < 0.66) {
+    // Fast phase
+    const sub = (t - 0.33) / 0.33;
+    return 0.35 + easeInOut(sub) * 2.5;
+  } else {
+    // Decelerating back to zero
+    const sub = (t - 0.66) / 0.34;
+    return 2.85 * (1 - easeInOut(sub));
+  }
+}
+
+function drawOrbs(rotation) {
+  // Background orbs (blurred circles)
+  const orbData = [
+    { x: cx - 150, y: cy - 100, r: 200, color: 'rgba(208,188,138,0.12)' },
+    { x: cx + 180, y: cy + 120, r: 170, color: 'rgba(148,176,192,0.10)' },
+    { x: cx + 50, y: cy - 180, r: 150, color: 'rgba(196,148,132,0.08)' }
+  ];
+
+  orbData.forEach((orb, i) => {
+    const offsetAngle = rotation * 0.3 + i * 2.094;
+    const ox = orb.x + Math.sin(offsetAngle) * 30;
+    const oy = orb.y + Math.cos(offsetAngle) * 20;
+
+    const grad = ctx.createRadialGradient(ox, oy, 0, ox, oy, orb.r);
+    grad.addColorStop(0, orb.color);
+    grad.addColorStop(1, 'rgba(12,12,14,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(ox, oy, orb.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawMark(rotation, scale) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(scale, scale);
+
+  for (let i = 0; i < 3; i++) {
+    ctx.save();
+    ctx.rotate((angles[i] + rotation) * Math.PI / 180);
+
+    // Rect centred at origin: width 44, height 116, offset so centre is at (0,0)
+    const rw = 44, rh = 116, rx = 12;
+    const x = -rw / 2, y = -rh / 2;
+
+    drawRoundedRect(x, y, rw, rh, rx);
+    ctx.fillStyle = colors[i].fill;
+    ctx.fill();
+    ctx.strokeStyle = colors[i].stroke;
+    ctx.lineWidth = 5;
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  ctx.restore();
+}
+
+function frame(timestamp) {
+  if (paused) { requestAnimationFrame(frame); return; }
+  if (!startTime) startTime = timestamp;
+
+  const elapsed = timestamp - startTime;
+  const t = Math.min(elapsed / DURATION, 1);
+
+  // Integrate speed to get rotation angle
+  const steps = 200;
+  let totalRotation = 0;
+  for (let i = 0; i <= Math.floor(t * steps); i++) {
+    totalRotation += getSpeed(i / steps) * (360 / steps) * 3;
+  }
+
+  // Scale pulse: subtle breathe
+  const scale = 1.5 + Math.sin(t * Math.PI * 4) * 0.08;
+
+  // Clear
+  ctx.fillStyle = '#0C0C0E';
+  ctx.fillRect(0, 0, W, H);
+
+  // Draw orbs
+  drawOrbs(totalRotation * Math.PI / 180);
+
+  // Draw mark
+  drawMark(totalRotation, scale);
+
+  if (t < 1) {
+    requestAnimationFrame(frame);
+  }
+}
+
+function restart() {
+  startTime = null;
+  paused = false;
+  requestAnimationFrame(frame);
+}
+
+function togglePause() {
+  paused = !paused;
+  if (!paused) requestAnimationFrame(frame);
+}
+
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

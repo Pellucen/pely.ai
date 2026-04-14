@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workflow Audit — Pellucen</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F8F6F2">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-xqBqrFytfJUsaE7CxdEYX.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ── Base ── */
+body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
+
+/* ── Nav ── */
+.audit-nav {
+  padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+  position: relative; z-index: 10;
+}
+.audit-nav-left { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #1A1A1C; }
+.audit-nav-left span { font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 20px; letter-spacing: -0.3px; }
+.audit-nav-pill {
+  display: none; background: rgba(208,188,138,0.15); border-radius: 20px; padding: 6px 14px;
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; color: #D0BC8A;
+}
+
+/* ── Orbs ── */
+.audit-orb {
+  position: fixed; border-radius: 50%; pointer-events: none; filter: blur(80px); z-index: 0;
+}
+.audit-orb-gold { width: 500px; height: 500px; background: #D0BC8A; top: -10%; left: -8%; opacity: 0.25; animation: orbFloat 18s ease-in-out infinite; }
+.audit-orb-crystal { width: 450px; height: 450px; background: #94B0C0; bottom: -5%; right: -10%; opacity: 0.25; animation: orbFloat 18s ease-in-out infinite -6s; }
+.audit-orb-sand { width: 380px; height: 380px; background: #C49484; top: 55%; left: 55%; opacity: 0.2; animation: orbFloat 18s ease-in-out infinite -12s; }
+
+/* ── Footer ── */
+.audit-footer {
+  text-align: center; padding: 32px 20px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: #7A7A84; position: relative; z-index: 2;
+}
+.audit-footer a { color: #B0A070; text-decoration: none; }
+.audit-footer a:hover { text-decoration: underline; }
+
+/* ── Glassmorphism card ── */
+.glass-card {
+  background: rgba(255,255,255,0.45); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.25); border-radius: 16px; padding: 28px;
+}
+
+/* ── Inputs & Textareas ── */
+.audit-input, .audit-textarea {
+  display: block; width: 100%; box-sizing: border-box; background: #fff;
+  border: 1.5px solid rgba(0,0,0,0.08); border-radius: 10px; padding: 12px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 16px; color: #1A1A1C;
+  transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+}
+.audit-input:focus, .audit-textarea:focus {
+  border-color: #D0BC8A; box-shadow: 0 0 0 3px rgba(208,188,138,0.15);
+}
+.audit-textarea { resize: vertical; min-height: 100px; }
+.audit-input.error, .audit-textarea.error { border-color: #e55; }
+
+/* ── Chips ── */
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 8px 16px; border-radius: 20px; border: 1.5px solid rgba(0,0,0,0.08);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: #4A4A52;
+  cursor: pointer; background: #fff; transition: all 0.2s; user-select: none;
+}
+.chip:hover { border-color: rgba(208,188,138,0.5); }
+.chip.selected {
+  border-color: #D0BC8A; background: rgba(208,188,138,0.15);
+  color: #B0A070; font-weight: 600;
+}
+.chip.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+/* ── Buttons ── */
+.audit-btn {
+  display: block; width: 100%; padding: 16px 28px; border: none; border-radius: 12px;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  min-height: 48px;
+}
+.audit-btn:hover { transform: translateY(-2px); }
+.audit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.audit-btn-ink { background: #0C0C0E; color: #fff; }
+.audit-btn-gold {
+  background: linear-gradient(135deg, #D0BC8A, #B0A070); color: #fff;
+  box-shadow: 0 0 16px rgba(208,188,138,0.25);
+}
+.audit-btn-outline {
+  background: transparent; border: 1.5px solid rgba(208,188,138,0.4);
+  color: #B0A070; font-size: 14px;
+}
+
+/* ── Completed badges ── */
+.completed-badge {
+  display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+  background: rgba(208,188,138,0.1); border: 1px solid rgba(208,188,138,0.3);
+  border-radius: 12px; margin-bottom: 12px; animation: fadeUp 0.5s ease forwards;
+}
+.badge-check {
+  width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #D0BC8A, #B0A070);
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.badge-label { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 500; color: #B0A070; }
+
+/* ── Section headers ── */
+.section-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%; background: #0C0C0E;
+  color: #fff; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px;
+  flex-shrink: 0;
+}
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.section-title { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 700; color: #1A1A1C; }
+.section-subtitle {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: #7A7A84;
+  margin-bottom: 24px;
+}
+
+/* ── Field labels ── */
+.field-label {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  color: #1A1A1C; margin-bottom: 8px; margin-top: 20px;
+}
+.field-hint {
+  font-family: 'DM Sans', sans-serif; font-size: 12px; color: #7A7A84;
+  margin-top: 6px;
+}
+
+/* ── Intro ── */
+.shimmer-text {
+  background: linear-gradient(90deg, #1A1A1C 0%, #1A1A1C 40%, #D0BC8A 50%, #94B0C0 55%, #1A1A1C 60%, #1A1A1C 100%);
+  background-size: 200% 100%; background-clip: text; -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; animation: shimmerText 6s ease-in-out infinite;
+}
+.shimmer-text-gold {
+  background: linear-gradient(90deg, #B0A070 0%, #B0A070 40%, #D0BC8A 50%, #B0A070 60%, #B0A070 100%);
+  background-size: 200% 100%; background-clip: text; -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; animation: shimmerText 6s ease-in-out infinite;
+}
+
+/* ── Keyframes ── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes shimmerText { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(40px, -50px) scale(1.08); }
+  50% { transform: translate(-20px, 30px) scale(0.95); }
+  75% { transform: translate(30px, 20px) scale(1.04); }
+}
+@keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes shakeButton { 0% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } 100% { transform: translateX(0); } }
+@keyframes flowStepReveal { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 16px rgba(208,188,138,0.25); }
+  50% { box-shadow: 0 0 28px rgba(208,188,138,0.45); }
+}
+
+/* ── Intro screen ── */
+#intro-logo-anchor {
+  position: absolute; top: 28%; left: 50%; transform: translate(-50%, -50%);
+  z-index: 2; pointer-events: none; text-align: center;
+}
+#intro-scroll-hint {
+  margin-top: 16px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+  color: #7A7A84; letter-spacing: 2px; text-transform: uppercase;
+  animation: hintBounce 2s ease-in-out infinite;
+  transition: opacity 0.6s;
+}
+@keyframes hintBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+.intro-slide {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  padding-top: 12vh; /* push text below the logo */
+  box-sizing: border-box;
+  opacity: 0; pointer-events: none;
+}
+.intro-slide-inner {
+  max-width: 720px; text-align: center; padding: 0 32px;
+}
+.intro-slide h1 {
+  font-family: 'Outfit', sans-serif; font-size: 46px; font-weight: 700;
+  color: #1A1A1C; margin: 0 0 20px; line-height: 1.2;
+}
+.intro-slide p {
+  font-family: 'DM Sans', sans-serif; font-size: 22px; color: #4A4A52;
+  margin: 0; line-height: 1.6;
+}
+.intro-slide .intro-arrow {
+  font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 600;
+  color: #1A1A1C; margin: 0 0 20px; line-height: 1.4; text-align: left;
+}
+.intro-slide .arrow-icon { color: #D0BC8A; margin-right: 10px; }
+.intro-slide .intro-body {
+  font-family: 'DM Sans', sans-serif; font-size: 20px; color: #4A4A52;
+  line-height: 1.7; margin: 0 0 20px;
+}
+.intro-slide .intro-dim {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: #7A7A84;
+  line-height: 1.5; margin: 24px 0 0;
+}
+#intro-cta {
+  display: inline-block; max-width: 380px; width: 100%; padding: 16px 28px;
+  background: #0C0C0E; color: #fff; border: none; border-radius: 12px;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
+  cursor: pointer; margin-top: 28px; transition: transform 0.2s, box-shadow 0.2s;
+  animation: glowPulse 3s infinite;
+}
+#intro-cta:hover { transform: translateY(-2px); box-shadow: 0 0 32px rgba(208,188,138,0.5); }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .audit-nav { padding: 16px 20px; }
+  .audit-nav-left span { font-size: 17px; }
+  #audit-content { padding: 16px 16px 60px !important; }
+  .intro-slide-inner { max-width: 100%; padding: 0 20px; }
+  .intro-slide h1 { font-size: 28px; }
+  .intro-slide p { font-size: 17px; }
+  .intro-slide .intro-arrow { font-size: 18px; }
+  .intro-slide .intro-body { font-size: 16px; }
+  #intro-logo-anchor svg { width: 60px; height: 60px; }
+  .glass-card { padding: 20px 16px; }
+  #about-comfort-circles div { width: 38px !important; height: 38px !important; font-size: 13px !important; }
+  .audit-btn { min-height: 48px; }
+  .section-title { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="audit-nav">
+  <a href="https://pellucen.co.uk" class="audit-nav-left">
+    <svg width="28" height="28" viewBox="0 0 200 200" fill="none">
+      <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(0 100 100)" stroke="#D0BC8A" stroke-width="5" fill="#D0BC8A" fill-opacity="0.09"/>
+      <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(60 100 100)" stroke="#94B0C0" stroke-width="5" fill="#94B0C0" fill-opacity="0.09"/>
+      <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(120 100 100)" stroke="#C49484" stroke-width="5" fill="#C49484" fill-opacity="0.09"/>
+    </svg>
+    <span>Pellucen</span>
+  </a>
+  <div class="audit-nav-pill" id="nav-audit-id"></div>
+</nav>
+
+<!-- Orbs -->
+<div class="audit-orb audit-orb-gold"></div>
+<div class="audit-orb audit-orb-crystal"></div>
+<div class="audit-orb audit-orb-sand"></div>
+
+<!-- ZONE 1: Full-width intro (visible on load) -->
+<div id="screen-intro">
+  <div id="intro-scroll-area" style="height: 3000vh; position: relative;">
+    <div id="intro-viewport" style="position: -webkit-sticky; position: sticky; top: 0; height: 100vh; overflow: hidden;">
+
+      <!-- Single logo, fixed position above the text — visible on load -->
+      <div id="intro-logo-anchor">
+        <svg id="intro-logo-svg" width="80" height="80" viewBox="0 0 200 200" fill="none">
+          <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(0 100 100)" stroke="#D0BC8A" stroke-width="5" fill="#D0BC8A" fill-opacity="0.09"/>
+          <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(60 100 100)" stroke="#94B0C0" stroke-width="5" fill="#94B0C0" fill-opacity="0.09"/>
+          <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(120 100 100)" stroke="#C49484" stroke-width="5" fill="#C49484" fill-opacity="0.09"/>
+        </svg>
+        <div id="intro-scroll-hint">Scroll</div>
+      </div>
+
+      <!-- Slide 1: Headline -->
+      <div class="intro-slide" id="intro-slide-1">
+        <div class="intro-slide-inner">
+          <h1 class="shimmer-text">AI tools designed around you</h1>
+          <p>Not around a department. Not around a job title. Around the person doing the work.</p>
+        </div>
+      </div>
+
+      <!-- Slide 2: Three pillars -->
+      <div class="intro-slide" id="intro-slide-2">
+        <div class="intro-slide-inner">
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Pellucen builds the system</p>
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Your company owns the data you work with</p>
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> You hold the key to the tools</p>
+        </div>
+      </div>
+
+      <!-- Slide 3: Explanation -->
+      <div class="intro-slide" id="intro-slide-3">
+        <div class="intro-slide-inner">
+          <p class="intro-body">Your key unlocks your tools, your settings, and your way of working. Everything you do with your tools is encrypted &mdash; visible only to you. Your company sees what the team achieves together, never what you do individually.</p>
+          <p class="intro-body">If you move on, your tools don&rsquo;t follow you &mdash; and they don&rsquo;t stay behind either. They&rsquo;re retired. That&rsquo;s the deal: nobody inherits someone else&rsquo;s setup.</p>
+        </div>
+      </div>
+
+      <!-- Slide 4: Empowerment -->
+      <div class="intro-slide" id="intro-slide-4">
+        <div class="intro-slide-inner">
+          <h1 class="shimmer-text-gold" style="font-size:28px;line-height:1.4;">We built it this way so employees can leverage AI to feel empowered. Not replaced.</h1>
+          <p style="margin-top:12px;">You hold the keys to your workflow, no one else.</p>
+        </div>
+      </div>
+
+      <!-- Slide 5: CTA -->
+      <div class="intro-slide" id="intro-slide-5">
+        <div class="intro-slide-inner">
+          <h1 class="shimmer-text" style="font-size:30px;line-height:1.3;">This is the Pellucen Model</h1>
+          <button id="intro-cta" onclick="startAudit()">Start My Audit &rarr;</button>
+          <div style="margin-top:32px; padding-top:24px; border-top:1px solid rgba(0,0,0,0.06);">
+            <p class="intro-dim" style="margin:0 0 8px;">Your company has signed a confidentiality agreement covering this audit.</p>
+            <p class="intro-dim" style="margin:0 0 12px;">We&rsquo;ve also signed a terms of collaboration agreement &mdash; we&rsquo;ll never share the specifics of your workflows, only general patterns that help us build better tools.</p>
+            <p class="intro-dim" style="margin:0; font-size:12px;">Want to see either agreement? Ask your manager or email info@pellucen.co.uk.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ZONE 2: Centred content (hidden until intro CTA) -->
+<div id="audit-content" style="max-width:640px; margin:0 auto; padding:20px 24px 80px; display:none; position:relative; z-index:2;">
+  <div id="screen-reg1" style="display:none;"></div>
+  <div id="screen-reg2" style="display:none;"></div>
+  <div id="audit-id-banner" style="display:none;"></div>
+  <div id="badges-container"></div>
+  <div id="section-about" class="audit-section" style="display:none; opacity:0; transform:translateY(16px);"></div>
+  <div id="section-workflows" class="audit-section" style="display:none; opacity:0; transform:translateY(16px);"></div>
+  <div id="section-friction" class="audit-section" style="display:none; opacity:0; transform:translateY(16px);"></div>
+  <div id="section-wishes" class="audit-section" style="display:none; opacity:0; transform:translateY(16px);"></div>
+  <div id="section-complete" class="audit-section" style="display:none; opacity:0; transform:translateY(16px);"></div>
+  <div id="section-done" class="audit-section" style="display:none; opacity:0; transform:translateY(16px);"></div>
+</div>
+
+<!-- Footer -->
+<div class="audit-footer">
+  <a href="https://pellucen.co.uk">pellucen.co.uk</a> &mdash; AI workflow automation, Manchester
+</div>
+
+<!-- Chatbot widget -->
+<div class="chatbot-panel" id="chatbot-panel">
+  <div class="chatbot-header">
+    <div class="chatbot-header-dot"></div>
+    <div>
+      <div class="chatbot-header-text">Pellucen AI</div>
+      <div class="chatbot-header-sub">Ask us anything about our services</div>
+    </div>
+  </div>
+  <div class="chatbot-messages" id="chatbot-messages"></div>
+  <div class="chatbot-input-bar">
+    <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Ask a question..." autocomplete="off">
+    <button class="chatbot-send" id="chatbot-send" aria-label="Send">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+<button class="chatbot-fab" id="chatbot-fab" aria-label="Chat with Pellucen AI">
+  <svg class="chatbot-fab-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+  <svg class="chatbot-fab-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+
+<!-- Cookie consent banner -->
+<div class="cookie-banner" id="cookie-banner" hidden>
+  <p>We use privacy-friendly analytics (Plausible) to understand how people use this site. No personal data is collected or shared.</p>
+  <div class="cookie-actions">
+    <button class="cookie-accept" id="cookie-accept">Got it</button>
+    <button class="cookie-decline" id="cookie-decline">No thanks</button>
+  </div>
+</div>
+
+<script src="main.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   PELLUCEN AUDIT TOOL — Inline JS
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── State ── */
+var auditState = {
+  auditId: null,
+  currentScreen: 'intro',
+  completedSections: [],
+  emailFallbackMode: false,
+  registration: { company: '', name: '', email: '', role: '', industry: null, tools: [] },
+  aboutYou: { roleDescription: '', tenure: null, techComfort: null, aiExperience: null, sentiment: null, concerns: [], concernDetail: '' },
+  workflows: [],
+  dependencyChain: { whoWaits: '', waitFor: '' },
+  friction: { frustration: '', frustrationTime: '', toolSequence: '', judgementCalls: '', repetitiveTask: '' },
+  wishes: { freedTime: '', wishCould: '', anythingElse: '' }
+};
+
+/* ── Industry Data Lookup Tables ── */
+
+var INDUSTRY_OPTIONS = [
+  { key: 'ecommerce', label: 'E-commerce & Retail' },
+  { key: 'health', label: 'Health & Wellness' },
+  { key: 'finance', label: 'Finance & Trading' },
+  { key: 'services', label: 'Professional Services' },
+  { key: 'creative', label: 'Creative / Agency' },
+  { key: 'other', label: 'Other' }
+];
+
+var INDUSTRY_TOOLS = {
+  ecommerce: ['Squarespace', 'Shopify', 'Amazon/MCF', 'TikTok Shop', 'Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal'],
+  health: ['EHR/Patient System', 'Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal'],
+  finance: ['Trading/Analytics Platform', 'Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal'],
+  services: ['CRM', 'Project Management Tool', 'Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal'],
+  creative: ['Figma/Adobe/Canva', 'DAM/Asset Library', 'Project Management Tool', 'Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal'],
+  other: ['Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal']
+};
+
+var INDUSTRY_WORKFLOW_CHIPS = {
+  ecommerce: [
+    { label: 'Order fulfilment', text: 'When a customer places an order on Shopify, I manually check stock in a spreadsheet, send a confirmation email, create a shipping label, update the spreadsheet, and notify the warehouse via Slack.' },
+    { label: 'Stock reconciliation', text: 'Every morning I compare stock levels across Shopify, Amazon, and our master spreadsheet, flag any discrepancies, adjust quantities, and email the warehouse about low-stock items.' },
+    { label: 'Returns processing', text: 'When a customer requests a return, I check the order in Shopify, verify the return window, email the customer a returns label, process the refund, update the spreadsheet, and restock the item.' }
+  ],
+  health: [
+    { label: 'Patient intake', text: 'A new patient is referred to us. I create their record in our patient system, verify their insurance details, send a welcome pack by email, schedule their first appointment, and notify the assigned clinician.' },
+    { label: 'Referral processing', text: 'When a referral comes in by email or fax, I enter the details into our patient system, check eligibility, send an acknowledgement to the referring clinic, and add the patient to the waiting list.' },
+    { label: 'Compliance reporting', text: 'Every month I pull data from three different systems, check it against regulatory requirements, create a compliance summary, format it into a report, and submit it to the relevant body.' }
+  ],
+  finance: [
+    { label: 'Trade reconciliation', text: 'After market close I download trade confirmations, match them against our internal records in a spreadsheet, flag any breaks, email the counterparty about discrepancies, and update our position report.' },
+    { label: 'Client onboarding', text: 'A new client signs our engagement letter. I run KYC checks, collect identity documents, enter their details into our system, set up their account, and send a welcome email with portal access.' },
+    { label: 'Portfolio reporting', text: 'Every week I pull position data from our trading platform, calculate P&L in a spreadsheet, generate charts, write a commentary, format it into a PDF, and email it to clients.' }
+  ],
+  services: [
+    { label: 'Client onboarding', text: 'A new client signs a proposal. I create their folder in Google Drive, add them to our CRM, send a welcome email with onboarding docs, schedule a kick-off call, and assign tasks to team members.' },
+    { label: 'Weekly reporting', text: 'Every Friday I pull data from three different tools into a spreadsheet, create charts, write a summary, format it into a PDF report, email it to stakeholders, and post highlights in the team Slack channel.' },
+    { label: 'Invoice processing', text: 'At the end of each month I pull timesheet data, calculate billable hours per client, create invoices in Xero, email them to clients, and update our revenue tracker spreadsheet.' }
+  ],
+  creative: [
+    { label: 'Brief intake', text: 'A new brief arrives by email. I create a project in our PM tool, set up the folder structure, brief the creative team in Slack, schedule a kick-off call, and add milestones to the timeline.' },
+    { label: 'Asset review', text: 'When creative work is ready for review, I download assets from the DAM, compile them into a presentation, share with the client, collect feedback by email, and translate it into revision notes for the team.' },
+    { label: 'Project invoicing', text: 'When a project wraps, I reconcile the time logged against the quoted scope, flag any overruns, create the final invoice in Xero, email it to the client, and archive the project files.' }
+  ],
+  other: [
+    { label: 'Request processing', text: 'When a new request comes in, I log it in a spreadsheet, verify the details, send an acknowledgement email, assign it to the right person, and update the tracker when it\'s complete.' },
+    { label: 'Weekly reporting', text: 'Every Friday I pull data from three different tools into a spreadsheet, create charts, write a summary, format it into a PDF report, email it to stakeholders, and post highlights in the team Slack channel.' },
+    { label: 'Client onboarding', text: 'A new client signs up. I create their account in our system, send a welcome email, set up their folder, schedule an onboarding call, and add them to our mailing list.' }
+  ]
+};
+
+var INDUSTRY_COMPLIANCE_ORDER = {
+  ecommerce: ['None beyond GDPR', 'Advertising (ASA/CAP)', 'Contractual NDAs', 'Financial (FCA)', 'ISO 27001', 'Health/Medical (MHRA, NHS)', 'Other regulation \u2014 please specify'],
+  health: ['Health/Medical (MHRA, NHS)', 'None beyond GDPR', 'Contractual NDAs', 'ISO 27001', 'Financial (FCA)', 'Advertising (ASA/CAP)', 'Other regulation \u2014 please specify'],
+  finance: ['Financial (FCA)', 'ISO 27001', 'Contractual NDAs', 'None beyond GDPR', 'Health/Medical (MHRA, NHS)', 'Advertising (ASA/CAP)', 'Other regulation \u2014 please specify'],
+  services: ['Contractual NDAs', 'None beyond GDPR', 'ISO 27001', 'Financial (FCA)', 'Health/Medical (MHRA, NHS)', 'Advertising (ASA/CAP)', 'Other regulation \u2014 please specify'],
+  creative: ['Contractual NDAs', 'Advertising (ASA/CAP)', 'None beyond GDPR', 'ISO 27001', 'Financial (FCA)', 'Health/Medical (MHRA, NHS)', 'Other regulation \u2014 please specify'],
+  other: ['None beyond GDPR', 'Contractual NDAs', 'ISO 27001', 'Financial (FCA)', 'Health/Medical (MHRA, NHS)', 'Advertising (ASA/CAP)', 'Other regulation \u2014 please specify']
+};
+
+var INDUSTRY_ROLE_PLACEHOLDERS = {
+  ecommerce: 'e.g. I spend most of my day processing orders, reconciling stock, and chasing suppliers.',
+  health: 'e.g. I spend most of my day managing patient records, chasing referrals, and updating compliance logs.',
+  finance: 'e.g. I spend most of my day reconciling transactions, pulling reports, and monitoring positions.',
+  services: 'e.g. I spend most of my day managing client projects, tracking time, and writing proposals.',
+  creative: 'e.g. I spend most of my day managing briefs, organising assets, and chasing client feedback.',
+  other: 'e.g. I spend most of my day processing requests, updating spreadsheets, and chasing approvals.'
+};
+
+var INDUSTRY_TOOL_SWITCH_PLACEHOLDERS = {
+  ecommerce: 'e.g. Email \u2192 Shopify \u2192 Google Sheets \u2192 Amazon Seller Central \u2192 Sheets \u2192 Slack',
+  health: 'e.g. Patient system \u2192 Spreadsheet \u2192 Email \u2192 Referral portal \u2192 Back to patient system',
+  finance: 'e.g. Trading platform \u2192 Spreadsheet \u2192 Risk dashboard \u2192 Email \u2192 Portfolio system',
+  services: 'e.g. Email \u2192 CRM \u2192 Project management \u2192 Spreadsheet \u2192 Back to email',
+  creative: 'e.g. Email \u2192 Figma \u2192 Slack \u2192 Asset library \u2192 Project management \u2192 Email',
+  other: 'e.g. Email \u2192 Spreadsheet \u2192 Internal system \u2192 Back to spreadsheet \u2192 Slack'
+};
+
+/* ── URL Parameter Reading ── */
+var params = new URLSearchParams(window.location.search);
+if (params.get('company')) auditState.registration.company = decodeURIComponent(params.get('company'));
+if (params.get('name')) auditState.registration.name = decodeURIComponent(params.get('name'));
+
+/* ── Utility Functions ── */
+function generateAuditId() {
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var id = '';
+  for (var i = 0; i < 6; i++) id += chars[Math.floor(Math.random() * chars.length)];
+  return 'PEL-' + id;
+}
+
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+function enableBeforeUnload() {
+  window.onbeforeunload = function() { return ''; };
+}
+
+/* ── Shared: Validate minimum input lengths ── */
+function validateFields(checks, btn) {
+  // checks: array of { id, min, label }
+  var valid = true;
+  // Clear previous errors
+  checks.forEach(function(c) {
+    var el = document.getElementById(c.id);
+    if (!el) return;
+    el.classList.remove('error');
+    var msg = el.parentNode.querySelector('.field-error[data-for="' + c.id + '"]');
+    if (msg) msg.remove();
+  });
+  checks.forEach(function(c) {
+    var el = document.getElementById(c.id);
+    if (!el) return;
+    var val = el.value.trim();
+    if (val.length < c.min) {
+      el.classList.add('error');
+      var msg = document.createElement('p');
+      msg.className = 'field-error';
+      msg.setAttribute('data-for', c.id);
+      msg.style.cssText = 'font-family:DM Sans,sans-serif;font-size:12px;color:#e55;margin:4px 0 0;';
+      msg.textContent = c.min <= 1 ? 'This field is required.' : 'Please write at least ' + c.min + ' characters.';
+      el.parentNode.insertBefore(msg, el.nextSibling);
+      valid = false;
+    }
+  });
+  if (!valid && btn) {
+    btn.style.animation = 'shakeButton 0.4s ease';
+    setTimeout(function() { btn.style.animation = ''; }, 400);
+  }
+  return valid;
+}
+
+/* ── Shared: Show section with fade-up ── */
+function showSection(el) {
+  el.style.display = 'block';
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  requestAnimationFrame(function() {
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+  });
+}
+
+/* ── Email & Section Completion (stubs — replaced in Section 4 build) ── */
+async function sendAuditEmail(subject, fields, isConsolidated) {
+  if (auditState.emailFallbackMode && !isConsolidated) {
+    console.warn('Email fallback mode — skipping per-section email:', subject);
+    return false;
+  }
+  var fullSubject = '[' + auditState.auditId + '] ' + subject;
+  var allFields = {
+    'Audit Number': auditState.auditId,
+    'Name': auditState.registration.name,
+    'Company': auditState.registration.company,
+    'Email': auditState.registration.email
+  };
+  Object.keys(fields).forEach(function(key) {
+    allFields[key] = String(fields[key] || 'Not provided');
+  });
+  try {
+    var resp = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to: 'audit@pellucen.co.uk', subject: fullSubject, fields: allFields })
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    return true;
+  } catch (e) {
+    console.warn('Email send failed:', e.message);
+    if (!isConsolidated) {
+      auditState.emailFallbackMode = true;
+      showAmberWarning();
+    }
+    return false;
+  }
+}
+
+function showAmberWarning() {
+  if (document.getElementById('email-warning')) return;
+  var warn = document.createElement('div');
+  warn.id = 'email-warning';
+  warn.style.cssText = 'background:#FEF3CD;border:1px solid #F0D78C;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-family:DM Sans,sans-serif;font-size:13px;color:#856404;';
+  warn.textContent = "Couldn\u2019t save this section \u2014 your final submission will include everything.";
+  var container = document.getElementById('badges-container');
+  container.parentNode.insertBefore(warn, container);
+}
+
+async function completeSection(sectionId, emailSubject, emailFields) {
+  var btn = document.querySelector('#section-' + sectionId + ' .section-complete-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
+
+  await sendAuditEmail(emailSubject, emailFields);
+  auditState.completedSections.push(sectionId);
+
+  var section = document.getElementById('section-' + sectionId);
+  section.style.transition = 'opacity 0.3s ease';
+  section.style.opacity = '0';
+
+  setTimeout(function() {
+    section.style.display = 'none';
+
+    var badge = document.createElement('div');
+    badge.className = 'completed-badge';
+    badge.innerHTML = '<div class="badge-check">\u2713</div><span class="badge-label">' +
+      escapeHtml(emailSubject.replace('Section \u2014 ', '')) + ' \u2014 saved</span>';
+    document.getElementById('badges-container').appendChild(badge);
+
+    var order = ['about', 'workflows', 'friction', 'wishes'];
+    var idx = order.indexOf(sectionId);
+    var nextId;
+    if (sectionId === 'wishes') {
+      nextId = 'complete';
+    } else if (idx >= 0 && idx < order.length - 1) {
+      nextId = order[idx + 1];
+    }
+
+    if (nextId) {
+      var next = document.getElementById('section-' + nextId);
+      showSection(next);
+      auditState.currentScreen = nextId;
+      setTimeout(function() { next.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+    }
+  }, 300);
+}
+
+/* ── startAudit — transitions from intro to registration ── */
+function startAudit() {
+  if (typeof plausible !== 'undefined') plausible('Audit Started');
+  document.getElementById('screen-intro').style.display = 'none';
+  document.getElementById('audit-content').style.display = 'block';
+  window.scrollTo(0, 0);
+  var reg1 = document.getElementById('screen-reg1');
+  showSection(reg1);
+  auditState.currentScreen = 'reg1';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BUILD ALL SCREENS ON LOAD
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Section 3: Registration Screen 1 (Identity) ── */
+(function buildReg1() {
+  var reg1 = document.getElementById('screen-reg1');
+  reg1.innerHTML = '<div class="glass-card">' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:22px;font-weight:700;color:#1A1A1C;margin:0 0 6px;">Let\u2019s get started</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;margin:0 0 24px;">We\u2019ll save your progress as you go.</p>' +
+    '<label class="field-label" style="margin-top:0;">Company</label>' +
+    '<input type="text" class="audit-input" id="reg-company" placeholder="e.g. Andinn Organics" value="' + escapeHtml(auditState.registration.company) + '">' +
+    '<label class="field-label">Your name</label>' +
+    '<input type="text" class="audit-input" id="reg-name" placeholder="e.g. Sarah Chen" value="' + escapeHtml(auditState.registration.name) + '">' +
+    '<label class="field-label">Email</label>' +
+    '<input type="email" class="audit-input" id="reg-email" placeholder="e.g. sarah@andinn.co.uk">' +
+    '<div id="reg-email-error" style="font-family:DM Sans,sans-serif;font-size:12px;color:#e55;margin-top:4px;display:none;">Please enter a valid email</div>' +
+    '<button class="audit-btn audit-btn-ink" id="reg1-btn" style="margin-top:24px;" onclick="handleReg1()">Continue &rarr;</button>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;margin-top:10px;text-align:center;">You\u2019ll receive an audit number so your progress is never lost.</p>' +
+  '</div>';
+})();
+
+function handleReg1() {
+  var companyEl = document.getElementById('reg-company');
+  var nameEl = document.getElementById('reg-name');
+  var emailEl = document.getElementById('reg-email');
+  var emailErr = document.getElementById('reg-email-error');
+  var btn = document.getElementById('reg1-btn');
+
+  // Reset errors
+  [companyEl, nameEl, emailEl].forEach(function(el) { el.classList.remove('error'); });
+  emailErr.style.display = 'none';
+
+  var company = companyEl.value.trim();
+  var name = nameEl.value.trim();
+  var email = emailEl.value.trim();
+  var valid = true;
+
+  if (!company) { companyEl.classList.add('error'); valid = false; }
+  if (!name) { nameEl.classList.add('error'); valid = false; }
+  if (!email || email.indexOf('@') < 1 || email.indexOf('.', email.indexOf('@')) < 0) {
+    emailEl.classList.add('error');
+    emailErr.style.display = 'block';
+    valid = false;
+  }
+
+  if (!valid) {
+    btn.style.animation = 'shakeButton 0.4s ease';
+    setTimeout(function() { btn.style.animation = ''; }, 400);
+    return;
+  }
+
+  // Store
+  auditState.registration.company = company;
+  auditState.registration.name = name;
+  auditState.registration.email = email;
+  auditState.auditId = generateAuditId();
+
+  // Enable beforeunload
+  enableBeforeUnload();
+
+  // Disable button
+  btn.disabled = true;
+  btn.textContent = 'Starting audit...';
+
+  // Send registration email (fire and forget)
+  sendAuditEmail('Audit Started \u2014 Registration', {
+    'Started At': new Date().toLocaleString('en-GB'),
+    'Industry': 'Pending (set in next step)',
+    'Role': 'Pending'
+  });
+
+  // Show nav pill
+  var pill = document.getElementById('nav-audit-id');
+  pill.textContent = auditState.auditId;
+  pill.style.display = 'inline-block';
+
+  // Fade out reg1
+  var reg1 = document.getElementById('screen-reg1');
+  reg1.style.transition = 'opacity 0.3s ease';
+  reg1.style.opacity = '0';
+
+  setTimeout(function() {
+    reg1.style.display = 'none';
+
+    // Build and show audit ID banner
+    var banner = document.getElementById('audit-id-banner');
+    banner.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">' +
+      '<div>' +
+        '<div style="font-family:Outfit,sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.7);">YOUR AUDIT NUMBER</div>' +
+        '<div style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#fff;">' + escapeHtml(auditState.auditId) + '</div>' +
+      '</div>' +
+      '<div style="text-align:right;">' +
+        '<div style="font-family:DM Sans,sans-serif;font-size:12px;color:rgba(255,255,255,0.7);">' + escapeHtml(name) + '</div>' +
+        '<div style="font-family:DM Sans,sans-serif;font-size:12px;color:rgba(255,255,255,0.7);">' + escapeHtml(company) + '</div>' +
+      '</div>' +
+    '</div>';
+    banner.style.cssText = 'background:linear-gradient(135deg,#D0BC8A,#B0A070);border-radius:14px;padding:16px 24px;margin-bottom:24px;opacity:0;transform:translateY(-20px);transition:opacity 0.4s ease,transform 0.4s ease;';
+    banner.style.display = 'block';
+    requestAnimationFrame(function() {
+      banner.style.opacity = '1';
+      banner.style.transform = 'translateY(0)';
+    });
+
+    // Show reg2
+    var reg2 = document.getElementById('screen-reg2');
+    showSection(reg2);
+    auditState.currentScreen = 'reg2';
+  }, 300);
+}
+
+/* ── Section 4: Registration Screen 2 (Context) ── */
+(function buildReg2() {
+  var reg2 = document.getElementById('screen-reg2');
+  reg2.innerHTML = '<div class="glass-card">' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:22px;font-weight:700;color:#1A1A1C;margin:0 0 6px;">Tell us about your role</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;margin:0 0 24px;">This helps us tailor the audit to your industry.</p>' +
+    '<label class="field-label" style="margin-top:0;">Job title / role <span style="color:#7A7A84;font-weight:400;">(optional)</span></label>' +
+    '<input type="text" class="audit-input" id="reg-role" placeholder="e.g. Operations Manager">' +
+    '<label class="field-label">Industry</label>' +
+    '<div class="chip-group" id="reg-industry-chips"></div>' +
+    '<div id="reg-tools-container" style="overflow:hidden;max-height:0;opacity:0;transition:max-height 0.3s ease,opacity 0.3s ease,margin 0.3s ease;margin-top:0;">' +
+      '<label class="field-label">Which platforms or tools do you use regularly?</label>' +
+      '<div class="chip-group" id="reg-tool-chips"></div>' +
+    '</div>' +
+    '<button class="audit-btn audit-btn-ink" id="reg2-btn" style="margin-top:24px;opacity:0.5;cursor:not-allowed;" disabled onclick="handleReg2()">Begin Audit &rarr;</button>' +
+  '</div>';
+
+  // Populate industry chips
+  var container = document.getElementById('reg-industry-chips');
+  INDUSTRY_OPTIONS.forEach(function(ind) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = ind.label;
+    chip.dataset.key = ind.key;
+    chip.onclick = function() { selectIndustry(ind.key); };
+    container.appendChild(chip);
+  });
+})();
+
+var selectedIndustry = null;
+
+function selectIndustry(key) {
+  selectedIndustry = key;
+  // Update chip visuals
+  var chips = document.querySelectorAll('#reg-industry-chips .chip');
+  chips.forEach(function(c) { c.classList.toggle('selected', c.dataset.key === key); });
+
+  // Enable button
+  var btn = document.getElementById('reg2-btn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  btn.style.cursor = 'pointer';
+
+  // Show/update tool chips
+  var toolContainer = document.getElementById('reg-tools-container');
+  var toolChips = document.getElementById('reg-tool-chips');
+
+  // Fade out, swap, fade in
+  toolContainer.style.opacity = '0';
+  toolContainer.style.maxHeight = '0';
+  toolContainer.style.marginTop = '0';
+
+  setTimeout(function() {
+    toolChips.innerHTML = '';
+    var tools = INDUSTRY_TOOLS[key] || [];
+    tools.forEach(function(tool) {
+      var chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = tool;
+      chip.onclick = function() { chip.classList.toggle('selected'); };
+      toolChips.appendChild(chip);
+    });
+
+    toolContainer.style.maxHeight = '500px';
+    toolContainer.style.opacity = '1';
+    toolContainer.style.marginTop = '20px';
+  }, 200);
+}
+
+function handleReg2() {
+  var btn = document.querySelector('#screen-reg2 .audit-btn');
+  if (!validateFields([
+    { id: 'reg-role', min: 2, label: 'Job title' }
+  ], btn)) return;
+
+  var role = document.getElementById('reg-role').value.trim();
+  auditState.registration.role = role;
+  auditState.registration.industry = selectedIndustry;
+
+  // Gather selected tools
+  var toolChips = document.querySelectorAll('#reg-tool-chips .chip.selected');
+  auditState.registration.tools = Array.prototype.map.call(toolChips, function(c) { return c.textContent; });
+
+  // Fade out reg2
+  var reg2 = document.getElementById('screen-reg2');
+  reg2.style.transition = 'opacity 0.3s ease';
+  reg2.style.opacity = '0';
+
+  setTimeout(function() {
+    reg2.style.display = 'none';
+    // Build and show About You
+    buildAboutYou();
+    var about = document.getElementById('section-about');
+    showSection(about);
+    auditState.currentScreen = 'about';
+    setTimeout(function() { about.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+  }, 300);
+}
+
+/* ── Section 5: About You Screen ── */
+function buildAboutYou() {
+  var industry = auditState.registration.industry;
+  var section = document.getElementById('section-about');
+  section.innerHTML = '<div class="glass-card">' +
+    '<div class="section-header"><div class="section-badge">1</div><div class="section-title">About You</div></div>' +
+    '<p class="section-subtitle">Help us understand your comfort level and how you work.</p>' +
+
+    '<label class="field-label">Forget your job title \u2014 in a sentence or two, what does a typical day actually look like for you?</label>' +
+    '<textarea class="audit-textarea" id="about-role-desc" placeholder="' + escapeHtml(INDUSTRY_ROLE_PLACEHOLDERS[industry] || '') + '"></textarea>' +
+
+    '<label class="field-label">How long have you been in this role?</label>' +
+    '<div class="chip-group" id="about-tenure-chips"></div>' +
+
+    '<label class="field-label">How comfortable are you with technology?</label>' +
+    '<div style="display:flex;align-items:center;gap:8px;margin-top:4px;">' +
+      '<span style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;">Not at all</span>' +
+      '<div id="about-comfort-circles" style="display:flex;gap:8px;"></div>' +
+      '<span style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;">Very</span>' +
+    '</div>' +
+
+    '<label class="field-label">Have you used AI tools before?</label>' +
+    '<div class="chip-group" id="about-ai-chips"></div>' +
+
+    '<label class="field-label">How do you feel about AI tools being introduced to help with your work?</label>' +
+    '<div class="chip-group" id="about-sentiment-chips"></div>' +
+
+    '<div id="about-reassurance-container" style="overflow:hidden;max-height:0;opacity:0;transition:max-height 0.4s ease,opacity 0.3s ease,margin 0.3s ease;margin-top:0;">' +
+      '<div style="border-left:3px solid #D0BC8A;background:rgba(208,188,138,0.06);border-radius:0 12px 12px 0;padding:16px 20px;font-family:DM Sans,sans-serif;font-size:14px;color:#4A4A52;line-height:1.7;">' +
+        '<p style="margin:0 0 12px;">We understand, and we want to be upfront about how this works:</p>' +
+        '<p style="margin:0 0 12px;"><strong>Your interactions are encrypted with your personal key.</strong> Only you can see what you do with your tools \u2014 not your employer, and not us.</p>' +
+        '<p style="margin:0 0 12px;"><strong>Your company sees team results, not individual activity.</strong> They\u2019ll know the team saved 20 hours this week. They won\u2019t know what you personally asked or worked on.</p>' +
+        '<p style="margin:0;"><strong>These tools belong to you.</strong> Your personal access key, your settings, your way of working. If you leave, your tools are retired \u2014 your employer doesn\u2019t inherit them.</p>' +
+      '</div>' +
+      '<p style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;font-style:italic;margin-top:12px;">If you have specific concerns, let us know below \u2014 it helps us get the onboarding right for you.</p>' +
+    '</div>' +
+
+    '<div id="about-concerns-container" style="overflow:hidden;max-height:0;opacity:0;transition:max-height 0.4s ease,opacity 0.3s ease,margin 0.3s ease;margin-top:0;">' +
+      '<label class="field-label">What concerns you?</label>' +
+      '<div class="chip-group" id="about-concern-chips"></div>' +
+      '<div id="about-concern-other-wrap" style="overflow:hidden;max-height:0;opacity:0;transition:max-height 0.3s ease,opacity 0.3s ease;margin-top:0;">' +
+        '<input type="text" class="audit-input" id="about-concern-other" placeholder="What\u2019s on your mind?" style="margin-top:8px;">' +
+      '</div>' +
+    '</div>' +
+
+    '<button class="audit-btn audit-btn-ink section-complete-btn" style="margin-top:28px;" onclick="handleAboutComplete()">Complete Section &rarr;</button>' +
+  '</div>';
+
+  // Tenure chips
+  var tenureOpts = ['Less than 6 months', '6 months \u2013 2 years', '2\u20135 years', '5+ years'];
+  var tenureContainer = document.getElementById('about-tenure-chips');
+  tenureOpts.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      tenureContainer.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      auditState.aboutYou.tenure = opt;
+    };
+    tenureContainer.appendChild(chip);
+  });
+
+  // Tech comfort circles
+  var comfortContainer = document.getElementById('about-comfort-circles');
+  for (var i = 1; i <= 5; i++) {
+    (function(n) {
+      var circle = document.createElement('div');
+      circle.style.cssText = 'width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Outfit,sans-serif;font-weight:600;font-size:15px;cursor:pointer;border:1.5px solid rgba(0,0,0,0.08);background:#fff;color:#4A4A52;transition:all 0.2s;';
+      circle.textContent = n;
+      circle.onclick = function() {
+        comfortContainer.querySelectorAll('div').forEach(function(c) {
+          c.style.background = '#fff'; c.style.color = '#4A4A52'; c.style.borderColor = 'rgba(0,0,0,0.08)';
+        });
+        circle.style.background = 'linear-gradient(135deg,#D0BC8A,#B0A070)';
+        circle.style.color = '#fff';
+        circle.style.borderColor = '#D0BC8A';
+        auditState.aboutYou.techComfort = n;
+      };
+      comfortContainer.appendChild(circle);
+    })(i);
+  }
+
+  // AI experience chips
+  var aiOpts = ['Never used one', 'Tried once or twice', 'Use occasionally', 'Use regularly'];
+  var aiContainer = document.getElementById('about-ai-chips');
+  aiOpts.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      aiContainer.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      auditState.aboutYou.aiExperience = opt;
+    };
+    aiContainer.appendChild(chip);
+  });
+
+  // Sentiment chips
+  var sentimentOpts = [
+    'Excited \u2014 I\u2019ve been waiting for this',
+    'Curious but cautious',
+    'Neutral \u2014 I\u2019ll see how it goes',
+    'Sceptical \u2014 I\u2019ve seen tools fail before',
+    'Worried \u2014 I have specific concerns'
+  ];
+  var sentimentContainer = document.getElementById('about-sentiment-chips');
+  sentimentOpts.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      sentimentContainer.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      auditState.aboutYou.sentiment = opt;
+      // Show/hide reassurance
+      var showReassurance = opt.indexOf('Sceptical') >= 0 || opt.indexOf('Worried') >= 0;
+      var reassurance = document.getElementById('about-reassurance-container');
+      var concerns = document.getElementById('about-concerns-container');
+      if (showReassurance) {
+        reassurance.style.maxHeight = '600px'; reassurance.style.opacity = '1'; reassurance.style.marginTop = '16px';
+        concerns.style.maxHeight = '400px'; concerns.style.opacity = '1'; concerns.style.marginTop = '16px';
+      } else {
+        reassurance.style.maxHeight = '0'; reassurance.style.opacity = '0'; reassurance.style.marginTop = '0';
+        concerns.style.maxHeight = '0'; concerns.style.opacity = '0'; concerns.style.marginTop = '0';
+      }
+    };
+    sentimentContainer.appendChild(chip);
+  });
+
+  // Concern chips
+  var concernOpts = ['It might replace me', 'My employer will monitor me', 'It will make mistakes', 'It will be too complicated', 'Other'];
+  var concernContainer = document.getElementById('about-concern-chips');
+  concernOpts.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      chip.classList.toggle('selected');
+      var selected = concernContainer.querySelectorAll('.chip.selected');
+      auditState.aboutYou.concerns = Array.prototype.map.call(selected, function(c) { return c.textContent; });
+      // Show/hide Other input
+      var otherWrap = document.getElementById('about-concern-other-wrap');
+      var hasOther = auditState.aboutYou.concerns.indexOf('Other') >= 0;
+      otherWrap.style.maxHeight = hasOther ? '100px' : '0';
+      otherWrap.style.opacity = hasOther ? '1' : '0';
+      otherWrap.style.marginTop = hasOther ? '8px' : '0';
+    };
+    concernContainer.appendChild(chip);
+  });
+}
+
+function handleAboutComplete() {
+  var btn = document.querySelector('#section-about .section-complete-btn');
+  if (!validateFields([
+    { id: 'about-role-desc', min: 50, label: 'Role description' }
+  ], btn)) return;
+
+  auditState.aboutYou.roleDescription = (document.getElementById('about-role-desc') || {}).value || '';
+  auditState.aboutYou.concernDetail = (document.getElementById('about-concern-other') || {}).value || '';
+
+  completeSection('about', 'Section \u2014 About You', {
+    'Role Description': auditState.aboutYou.roleDescription || 'Not provided',
+    'Tenure': auditState.aboutYou.tenure || 'Not answered',
+    'Tech Comfort': auditState.aboutYou.techComfort ? auditState.aboutYou.techComfort + '/5' : 'Not answered',
+    'AI Experience': auditState.aboutYou.aiExperience || 'Not answered',
+    'Sentiment': auditState.aboutYou.sentiment || 'Not answered',
+    'Concerns': auditState.aboutYou.concerns.length ? auditState.aboutYou.concerns.join(', ') : 'None',
+    'Concern Detail': auditState.aboutYou.concernDetail || 'None'
+  });
+
+  // After completeSection hides about and shows workflows, build it
+  setTimeout(function() { buildWorkflows(); }, 350);
+}
+
+/* ── Section 6 & 7: Workflows Screen ── */
+function buildWorkflows() {
+  if (auditState.workflows.length === 0) {
+    auditState.workflows.push({ input: '', result: null, compliance: [], complianceOther: '', frequency: null, request: '', cantDo: '', phase: 'input' });
+  }
+  renderWorkflowSection();
+}
+
+function renderWorkflowSection() {
+  var section = document.getElementById('section-workflows');
+  var industry = auditState.registration.industry;
+  var html = '<div class="glass-card">' +
+    '<div class="section-header"><div class="section-badge">2</div><div class="section-title">Your Workflows</div></div>' +
+    '<p class="section-subtitle">Describe your daily workflows in plain English. We\u2019ll show you what can be automated.</p>' +
+    '<div id="workflow-collapsed-list"></div>' +
+    '<div id="workflow-active-area"></div>' +
+    '<div id="workflow-dependency" style="display:none;"></div>' +
+    '<button class="audit-btn audit-btn-ink section-complete-btn" id="workflows-complete-btn" style="margin-top:24px;opacity:0.5;cursor:not-allowed;" disabled onclick="handleWorkflowsComplete()">Complete Section &rarr;</button>' +
+  '</div>';
+  section.innerHTML = html;
+  renderActiveWorkflow();
+}
+
+function renderActiveWorkflow() {
+  var idx = auditState.workflows.length - 1;
+  var wf = auditState.workflows[idx];
+  var area = document.getElementById('workflow-active-area');
+  var industry = auditState.registration.industry;
+  var chips = INDUSTRY_WORKFLOW_CHIPS[industry] || [];
+
+  if (wf.phase === 'input') {
+    var removeHtml = idx > 0 ? '<span style="font-family:DM Sans,sans-serif;font-size:12px;color:#e55;cursor:pointer;float:right;" onclick="removeWorkflow()">Remove</span>' : '';
+    area.innerHTML = '<div style="margin-bottom:16px;">' +
+      '<span style="font-family:Outfit,sans-serif;font-size:16px;font-weight:700;color:#1A1A1C;">Workflow ' + (idx + 1) + '</span>' + removeHtml +
+    '</div>' +
+    '<textarea class="audit-textarea" id="wf-input" style="min-height:120px;" placeholder="Describe a workflow you do regularly"></textarea>' +
+    '<div class="chip-group" id="wf-quick-chips" style="margin-top:12px;"></div>' +
+    '<button class="audit-btn audit-btn-ink" id="wf-map-btn" style="margin-top:16px;opacity:0.5;cursor:not-allowed;" disabled onclick="mapWorkflow()">Map This Workflow</button>';
+
+    // Quick-start chips
+    var chipContainer = document.getElementById('wf-quick-chips');
+    chips.forEach(function(c) {
+      var chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.style.cssText = 'border-color:rgba(208,188,138,0.3);color:#B0A070;';
+      chip.textContent = c.label;
+      chip.onclick = function() {
+        document.getElementById('wf-input').value = c.text;
+        chip.style.background = 'rgba(208,188,138,0.15)';
+        setTimeout(function() { chip.style.background = ''; }, 300);
+        enableMapBtn();
+      };
+      chipContainer.appendChild(chip);
+    });
+
+    // Enable/disable map button on input
+    var input = document.getElementById('wf-input');
+    input.addEventListener('input', enableMapBtn);
+    input.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); mapWorkflow(); }
+    });
+  } else if (wf.phase === 'loading') {
+    area.innerHTML = '<div style="text-align:center;padding:40px 0;">' +
+      '<div style="display:flex;justify-content:center;gap:8px;margin-bottom:16px;">' +
+        '<div style="width:10px;height:10px;border-radius:50%;background:#D0BC8A;animation:pulse 1.4s ease-in-out infinite;"></div>' +
+        '<div style="width:10px;height:10px;border-radius:50%;background:#D0BC8A;animation:pulse 1.4s ease-in-out infinite 0.2s;"></div>' +
+        '<div style="width:10px;height:10px;border-radius:50%;background:#D0BC8A;animation:pulse 1.4s ease-in-out infinite 0.4s;"></div>' +
+      '</div>' +
+      '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;">Analysing your workflow...</p>' +
+      '<div style="margin:16px auto;max-width:300px;">' +
+        '<div style="height:8px;border-radius:4px;background:rgba(208,188,138,0.15);margin-bottom:8px;overflow:hidden;"><div style="width:60%;height:100%;background:linear-gradient(90deg,rgba(208,188,138,0.3),rgba(208,188,138,0.6),rgba(208,188,138,0.3));background-size:200%;animation:shimmerText 1.5s ease-in-out infinite;"></div></div>' +
+        '<div style="height:8px;border-radius:4px;background:rgba(208,188,138,0.15);overflow:hidden;"><div style="width:40%;height:100%;background:linear-gradient(90deg,rgba(208,188,138,0.3),rgba(208,188,138,0.6),rgba(208,188,138,0.3));background-size:200%;animation:shimmerText 1.5s ease-in-out infinite 0.3s;"></div></div>' +
+      '</div>' +
+    '</div>';
+  } else if (wf.phase === 'result' || wf.phase === 'followup') {
+    renderWorkflowResult(idx);
+  } else if (wf.phase === 'error') {
+    area.innerHTML = '<div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">' +
+      '<span style="font-family:DM Sans,sans-serif;font-size:13px;color:#991B1B;">' + escapeHtml(wf.errorMsg || 'Analysis failed') + '</span>' +
+      '<span style="cursor:pointer;color:#991B1B;font-size:18px;" onclick="retryWorkflow()">&times;</span>' +
+    '</div>';
+    wf.phase = 'input';
+    renderActiveWorkflow();
+  }
+}
+
+function enableMapBtn() {
+  var btn = document.getElementById('wf-map-btn');
+  var input = document.getElementById('wf-input');
+  if (btn && input) {
+    var len = input.value.trim().length;
+    var ready = len >= 80;
+    btn.disabled = !ready;
+    btn.style.opacity = ready ? '1' : '0.5';
+    btn.style.cursor = ready ? 'pointer' : 'not-allowed';
+  }
+}
+
+function removeWorkflow() {
+  auditState.workflows.pop();
+  renderActiveWorkflow();
+}
+
+function retryWorkflow() {
+  var idx = auditState.workflows.length - 1;
+  auditState.workflows[idx].phase = 'input';
+  renderActiveWorkflow();
+}
+
+async function mapWorkflow() {
+  var idx = auditState.workflows.length - 1;
+  var wf = auditState.workflows[idx];
+  var text = document.getElementById('wf-input').value.trim();
+  if (text.length < 80) {
+    var btn = document.getElementById('wf-map-btn');
+    if (!validateFields([{ id: 'wf-input', min: 80, label: 'Workflow description' }], btn)) return;
+  }
+  wf.input = text;
+  wf.phase = 'loading';
+  renderActiveWorkflow();
+
+  var controller = new AbortController();
+  var timeout = setTimeout(function() { controller.abort(); }, 30000);
+  try {
+    var response = await fetch('/api/audit-map', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ workflow: text.slice(0, 2000), industry: auditState.registration.industry }),
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    if (!response.ok) {
+      var errData = await response.json().catch(function() { return {}; });
+      throw new Error(errData.error || 'Analysis failed');
+    }
+    var data = await response.json();
+    wf.result = data;
+    wf.phase = 'result';
+    renderActiveWorkflow();
+    // Enable complete button
+    var btn = document.getElementById('workflows-complete-btn');
+    if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+  } catch (err) {
+    clearTimeout(timeout);
+    wf.errorMsg = err.name === 'AbortError' ? 'Taking too long, try again.' : err.message;
+    wf.phase = 'error';
+    renderActiveWorkflow();
+  }
+}
+
+function renderWorkflowResult(idx) {
+  var wf = auditState.workflows[idx];
+  var data = wf.result;
+  var area = document.getElementById('workflow-active-area');
+  var summary = data.summary || {};
+  var steps = data.steps || [];
+  var recommendation = data.recommendation || {};
+  var autoSteps = summary.automatable_steps || 0;
+  var totalSteps = summary.total_steps || steps.length;
+  var pct = totalSteps > 0 ? Math.round((autoSteps / totalSteps) * 100) : 0;
+
+  var html = '<div style="margin-bottom:16px;"><span style="font-family:Outfit,sans-serif;font-size:16px;font-weight:700;color:#1A1A1C;">Workflow ' + (idx + 1) + ': ' + escapeHtml(data.workflow_name || 'Your Workflow') + '</span></div>';
+
+  // Stats bar
+  html += '<div style="display:flex;gap:12px;margin-bottom:16px;">';
+  html += '<div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.6);border-radius:10px;border:1px solid rgba(0,0,0,0.05);"><div style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#1A1A1C;" class="count-up" data-target="' + totalSteps + '">0</div><div style="font-family:DM Sans,sans-serif;font-size:11px;color:#7A7A84;">Total steps</div></div>';
+  html += '<div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.6);border-radius:10px;border:1px solid rgba(0,0,0,0.05);"><div style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#D0BC8A;" class="count-up" data-target="' + autoSteps + '">0</div><div style="font-family:DM Sans,sans-serif;font-size:11px;color:#7A7A84;">Automatable</div></div>';
+  html += '<div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.6);border-radius:10px;border:1px solid rgba(0,0,0,0.05);"><div style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#1A1A1C;" class="count-up" data-target="' + (summary.saveable_time_minutes || 0) + '">0</div><div style="font-family:DM Sans,sans-serif;font-size:11px;color:#7A7A84;">Minutes saved</div></div>';
+  html += '</div>';
+
+  // Percentage bar
+  html += '<div style="margin-bottom:20px;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;">' + pct + '% automatable</span></div>' +
+    '<div style="height:8px;border-radius:4px;background:rgba(0,0,0,0.06);overflow:hidden;"><div id="pct-bar-' + idx + '" style="height:100%;border-radius:4px;background:linear-gradient(90deg,#D0BC8A,#B0A070);width:0%;transition:width 1.2s ease 0.3s;"></div></div></div>';
+
+  // Build approval point lookup
+  var approvalPoints = {};
+  (data.approval_points || []).forEach(function(ap) {
+    approvalPoints[ap.after_step] = ap.reason;
+  });
+
+  // Flowchart
+  html += '<div class="flow-chart">';
+  steps.forEach(function(step, i) {
+    var stepNum = step.number || i + 1;
+    var cls = step.automatable ? 'flow-step flow-step--auto' : 'flow-step flow-step--manual';
+    html += '<div class="' + cls + '" style="animation:flowStepReveal 0.5s ease forwards;animation-delay:' + (i * 0.1) + 's;opacity:0;">' +
+      '<div class="flow-step-badge">' + stepNum + '</div>' +
+      '<div class="flow-step-title">' + escapeHtml(step.title) + '</div>' +
+      '<div class="flow-step-desc">' + escapeHtml(step.description) + '</div>' +
+      '<div class="flow-step-meta">' +
+        '<span class="flow-step-time">' + (step.time_minutes || '?') + ' min</span>' +
+        '<span class="flow-step-tag flow-step-tag--' + (step.automatable ? 'auto' : 'manual') + '">' + (step.automatable ? 'Automatable' : 'Manual') + '</span>' +
+      '</div>' +
+      (step.automatable ? '<div class="flow-step-method">' + escapeHtml(step.automation_method) + '</div>' : '') +
+    '</div>';
+    if (approvalPoints[stepNum]) {
+      html += '<div style="display:flex;align-items:center;gap:10px;margin:12px 0;padding:10px 14px;background:rgba(148,176,192,0.1);border-left:3px solid #94B0C0;border-radius:0 10px 10px 0;animation:flowStepReveal 0.5s ease forwards;animation-delay:' + ((i + 0.5) * 0.1) + 's;opacity:0;">' +
+        '<span style="font-size:16px;">&#9995;</span>' +
+        '<div><div style="font-family:Outfit,sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#94B0C0;">Employee approval</div>' +
+        '<div style="font-family:DM Sans,sans-serif;font-size:13px;color:#4A4A52;margin-top:2px;">' + escapeHtml(approvalPoints[stepNum]) + '</div></div>' +
+      '</div>';
+    }
+  });
+  html += '</div>';
+
+  // Quick win
+  if (recommendation.quick_win) {
+    html += '<div style="background:linear-gradient(135deg,rgba(208,188,138,0.15),rgba(208,188,138,0.08));border:1px solid rgba(208,188,138,0.3);border-radius:12px;padding:16px;margin-top:16px;">' +
+      '<div style="font-family:Outfit,sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#B0A070;margin-bottom:6px;">QUICK WIN</div>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:14px;color:#4A4A52;line-height:1.5;">' + escapeHtml(recommendation.quick_win) + '</div>' +
+    '</div>';
+  }
+
+  // Follow-up section
+  html += renderFollowUp(idx);
+
+  // Add another / max message
+  if (auditState.workflows.length < 5) {
+    html += '<button class="audit-btn audit-btn-outline" style="margin-top:16px;" onclick="addAnotherWorkflow()">Add Another Workflow</button>';
+  } else {
+    html += '<p style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;font-style:italic;margin-top:16px;">You\u2019ve mapped 5 workflows \u2014 that\u2019s plenty. Mention extras in the final section.</p>';
+  }
+
+  area.innerHTML = html;
+
+  // Animate count-ups
+  setTimeout(function() {
+    area.querySelectorAll('.count-up').forEach(function(el) {
+      var target = parseInt(el.dataset.target) || 0;
+      animateCount(el, 0, target, 800);
+    });
+    // Percentage bar
+    var bar = document.getElementById('pct-bar-' + idx);
+    if (bar) bar.style.width = pct + '%';
+  }, 50);
+
+  // Show dependency chain after first workflow
+  if (idx === 0) showDependencyChain();
+
+  wf.phase = 'followup';
+}
+
+function renderFollowUp(idx) {
+  var industry = auditState.registration.industry;
+  var complianceOrder = INDUSTRY_COMPLIANCE_ORDER[industry] || INDUSTRY_COMPLIANCE_ORDER.other;
+  var html = '<div style="background:#F3F0EB;border-radius:12px;padding:20px;margin-top:20px;">';
+
+  // Compliance
+  html += '<label class="field-label" style="margin-top:0;">Are there any regulations or compliance requirements that affect this workflow?</label>';
+  html += '<div class="chip-group" id="wf-compliance-' + idx + '">';
+  complianceOrder.forEach(function(opt) {
+    html += '<div class="chip" onclick="toggleCompliance(this,' + idx + ')">' + escapeHtml(opt) + '</div>';
+  });
+  html += '</div>';
+  html += '<div id="wf-compliance-other-' + idx + '" style="overflow:hidden;max-height:0;opacity:0;transition:max-height 0.3s ease,opacity 0.3s ease;">' +
+    '<input type="text" class="audit-input" placeholder="e.g. ITAR, SOX, PCI-DSS, sector-specific requirement..." style="margin-top:8px;" onchange="auditState.workflows[' + idx + '].complianceOther=this.value;">' +
+  '</div>';
+
+  // Frequency
+  html += '<label class="field-label">How often do you do this workflow?</label>';
+  html += '<div class="chip-group" id="wf-frequency-' + idx + '">';
+  ['Multiple times daily', 'Daily', 'A few times a week', 'Weekly', 'Monthly'].forEach(function(opt) {
+    html += '<div class="chip" onclick="selectFrequency(this,' + idx + ')">' + escapeHtml(opt) + '</div>';
+  });
+  html += '</div>';
+
+  // Request
+  html += '<label class="field-label">If you could have a personal AI assistant handle one part of this workflow, which part?</label>';
+  html += '<textarea class="audit-textarea" style="min-height:80px;" id="wf-request-' + idx + '" placeholder="Which specific step or part would you most want automated?" onchange="auditState.workflows[' + idx + '].request=this.value;"></textarea>';
+
+  // Latent demand
+  html += '<label class="field-label">Is there anything you currently can\u2019t do because it would take too long?</label>';
+  html += '<textarea class="audit-textarea" style="min-height:80px;" placeholder="e.g. I\u2019d love to analyse trends across all our orders but it would take days manually." onchange="auditState.workflows[' + idx + '].cantDo=this.value;"></textarea>';
+
+  html += '</div>';
+  return html;
+}
+
+function toggleCompliance(chip, idx) {
+  var wf = auditState.workflows[idx];
+  var text = chip.textContent;
+  var container = chip.parentElement;
+
+  if (text === 'None beyond GDPR') {
+    // Deselect all others
+    container.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+    chip.classList.add('selected');
+    wf.compliance = [text];
+  } else {
+    // Deselect "None beyond GDPR"
+    container.querySelectorAll('.chip').forEach(function(c) {
+      if (c.textContent === 'None beyond GDPR') c.classList.remove('selected');
+    });
+    chip.classList.toggle('selected');
+    wf.compliance = Array.prototype.filter.call(container.querySelectorAll('.chip.selected'), function() { return true; }).map(function(c) { return c.textContent; });
+  }
+
+  // Show/hide other input
+  var otherWrap = document.getElementById('wf-compliance-other-' + idx);
+  var hasOther = wf.compliance.some(function(c) { return c.indexOf('Other regulation') >= 0; });
+  if (otherWrap) {
+    otherWrap.style.maxHeight = hasOther ? '100px' : '0';
+    otherWrap.style.opacity = hasOther ? '1' : '0';
+  }
+}
+
+function selectFrequency(chip, idx) {
+  var container = chip.parentElement;
+  container.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+  chip.classList.add('selected');
+  auditState.workflows[idx].frequency = chip.textContent;
+}
+
+function addAnotherWorkflow() {
+  // Collapse current
+  var collapsed = document.getElementById('workflow-collapsed-list');
+  var wf = auditState.workflows[auditState.workflows.length - 1];
+  if (wf.result) {
+    var s = wf.result.summary || {};
+    var bar = document.createElement('div');
+    bar.style.cssText = 'background:rgba(208,188,138,0.1);border-radius:10px;padding:10px 16px;margin-bottom:8px;font-family:DM Sans,sans-serif;font-size:13px;color:#4A4A52;';
+    bar.textContent = escapeHtml(wf.result.workflow_name || 'Workflow') + ' \u2014 ' + (s.total_steps || '?') + ' steps, ' + (s.automatable_steps || '?') + ' automatable, ' + (s.saveable_time_minutes || '?') + ' min saved';
+    collapsed.appendChild(bar);
+  }
+  auditState.workflows.push({ input: '', result: null, compliance: [], complianceOther: '', frequency: null, request: '', cantDo: '', phase: 'input' });
+  renderActiveWorkflow();
+}
+
+function showDependencyChain() {
+  var dep = document.getElementById('workflow-dependency');
+  dep.style.display = 'block';
+  dep.innerHTML = '<div style="border-left:3px solid #D0BC8A;background:rgba(208,188,138,0.04);border-radius:0 12px 12px 0;padding:16px 20px;margin-top:20px;">' +
+    '<div style="font-family:Outfit,sans-serif;font-size:16px;font-weight:600;color:#1A1A1C;margin-bottom:12px;">One more thing \u2014 help us understand how your work connects to the rest of the team.</div>' +
+    '<label class="field-label" style="margin-top:0;">Who waits for you to finish something before they can start?</label>' +
+    '<textarea class="audit-textarea" style="min-height:80px;" id="dep-who-waits" placeholder="e.g. The warehouse team waits for me to update the stock sheet before they can ship orders." onchange="auditState.dependencyChain.whoWaits=this.value;"></textarea>' +
+    '<label class="field-label">Who do you wait for before you can do your work?</label>' +
+    '<textarea class="audit-textarea" style="min-height:80px;" id="dep-wait-for" placeholder="e.g. I wait for the finance team to approve purchase orders before I can reorder stock." onchange="auditState.dependencyChain.waitFor=this.value;"></textarea>' +
+  '</div>';
+}
+
+function animateCount(el, start, end, duration) {
+  var startTime = null;
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var progress = Math.min((timestamp - startTime) / duration, 1);
+    var eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(start + (end - start) * eased);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function handleWorkflowsComplete() {
+  var btn = document.querySelector('#section-workflows .section-complete-btn');
+  // Validate: request field for each mapped workflow + dependency chain
+  var checks = [];
+  auditState.workflows.forEach(function(wf, i) {
+    if (!wf.result) return;
+    checks.push({ id: 'wf-request-' + i, min: 15, label: 'Automation request' });
+  });
+  checks.push({ id: 'dep-who-waits', min: 10, label: 'Who waits for you' });
+  checks.push({ id: 'dep-wait-for', min: 10, label: 'Who you wait for' });
+  if (!validateFields(checks, btn)) return;
+
+  // Sync textarea values into state before building email fields
+  auditState.workflows.forEach(function(wf, i) {
+    var reqEl = document.getElementById('wf-request-' + i);
+    if (reqEl) wf.request = reqEl.value;
+  });
+  auditState.dependencyChain.whoWaits = (document.getElementById('dep-who-waits') || {}).value || '';
+  auditState.dependencyChain.waitFor = (document.getElementById('dep-wait-for') || {}).value || '';
+
+  var fields = { 'Total Workflows Mapped': auditState.workflows.filter(function(w) { return w.result; }).length };
+  auditState.workflows.forEach(function(wf, i) {
+    if (!wf.result) return;
+    var prefix = 'Workflow ' + (i + 1) + ' \u2014 ';
+    var s = wf.result.summary || {};
+    fields[prefix + 'Name'] = wf.result.workflow_name || 'Unnamed';
+    fields[prefix + 'Total Steps'] = s.total_steps || '?';
+    fields[prefix + 'Automatable Steps'] = s.automatable_steps || '?';
+    fields[prefix + 'Total Time (min)'] = s.total_time_minutes || '?';
+    fields[prefix + 'Saveable Time (min)'] = s.saveable_time_minutes || '?';
+    fields[prefix + 'Compliance'] = wf.compliance.length ? wf.compliance.join(', ') : 'None specified';
+    if (wf.complianceOther) fields[prefix + 'Compliance Other'] = wf.complianceOther;
+    fields[prefix + 'Frequency'] = wf.frequency || 'Not specified';
+    fields[prefix + 'Request'] = wf.request || 'Not provided';
+    fields[prefix + 'Latent Demand'] = wf.cantDo || 'Not provided';
+    if (wf.result.recommendation) fields[prefix + 'Quick Win'] = wf.result.recommendation.quick_win || '';
+  });
+  fields['Dependency \u2014 Who Waits For You'] = auditState.dependencyChain.whoWaits || 'Not provided';
+  fields['Dependency \u2014 Who You Wait For'] = auditState.dependencyChain.waitFor || 'Not provided';
+
+  completeSection('workflows', 'Section \u2014 Your Workflows', fields);
+  setTimeout(function() { buildFriction(); }, 350);
+}
+
+/* ── Section 8: Daily Friction Screen ── */
+function buildFriction() {
+  var industry = auditState.registration.industry;
+  var section = document.getElementById('section-friction');
+  section.innerHTML = '<div class="glass-card">' +
+    '<div class="section-header"><div class="section-badge">3</div><div class="section-title">Daily Friction</div></div>' +
+    '<p class="section-subtitle">Help us find the hidden time-wasters and bottlenecks in your day.</p>' +
+
+    '<label class="field-label" style="margin-top:0;">What task has frustrated you most this week?</label>' +
+    '<textarea class="audit-textarea" id="friction-frustration" style="min-height:100px;"></textarea>' +
+
+    '<label class="field-label">Roughly how long did it take?</label>' +
+    '<input type="text" class="audit-input" id="friction-time" placeholder="e.g. 45 minutes">' +
+
+    '<label class="field-label">For your most common task, list the sequence of apps or tabs you open, in order.</label>' +
+    '<textarea class="audit-textarea" id="friction-tools" style="min-height:80px;" placeholder="' + escapeHtml(INDUSTRY_TOOL_SWITCH_PLACEHOLDERS[industry] || '') + '"></textarea>' +
+
+    '<label class="field-label">Are there moments in your day where you have to make a judgement call that slows everything down?</label>' +
+    '<textarea class="audit-textarea" id="friction-judgement" style="min-height:80px;"></textarea>' +
+
+    '<label class="field-label">What\u2019s the single most repetitive thing you do every day?</label>' +
+    '<textarea class="audit-textarea" id="friction-repetitive" style="min-height:80px;"></textarea>' +
+
+    '<button class="audit-btn audit-btn-ink section-complete-btn" style="margin-top:28px;" onclick="handleFrictionComplete()">Complete Section &rarr;</button>' +
+  '</div>';
+}
+
+function handleFrictionComplete() {
+  var btn = document.querySelector('#section-friction .section-complete-btn');
+  if (!validateFields([
+    { id: 'friction-frustration', min: 20, label: 'Frustration' },
+    { id: 'friction-tools', min: 10, label: 'Tool sequence' },
+    { id: 'friction-repetitive', min: 10, label: 'Repetitive task' }
+  ], btn)) return;
+
+  auditState.friction.frustration = (document.getElementById('friction-frustration') || {}).value || '';
+  auditState.friction.frustrationTime = (document.getElementById('friction-time') || {}).value || '';
+  auditState.friction.toolSequence = (document.getElementById('friction-tools') || {}).value || '';
+  auditState.friction.judgementCalls = (document.getElementById('friction-judgement') || {}).value || '';
+  auditState.friction.repetitiveTask = (document.getElementById('friction-repetitive') || {}).value || '';
+
+  completeSection('friction', 'Section \u2014 Daily Friction', {
+    'Biggest Frustration': auditState.friction.frustration || 'Not provided',
+    'Time Taken': auditState.friction.frustrationTime || 'Not provided',
+    'Tool Switching Sequence': auditState.friction.toolSequence || 'Not provided',
+    'Judgement Call Bottlenecks': auditState.friction.judgementCalls || 'Not provided',
+    'Most Repetitive Task': auditState.friction.repetitiveTask || 'Not provided'
+  });
+  setTimeout(function() { buildWishes(); }, 350);
+}
+
+/* ── Section 9: Your Wishes Screen ── */
+function buildWishes() {
+  var section = document.getElementById('section-wishes');
+  section.innerHTML = '<div class="glass-card">' +
+    '<div class="section-header"><div class="section-badge">4</div><div class="section-title">Your Wishes</div></div>' +
+    '<p class="section-subtitle">Last section. Tell us what you\u2019d do with more time.</p>' +
+
+    '<label class="field-label" style="margin-top:0;">If these repetitive tasks were handled for you, what would you spend that time on?</label>' +
+    '<textarea class="audit-textarea" id="wishes-freed" style="min-height:100px;"></textarea>' +
+
+    '<label class="field-label">Is there anything you wish you could do in your role but can\u2019t because it would take too long?</label>' +
+    '<textarea class="audit-textarea" id="wishes-wish" style="min-height:100px;"></textarea>' +
+
+    '<label class="field-label">Anything else you\u2019d like us to know?</label>' +
+    '<textarea class="audit-textarea" id="wishes-else" style="min-height:80px;" placeholder="Optional \u2014 anything at all."></textarea>' +
+
+    '<button class="audit-btn audit-btn-ink section-complete-btn" style="margin-top:28px;" onclick="handleWishesComplete()">Complete Section &rarr;</button>' +
+  '</div>';
+}
+
+function handleWishesComplete() {
+  var btn = document.querySelector('#section-wishes .section-complete-btn');
+  if (!validateFields([
+    { id: 'wishes-freed', min: 20, label: 'Freed time' },
+    { id: 'wishes-wish', min: 20, label: 'Wish' }
+  ], btn)) return;
+
+  auditState.wishes.freedTime = (document.getElementById('wishes-freed') || {}).value || '';
+  auditState.wishes.wishCould = (document.getElementById('wishes-wish') || {}).value || '';
+  auditState.wishes.anythingElse = (document.getElementById('wishes-else') || {}).value || '';
+
+  completeSection('wishes', 'Section \u2014 Your Wishes', {
+    'Freed Time': auditState.wishes.freedTime || 'Not provided',
+    'Wish Could Do': auditState.wishes.wishCould || 'Not provided',
+    'Anything Else': auditState.wishes.anythingElse || 'Not provided'
+  });
+  setTimeout(function() { buildFinalScreen(); }, 350);
+}
+
+/* ── Section 10: Final Completion ── */
+function buildFinalScreen() {
+  var section = document.getElementById('section-complete');
+  section.innerHTML = '<div class="glass-card" style="text-align:center;box-shadow:0 0 24px rgba(208,188,138,0.15);border:1px solid rgba(208,188,138,0.3);">' +
+    '<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#D0BC8A,#B0A070);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;color:#fff;">\u2713</div>' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#1A1A1C;margin:0 0 12px;">All sections complete</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:15px;color:#7A7A84;max-width:420px;margin:0 auto 16px;">Hit the button below to submit your full audit. We\u2019ll review everything and come back to you with a personalised recommendation.</p>' +
+    '<p style="font-family:Outfit,sans-serif;font-size:14px;font-weight:600;color:#D0BC8A;margin-bottom:20px;">' + escapeHtml(auditState.auditId) + '</p>' +
+    '<button class="audit-btn audit-btn-gold" onclick="submitFinalAudit(this)">Submit My Audit</button>' +
+  '</div>';
+}
+
+async function submitFinalAudit(btn) {
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  // Build comprehensive fields
+  var fields = {};
+  // Registration
+  fields['Role'] = auditState.registration.role || 'Not provided';
+  fields['Industry'] = (INDUSTRY_OPTIONS.find(function(o) { return o.key === auditState.registration.industry; }) || {}).label || auditState.registration.industry || 'Not specified';
+  fields['Tools'] = auditState.registration.tools.length ? auditState.registration.tools.join(', ') : 'None selected';
+  // About You
+  fields['Role Description'] = auditState.aboutYou.roleDescription || 'Not provided';
+  fields['Tenure'] = auditState.aboutYou.tenure || 'Not answered';
+  fields['Tech Comfort'] = auditState.aboutYou.techComfort ? auditState.aboutYou.techComfort + '/5' : 'Not answered';
+  fields['AI Experience'] = auditState.aboutYou.aiExperience || 'Not answered';
+  fields['Sentiment'] = auditState.aboutYou.sentiment || 'Not answered';
+  fields['Concerns'] = auditState.aboutYou.concerns.length ? auditState.aboutYou.concerns.join(', ') : 'None';
+  fields['Concern Detail'] = auditState.aboutYou.concernDetail || 'None';
+  // Workflows
+  fields['Total Workflows Mapped'] = auditState.workflows.filter(function(w) { return w.result; }).length;
+  auditState.workflows.forEach(function(wf, i) {
+    if (!wf.result) return;
+    var prefix = 'Workflow ' + (i + 1) + ' \u2014 ';
+    var s = wf.result.summary || {};
+    fields[prefix + 'Name'] = wf.result.workflow_name || 'Unnamed';
+    fields[prefix + 'Steps'] = (wf.result.steps || []).map(function(st) { return st.number + '. ' + st.title + (st.automatable ? ' [AUTO]' : ' [MANUAL]') + ' (' + st.time_minutes + 'min)'; }).join('; ');
+    fields[prefix + 'Compliance'] = wf.compliance.length ? wf.compliance.join(', ') : 'None';
+    if (wf.complianceOther) fields[prefix + 'Compliance Other'] = wf.complianceOther;
+    fields[prefix + 'Frequency'] = wf.frequency || 'Not specified';
+    fields[prefix + 'Request'] = wf.request || 'Not provided';
+    fields[prefix + 'Latent Demand'] = wf.cantDo || 'Not provided';
+  });
+  fields['Dependency \u2014 Who Waits For You'] = auditState.dependencyChain.whoWaits || 'Not provided';
+  fields['Dependency \u2014 Who You Wait For'] = auditState.dependencyChain.waitFor || 'Not provided';
+  // Friction
+  fields['Biggest Frustration'] = auditState.friction.frustration || 'Not provided';
+  fields['Time Taken'] = auditState.friction.frustrationTime || 'Not provided';
+  fields['Tool Switching'] = auditState.friction.toolSequence || 'Not provided';
+  fields['Judgement Calls'] = auditState.friction.judgementCalls || 'Not provided';
+  fields['Most Repetitive'] = auditState.friction.repetitiveTask || 'Not provided';
+  // Wishes
+  fields['Freed Time'] = auditState.wishes.freedTime || 'Not provided';
+  fields['Wish Could Do'] = auditState.wishes.wishCould || 'Not provided';
+  fields['Anything Else'] = auditState.wishes.anythingElse || 'Not provided';
+  // Meta
+  fields['Completed At'] = new Date().toLocaleString('en-GB');
+
+  await sendAuditEmail('Completed Audit', fields, true);
+
+  if (typeof plausible !== 'undefined') plausible('Audit Completed');
+
+  // Disable beforeunload — safe to close now
+  window.onbeforeunload = null;
+
+  // Show done screen
+  document.getElementById('section-complete').style.transition = 'opacity 0.3s ease';
+  document.getElementById('section-complete').style.opacity = '0';
+  setTimeout(function() {
+    document.getElementById('section-complete').style.display = 'none';
+    var done = document.getElementById('section-done');
+    done.innerHTML = '<div class="glass-card" style="text-align:center;box-shadow:0 0 24px rgba(208,188,138,0.15);border:1px solid rgba(208,188,138,0.3);">' +
+      '<div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#D0BC8A,#B0A070);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;color:#fff;">\u2713</div>' +
+      '<h2 style="font-family:Outfit,sans-serif;font-size:28px;font-weight:700;color:#1A1A1C;margin:0 0 12px;">Audit submitted</h2>' +
+      '<p style="font-family:DM Sans,sans-serif;font-size:16px;color:#4A4A52;margin:0 0 16px;">Thank you, ' + escapeHtml(auditState.registration.name) + '. Your audit has been submitted and we\u2019ll be in touch within 24 hours.</p>' +
+      '<p style="font-family:Outfit,sans-serif;font-size:15px;font-weight:600;color:#D0BC8A;margin-bottom:32px;">' + escapeHtml(auditState.auditId) + '</p>' +
+      '<p style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;margin:0 0 4px;">Every tool we build belongs to the person using it.</p>' +
+      '<p style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;margin:0;">Your key. Your tools.</p>' +
+    '</div>';
+    showSection(done);
+  }, 300);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   INTRO SCROLL ANIMATION — Full-screen slide fade in/out
+   ══════════════════════════════════════════════════════════════ */
+(function() {
+  var introSkipped = false;
+  var lastProgress = 0;
+  var SLIDE_COUNT = 5;
+
+  var logoAnchor = document.getElementById('intro-logo-anchor');
+  var logoSvg = document.getElementById('intro-logo-svg');
+  var slides = [];
+  for (var i = 1; i <= SLIDE_COUNT; i++) slides.push(document.getElementById('intro-slide-' + i));
+
+  /*
+   * Eased spin: slow start → fast middle → slow end.
+   * Uses smoothstep (3t² - 2t³) so the logo feels organic.
+   */
+  function easedSpin(t) {
+    t = Math.min(Math.max(t, 0), 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  /*
+   * 3000vh scroll area, 5 slides = ~600vh per slide (4-8s reading time).
+   * Within each slice:
+   *   20% fade-in  (slow, gentle)
+   *   60% hold
+   *   20% fade-out (slow, gentle)
+   * Last slide: no fade-out.
+   */
+  function getSlideOpacity(slideIdx, p) {
+    var sliceSize = 1 / SLIDE_COUNT;
+    var start = slideIdx * sliceSize;
+    var fadeInEnd = start + sliceSize * 0.20;
+    var holdEnd = start + sliceSize * 0.80;
+    var fadeOutEnd = start + sliceSize;
+
+    if (slideIdx === SLIDE_COUNT - 1) {
+      if (p < start) return 0;
+      if (p < fadeInEnd) return (p - start) / (fadeInEnd - start);
+      return 1;
+    }
+
+    if (p < start) return 0;
+    if (p < fadeInEnd) return (p - start) / (fadeInEnd - start);
+    if (p < holdEnd) return 1;
+    if (p < fadeOutEnd) return 1 - (p - holdEnd) / (fadeOutEnd - holdEnd);
+    return 0;
+  }
+
+  function getIntroProgress() {
+    var area = document.getElementById('intro-scroll-area');
+    if (!area || area.offsetParent === null) return 1;
+    var max = area.offsetHeight - window.innerHeight;
+    return max <= 0 ? 1 : Math.min(Math.max(window.scrollY / max, 0), 1);
+  }
+
+  function skipToEnd() {
+    if (introSkipped) return;
+    introSkipped = true;
+    slides.forEach(function(s, i) {
+      if (s) { s.style.opacity = i === SLIDE_COUNT - 1 ? '1' : '0'; s.style.pointerEvents = i === SLIDE_COUNT - 1 ? 'auto' : 'none'; }
+    });
+    if (logoAnchor) logoAnchor.style.opacity = '1';
+    if (logoSvg) logoSvg.style.transform = 'rotate(720deg)';
+    var area = document.getElementById('intro-scroll-area');
+    if (area) window.scrollTo(0, area.offsetHeight - window.innerHeight);
+  }
+
+  function updateIntro() {
+    if (introSkipped) return;
+    var p = getIntroProgress();
+
+    if (Math.abs(p - lastProgress) > 0.25) {
+      skipToEnd();
+      return;
+    }
+    lastProgress = p;
+
+    // Eased rotation: slow → fast → slow (2 full rotations)
+    if (logoSvg) logoSvg.style.transform = 'rotate(' + (easedSpin(p) * 720) + 'deg)';
+
+    // Hide scroll hint once any scrolling has happened
+    var hint = document.getElementById('intro-scroll-hint');
+    if (hint && p > 0.005) { hint.style.animation = 'none'; hint.style.opacity = '0'; }
+
+    // Update each slide opacity
+    slides.forEach(function(slide, i) {
+      if (!slide) return;
+      var opacity = getSlideOpacity(i, p);
+      slide.style.opacity = String(opacity);
+      slide.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
+    });
+
+    requestAnimationFrame(updateIntro);
+  }
+
+  var introEl = document.getElementById('screen-intro');
+  if (introEl) {
+    introEl.addEventListener('click', function(e) {
+      if (e.target.id === 'intro-cta') return;
+      skipToEnd();
+    });
+  }
+
+  requestAnimationFrame(updateIntro);
+})();
+
+</script>
+</body>
+</html>

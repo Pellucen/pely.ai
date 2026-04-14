@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Audit — Pellucen</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F8F6F2">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-xqBqrFytfJUsaE7CxdEYX.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ── Base ── */
+body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
+
+/* ── Progress Bar ── */
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, #D0BC8A, #B0A070);
+  z-index: 100; transition: width 0.4s ease; width: 0%;
+}
+
+/* ── Nav ── */
+.ca-nav {
+  padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+  position: relative; z-index: 10;
+}
+.ca-nav-left { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #1A1A1C; }
+.ca-nav-left span { font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 20px; letter-spacing: -0.3px; }
+.ca-nav-pill {
+  display: none; background: rgba(208,188,138,0.15); border-radius: 20px; padding: 6px 14px;
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; color: #D0BC8A;
+}
+
+/* ── Orbs ── */
+.ca-orb {
+  position: fixed; border-radius: 50%; pointer-events: none; filter: blur(80px); z-index: 0;
+}
+.ca-orb-gold { width: 500px; height: 500px; background: #D0BC8A; top: -10%; left: -8%; opacity: 0.25; animation: orbFloat 18s ease-in-out infinite; }
+.ca-orb-crystal { width: 450px; height: 450px; background: #94B0C0; bottom: -5%; right: -10%; opacity: 0.25; animation: orbFloat 18s ease-in-out infinite -6s; }
+.ca-orb-sand { width: 380px; height: 380px; background: #C49484; top: 55%; left: 55%; opacity: 0.2; animation: orbFloat 18s ease-in-out infinite -12s; }
+
+/* ── Footer ── */
+.ca-footer {
+  text-align: center; padding: 32px 20px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: #7A7A84; position: relative; z-index: 2;
+}
+.ca-footer a { color: #B0A070; text-decoration: none; }
+.ca-footer a:hover { text-decoration: underline; }
+
+/* ── Glassmorphism card ── */
+.glass-card {
+  background: rgba(255,255,255,0.45); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.25); border-radius: 16px; padding: 28px;
+}
+
+/* ── Inputs & Textareas ── */
+.ca-input, .ca-textarea {
+  display: block; width: 100%; box-sizing: border-box; background: #fff;
+  border: 1.5px solid rgba(0,0,0,0.08); border-radius: 10px; padding: 12px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 16px; color: #1A1A1C;
+  transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+}
+.ca-input:focus, .ca-textarea:focus {
+  border-color: #D0BC8A; box-shadow: 0 0 0 3px rgba(208,188,138,0.15);
+}
+.ca-textarea { resize: vertical; min-height: 100px; }
+.ca-input.error, .ca-textarea.error { border-color: #e55; }
+
+/* ── Chips ── */
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 8px 16px; border-radius: 20px; border: 1.5px solid rgba(0,0,0,0.08);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: #4A4A52;
+  cursor: pointer; background: #fff; transition: all 0.2s; user-select: none;
+}
+.chip:hover { border-color: rgba(208,188,138,0.5); }
+.chip.selected {
+  border-color: #D0BC8A; background: rgba(208,188,138,0.15);
+  color: #B0A070; font-weight: 600;
+}
+.chip.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+.chip.chip-outline-gold {
+  border-color: rgba(208,188,138,0.3); color: #B0A070; background: transparent;
+}
+.chip.chip-outline-gold:hover { border-color: rgba(208,188,138,0.6); }
+.chip.chip-outline-gold.selected {
+  border-color: #D0BC8A; background: rgba(208,188,138,0.15); font-weight: 600;
+}
+
+/* ── Small chips (collaboration screen) ── */
+.chip-sm {
+  padding: 6px 14px; border-radius: 20px; border: 1.5px solid rgba(0,0,0,0.08);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; color: #4A4A52;
+  cursor: pointer; background: #fff; transition: all 0.2s; user-select: none;
+}
+.chip-sm:hover { border-color: rgba(208,188,138,0.5); }
+.chip-sm.selected {
+  border-color: #D0BC8A; background: rgba(208,188,138,0.15);
+  color: #B0A070; font-weight: 600;
+}
+
+/* ── Buttons ── */
+.ca-btn {
+  display: block; width: 100%; padding: 16px 28px; border: none; border-radius: 12px;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  min-height: 48px;
+}
+.ca-btn:hover { transform: translateY(-2px); }
+.ca-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.ca-btn-ink { background: #0C0C0E; color: #fff; }
+.ca-btn-gold {
+  background: linear-gradient(135deg, #D0BC8A, #B0A070); color: #fff;
+  box-shadow: 0 0 16px rgba(208,188,138,0.25);
+}
+.ca-btn-outline {
+  background: transparent; border: 1.5px solid rgba(208,188,138,0.4);
+  color: #B0A070; font-size: 14px;
+}
+
+/* ── Back link ── */
+.back-link {
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: #7A7A84;
+  cursor: pointer; margin-bottom: 20px; display: inline-block;
+  transition: color 0.2s; text-decoration: none;
+}
+.back-link:hover { color: #D0BC8A; }
+
+/* ── Completed badges ── */
+.completed-badge {
+  display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+  background: rgba(208,188,138,0.1); border: 1px solid rgba(208,188,138,0.3);
+  border-radius: 12px; margin-bottom: 12px; animation: fadeUp 0.5s ease forwards;
+}
+.badge-check {
+  width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #D0BC8A, #B0A070);
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.badge-label { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 500; color: #B0A070; }
+
+/* ── Section headers ── */
+.section-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%; background: #0C0C0E;
+  color: #fff; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px;
+  flex-shrink: 0;
+}
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.section-title { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 700; color: #1A1A1C; }
+.section-subtitle {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: #7A7A84;
+  margin-bottom: 24px;
+}
+
+/* ── Field labels ── */
+.field-label {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  color: #1A1A1C; margin-bottom: 8px; margin-top: 20px;
+}
+.field-hint {
+  font-family: 'DM Sans', sans-serif; font-size: 12px; color: #7A7A84;
+  margin-top: 6px;
+}
+
+/* ── Data comfort cards ── */
+.comfort-card {
+  background: rgba(255,255,255,0.45); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(255,255,255,0.25); border-radius: 14px; padding: 20px;
+  cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 10px;
+}
+.comfort-card:hover { border-color: rgba(208,188,138,0.4); }
+.comfort-card.selected {
+  border-color: #D0BC8A; background: rgba(208,188,138,0.08);
+}
+
+/* ── ROI result card ── */
+.roi-card {
+  background: linear-gradient(135deg, #D0BC8A, #B0A070);
+  color: #fff; border-radius: 16px; padding: 28px; margin-bottom: 20px;
+}
+
+/* ── Next steps timeline ── */
+.timeline-step {
+  display: flex; gap: 16px; position: relative; padding-bottom: 24px;
+}
+.timeline-step:last-child { padding-bottom: 0; }
+.timeline-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: linear-gradient(135deg, #D0BC8A, #B0A070);
+  flex-shrink: 0; margin-top: 4px; position: relative; z-index: 1;
+}
+.timeline-step:not(:last-child) .timeline-dot::after {
+  content: ''; position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  width: 2px; height: calc(100% + 12px); background: rgba(208,188,138,0.3);
+}
+.timeline-text { flex: 1; }
+.timeline-title {
+  font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 600; color: #1A1A1C;
+  margin: 0 0 4px;
+}
+.timeline-desc {
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: #7A7A84;
+  line-height: 1.5; margin: 0;
+}
+
+/* ── Intro screen ── */
+.shimmer-text {
+  background: linear-gradient(90deg, #1A1A1C 0%, #1A1A1C 40%, #D0BC8A 50%, #94B0C0 55%, #1A1A1C 60%, #1A1A1C 100%);
+  background-size: 200% 100%; background-clip: text; -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; animation: shimmerText 6s ease-in-out infinite;
+}
+.shimmer-text-gold {
+  background: linear-gradient(90deg, #B0A070 0%, #B0A070 40%, #D0BC8A 50%, #B0A070 60%, #B0A070 100%);
+  background-size: 200% 100%; background-clip: text; -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; animation: shimmerText 6s ease-in-out infinite;
+}
+#intro-logo-anchor {
+  position: absolute; top: 28%; left: 50%; transform: translate(-50%, -50%);
+  z-index: 2; pointer-events: none; text-align: center;
+}
+#intro-scroll-hint {
+  margin-top: 16px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+  color: #7A7A84; letter-spacing: 2px; text-transform: uppercase;
+  animation: hintBounce 2s ease-in-out infinite;
+  transition: opacity 0.6s;
+}
+.intro-slide {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  padding-top: 12vh; box-sizing: border-box;
+  opacity: 0; pointer-events: none;
+}
+.intro-slide-inner {
+  max-width: 720px; text-align: center; padding: 0 32px;
+}
+.intro-slide h1 {
+  font-family: 'Outfit', sans-serif; font-size: 46px; font-weight: 700;
+  color: #1A1A1C; margin: 0 0 20px; line-height: 1.2;
+}
+.intro-slide p {
+  font-family: 'DM Sans', sans-serif; font-size: 22px; color: #4A4A52;
+  margin: 0; line-height: 1.6;
+}
+.intro-slide .intro-arrow {
+  font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 600;
+  color: #1A1A1C; margin: 0 0 20px; line-height: 1.4; text-align: left;
+}
+.intro-slide .arrow-icon { color: #D0BC8A; margin-right: 10px; }
+.intro-slide .intro-body {
+  font-family: 'DM Sans', sans-serif; font-size: 20px; color: #4A4A52;
+  line-height: 1.7; margin: 0 0 20px;
+}
+.intro-slide .intro-dim {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: #7A7A84;
+  line-height: 1.5; margin: 24px 0 0;
+}
+#intro-cta {
+  display: inline-block; max-width: 380px; width: 100%; padding: 16px 28px;
+  background: #0C0C0E; color: #fff; border: none; border-radius: 12px;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
+  cursor: pointer; margin-top: 28px; transition: transform 0.2s, box-shadow 0.2s;
+  animation: glowPulse 3s infinite;
+}
+#intro-cta:hover { transform: translateY(-2px); box-shadow: 0 0 32px rgba(208,188,138,0.5); }
+
+/* ── Error banner ── */
+.error-banner {
+  background: #FEF2F2; border: 1px solid #FECACA; border-radius: 10px;
+  padding: 12px 16px; margin-bottom: 16px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: #991B1B; display: flex; align-items: center;
+  justify-content: space-between;
+}
+.error-banner-close {
+  background: none; border: none; color: #991B1B; cursor: pointer;
+  font-size: 16px; padding: 0 0 0 12px;
+}
+
+/* ── Keyframes ── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes shimmerText { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(40px, -50px) scale(1.08); }
+  50% { transform: translate(-20px, 30px) scale(0.95); }
+  75% { transform: translate(30px, 20px) scale(1.04); }
+}
+@keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes shakeButton { 0% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } 100% { transform: translateX(0); } }
+@keyframes flowStepReveal { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 16px rgba(208,188,138,0.25); }
+  50% { box-shadow: 0 0 28px rgba(208,188,138,0.45); }
+}
+@keyframes hintBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .ca-nav { padding: 16px 20px; }
+  .ca-nav-left span { font-size: 17px; }
+  #company-audit-content { padding: 16px 16px 60px !important; }
+  .intro-slide-inner { max-width: 100%; padding: 0 20px; }
+  .intro-slide h1 { font-size: 28px; }
+  .intro-slide p { font-size: 17px; }
+  .intro-slide .intro-arrow { font-size: 18px; }
+  .intro-slide .intro-body { font-size: 16px; }
+  #intro-logo-anchor svg { width: 60px; height: 60px; }
+  .glass-card { padding: 20px 16px; }
+  .ca-btn { min-height: 48px; }
+  .section-title { font-size: 20px; }
+  .comfort-card { padding: 16px; }
+  .roi-card { padding: 20px; }
+  .roi-card .roi-hours { font-size: 36px !important; }
+  .roi-card .roi-saving { font-size: 28px !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div id="progress-bar"></div>
+
+<!-- Nav -->
+<nav class="ca-nav">
+  <a href="https://pellucen.co.uk" class="ca-nav-left">
+    <svg width="28" height="28" viewBox="0 0 200 200" fill="none">
+      <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(0 100 100)" stroke="#D0BC8A" stroke-width="5" fill="#D0BC8A" fill-opacity="0.09"/>
+      <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(60 100 100)" stroke="#94B0C0" stroke-width="5" fill="#94B0C0" fill-opacity="0.09"/>
+      <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(120 100 100)" stroke="#C49484" stroke-width="5" fill="#C49484" fill-opacity="0.09"/>
+    </svg>
+    <span>Pellucen</span>
+  </a>
+  <div class="ca-nav-pill" id="nav-audit-id"></div>
+</nav>
+
+<!-- Orbs -->
+<div class="ca-orb ca-orb-gold"></div>
+<div class="ca-orb ca-orb-crystal"></div>
+<div class="ca-orb ca-orb-sand"></div>
+
+<!-- ZONE 1: Full-width intro (visible on load) -->
+<div id="screen-intro">
+  <div id="intro-scroll-area" style="height: 3000vh; position: relative;">
+    <div id="intro-viewport" style="position: -webkit-sticky; position: sticky; top: 0; height: 100vh; overflow: hidden;">
+
+      <!-- Single logo, fixed position above the text — visible on load -->
+      <div id="intro-logo-anchor">
+        <svg id="intro-logo-svg" width="80" height="80" viewBox="0 0 200 200" fill="none">
+          <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(0 100 100)" stroke="#D0BC8A" stroke-width="5" fill="#D0BC8A" fill-opacity="0.09"/>
+          <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(60 100 100)" stroke="#94B0C0" stroke-width="5" fill="#94B0C0" fill-opacity="0.09"/>
+          <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(120 100 100)" stroke="#C49484" stroke-width="5" fill="#C49484" fill-opacity="0.09"/>
+        </svg>
+        <div id="intro-scroll-hint">Scroll</div>
+      </div>
+
+      <!-- Slide 1: Headline -->
+      <div class="intro-slide" id="intro-slide-1">
+        <div class="intro-slide-inner">
+          <h1 class="shimmer-text">AI tools designed around your team</h1>
+          <p>Not around a department. Not around a job title. Around each person doing the work.</p>
+        </div>
+      </div>
+
+      <!-- Slide 2: Three pillars (founder perspective) -->
+      <div class="intro-slide" id="intro-slide-2">
+        <div class="intro-slide-inner">
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Pellucen builds the system</p>
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Your company owns the data your team works with</p>
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Each employee holds their own key to the tools</p>
+        </div>
+      </div>
+
+      <!-- Slide 3: Explanation (founder perspective) -->
+      <div class="intro-slide" id="intro-slide-3">
+        <div class="intro-slide-inner">
+          <p class="intro-body">Each member of your team gets their own set of tools, encrypted with a personal key. You see what the team achieves together &mdash; never what any individual does with their tools.</p>
+          <p class="intro-body">If someone leaves, their tools are retired. Nobody inherits someone else&rsquo;s setup. That&rsquo;s the deal &mdash; and it&rsquo;s what makes it work.</p>
+        </div>
+      </div>
+
+      <!-- Slide 4: Empowerment -->
+      <div class="intro-slide" id="intro-slide-4">
+        <div class="intro-slide-inner">
+          <h1 class="shimmer-text-gold" style="font-size:28px;line-height:1.4;">We built it this way because when employees feel protected, they feel comfortable to integrate AI to its full potential.</h1>
+          <p style="margin-top:12px;">Instead of feeling threatened by AI, your team members are incentivised to champion it.</p>
+        </div>
+      </div>
+
+      <!-- Slide 5: CTA -->
+      <div class="intro-slide" id="intro-slide-5">
+        <div class="intro-slide-inner">
+          <h1 class="shimmer-text" style="font-size:30px;line-height:1.3;">This is the Pellucen Model</h1>
+          <button id="intro-cta" onclick="startCompanyAudit()">Start Your Audit &rarr;</button>
+          <div style="margin-top:32px; padding-top:24px; border-top:1px solid rgba(0,0,0,0.06);">
+            <p class="intro-dim" style="margin:0 0 8px;">Everything you share here is treated as confidential and shapes the build spec we put together for you.</p>
+            <p class="intro-dim" style="margin:0; font-size:12px;">Questions before starting? Email info@pellucen.co.uk.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ZONE 2: Centred content (hidden until intro CTA) -->
+<div id="company-audit-content" style="max-width:640px; margin:0 auto; padding:20px 24px 80px; display:none; position:relative; z-index:2;">
+  <div id="ca-id-banner" style="display:none;"></div>
+  <div id="badges-container"></div>
+  <div id="screen-company" style="display:none;"></div>
+  <div id="screen-team" style="display:none;"></div>
+  <div id="screen-trigger" style="display:none;"></div>
+  <div id="screen-tools" style="display:none;"></div>
+  <div id="screen-workflows" style="display:none;"></div>
+  <div id="screen-data" style="display:none;"></div>
+  <div id="screen-collaboration" style="display:none;"></div>
+  <div id="screen-priorities" style="display:none;"></div>
+  <div id="screen-results" style="display:none;"></div>
+</div>
+
+<!-- Footer -->
+<div class="ca-footer">
+  <a href="https://pellucen.co.uk">pellucen.co.uk</a> &mdash; AI workflow automation, Manchester
+</div>
+
+<!-- Chatbot widget -->
+<div class="chatbot-panel" id="chatbot-panel">
+  <div class="chatbot-header">
+    <div class="chatbot-header-dot"></div>
+    <div>
+      <div class="chatbot-header-text">Pellucen AI</div>
+      <div class="chatbot-header-sub">Ask us anything about our services</div>
+    </div>
+  </div>
+  <div class="chatbot-messages" id="chatbot-messages"></div>
+  <div class="chatbot-input-bar">
+    <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Ask a question..." autocomplete="off">
+    <button class="chatbot-send" id="chatbot-send" aria-label="Send">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+<button class="chatbot-fab" id="chatbot-fab" aria-label="Chat with Pellucen AI">
+  <svg class="chatbot-fab-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+  <svg class="chatbot-fab-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+
+<!-- Cookie consent banner -->
+<div class="cookie-banner" id="cookie-banner" hidden>
+  <p>We use privacy-friendly analytics (Plausible) to understand how people use this site. No personal data is collected or shared.</p>
+  <div class="cookie-actions">
+    <button class="cookie-accept" id="cookie-accept">Got it</button>
+    <button class="cookie-decline" id="cookie-decline">No thanks</button>
+  </div>
+</div>
+
+<script src="main.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   PELLUCEN COMPANY AUDIT — Inline JS
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── State ── */
+var companyAuditState = {
+  companyAuditId: null,
+  currentScreen: 'intro',
+  currentStep: 0,
+  emailFallbackMode: false,
+  company: {
+    name: '',
+    contactName: '',
+    contactEmail: '',
+    contactRole: '',
+    industry: null
+  },
+  team: {
+    size: null,
+    workSetup: null,
+    hasIT: null
+  },
+  trigger: {
+    whatBroughtYou: '',
+    timeDrains: [],
+    previousAttempts: null,
+    previousDetail: ''
+  },
+  tools: {
+    platforms: [],
+    otherTools: '',
+    abandonedTools: '',
+    wishlist: ''
+  },
+  workflows: {
+    mapperInput: '',
+    mapperResult: null,
+    biggestRepetitiveTask: '',
+    latentDemand: ''
+  },
+  data: {
+    dataTypes: [],
+    dataTypeOther: '',
+    comfort: null,
+    largeFiles: null
+  },
+  compliance: {
+    regulations: [],
+    regulationOther: '',
+    approvalWorkflows: ''
+  },
+  collaboration: {
+    sharedData: null,
+    approvalChains: null,
+    mobileAccess: null,
+    multiDevice: null,
+    publicOutputs: null
+  },
+  priorities: {
+    singlePriority: '',
+    successThreeMonths: '',
+    optimisationMode: null,
+    budget: null,
+    timeline: '',
+    pilotInterest: null
+  }
+};
+
+/* ── Industry Data Lookup Tables ── */
+
+var INDUSTRY_OPTIONS = [
+  { key: 'ecommerce', label: 'E-commerce & Retail' },
+  { key: 'health', label: 'Health & Wellness' },
+  { key: 'finance', label: 'Finance & Trading' },
+  { key: 'services', label: 'Professional Services' },
+  { key: 'creative', label: 'Creative / Agency' },
+  { key: 'other', label: 'Other' }
+];
+
+var INDUSTRY_TOOLS = {
+  ecommerce: ['Squarespace', 'Shopify', 'Amazon/MCF', 'TikTok Shop', 'Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal'],
+  health: ['EHR/Patient System', 'Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal'],
+  finance: ['Trading/Analytics Platform', 'Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal'],
+  services: ['CRM', 'Project Management Tool', 'Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal'],
+  creative: ['Figma/Adobe/Canva', 'DAM/Asset Library', 'Project Management Tool', 'Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal'],
+  other: ['Xero/QuickBooks', 'Google Sheets', 'Slack', 'Custom/internal']
+};
+
+var INDUSTRY_WORKFLOW_CHIPS = {
+  ecommerce: [
+    { label: 'Order fulfilment', text: 'When a customer places an order on Shopify, I manually check stock in a spreadsheet, send a confirmation email, create a shipping label, update the spreadsheet, and notify the warehouse via Slack.' },
+    { label: 'Stock reconciliation', text: 'Every morning I compare stock levels across Shopify, Amazon, and our master spreadsheet, flag any discrepancies, adjust quantities, and email the warehouse about low-stock items.' },
+    { label: 'Returns processing', text: 'When a customer requests a return, I check the order in Shopify, verify the return window, email the customer a returns label, process the refund, update the spreadsheet, and restock the item.' }
+  ],
+  health: [
+    { label: 'Patient intake', text: 'A new patient is referred to us. I create their record in our patient system, verify their insurance details, send a welcome pack by email, schedule their first appointment, and notify the assigned clinician.' },
+    { label: 'Referral processing', text: 'When a referral comes in by email or fax, I enter the details into our patient system, check eligibility, send an acknowledgement to the referring clinic, and add the patient to the waiting list.' },
+    { label: 'Compliance reporting', text: 'Every month I pull data from three different systems, check it against regulatory requirements, create a compliance summary, format it into a report, and submit it to the relevant body.' }
+  ],
+  finance: [
+    { label: 'Trade reconciliation', text: 'After market close I download trade confirmations, match them against our internal records in a spreadsheet, flag any breaks, email the counterparty about discrepancies, and update our position report.' },
+    { label: 'Client onboarding', text: 'A new client signs our engagement letter. I run KYC checks, collect identity documents, enter their details into our system, set up their account, and send a welcome email with portal access.' },
+    { label: 'Portfolio reporting', text: 'Every week I pull position data from our trading platform, calculate P&L in a spreadsheet, generate charts, write a commentary, format it into a PDF, and email it to clients.' }
+  ],
+  services: [
+    { label: 'Client onboarding', text: 'A new client signs a proposal. I create their folder in Google Drive, add them to our CRM, send a welcome email with onboarding docs, schedule a kick-off call, and assign tasks to team members.' },
+    { label: 'Weekly reporting', text: 'Every Friday I pull data from three different tools into a spreadsheet, create charts, write a summary, format it into a PDF report, email it to stakeholders, and post highlights in the team Slack channel.' },
+    { label: 'Invoice processing', text: 'At the end of each month I pull timesheet data, calculate billable hours per client, create invoices in Xero, email them to clients, and update our revenue tracker spreadsheet.' }
+  ],
+  creative: [
+    { label: 'Brief intake', text: 'A new brief arrives by email. I create a project in our PM tool, set up the folder structure, brief the creative team in Slack, schedule a kick-off call, and add milestones to the timeline.' },
+    { label: 'Asset review', text: 'When creative work is ready for review, I download assets from the DAM, compile them into a presentation, share with the client, collect feedback by email, and translate it into revision notes for the team.' },
+    { label: 'Project invoicing', text: 'When a project wraps, I reconcile the time logged against the quoted scope, flag any overruns, create the final invoice in Xero, email it to the client, and archive the project files.' }
+  ],
+  other: [
+    { label: 'Request processing', text: 'When a new request comes in, I log it in a spreadsheet, verify the details, send an acknowledgement email, assign it to the right person, and update the tracker when it\'s complete.' },
+    { label: 'Weekly reporting', text: 'Every Friday I pull data from three different tools into a spreadsheet, create charts, write a summary, format it into a PDF report, email it to stakeholders, and post highlights in the team Slack channel.' },
+    { label: 'Client onboarding', text: 'A new client signs up. I create their account in our system, send a welcome email, set up their folder, schedule an onboarding call, and add them to our mailing list.' }
+  ]
+};
+
+var INDUSTRY_COMPLIANCE_ORDER = {
+  ecommerce: ['None beyond GDPR', 'Advertising (ASA/CAP)', 'Contractual NDAs', 'Financial (FCA)', 'ISO 27001', 'Health/Medical (MHRA, NHS)', 'Other regulation \u2014 please specify'],
+  health: ['Health/Medical (MHRA, NHS)', 'None beyond GDPR', 'Contractual NDAs', 'ISO 27001', 'Financial (FCA)', 'Advertising (ASA/CAP)', 'Other regulation \u2014 please specify'],
+  finance: ['Financial (FCA)', 'ISO 27001', 'Contractual NDAs', 'None beyond GDPR', 'Health/Medical (MHRA, NHS)', 'Advertising (ASA/CAP)', 'Other regulation \u2014 please specify'],
+  services: ['Contractual NDAs', 'None beyond GDPR', 'ISO 27001', 'Financial (FCA)', 'Health/Medical (MHRA, NHS)', 'Advertising (ASA/CAP)', 'Other regulation \u2014 please specify'],
+  creative: ['Contractual NDAs', 'Advertising (ASA/CAP)', 'None beyond GDPR', 'ISO 27001', 'Financial (FCA)', 'Health/Medical (MHRA, NHS)', 'Other regulation \u2014 please specify'],
+  other: ['None beyond GDPR', 'Contractual NDAs', 'ISO 27001', 'Financial (FCA)', 'Health/Medical (MHRA, NHS)', 'Advertising (ASA/CAP)', 'Other regulation \u2014 please specify']
+};
+
+var INDUSTRY_ROLE_PLACEHOLDERS = {
+  ecommerce: 'e.g. I spend most of my day processing orders, reconciling stock, and chasing suppliers.',
+  health: 'e.g. I spend most of my day managing patient records, chasing referrals, and updating compliance logs.',
+  finance: 'e.g. I spend most of my day reconciling transactions, pulling reports, and monitoring positions.',
+  services: 'e.g. I spend most of my day managing client projects, tracking time, and writing proposals.',
+  creative: 'e.g. I spend most of my day managing briefs, organising assets, and chasing client feedback.',
+  other: 'e.g. I spend most of my day processing requests, updating spreadsheets, and chasing approvals.'
+};
+
+var INDUSTRY_TOOL_SWITCH_PLACEHOLDERS = {
+  ecommerce: 'e.g. Email \u2192 Shopify \u2192 Google Sheets \u2192 Amazon Seller Central \u2192 Sheets \u2192 Slack',
+  health: 'e.g. Patient system \u2192 Spreadsheet \u2192 Email \u2192 Referral portal \u2192 Back to patient system',
+  finance: 'e.g. Trading platform \u2192 Spreadsheet \u2192 Risk dashboard \u2192 Email \u2192 Portfolio system',
+  services: 'e.g. Email \u2192 CRM \u2192 Project management \u2192 Spreadsheet \u2192 Back to email',
+  creative: 'e.g. Email \u2192 Figma \u2192 Slack \u2192 Asset library \u2192 Project management \u2192 Email',
+  other: 'e.g. Email \u2192 Spreadsheet \u2192 Internal system \u2192 Back to spreadsheet \u2192 Slack'
+};
+
+/* ── Company Audit-specific industry tables ── */
+
+var INDUSTRY_TRIGGER_CHIPS = {
+  ecommerce: [
+    "We're drowning in manual order processing",
+    "We can't keep up with multi-channel inventory",
+    "We're growing faster than we can hire"
+  ],
+  health: [
+    "Compliance admin is eating our clinical time",
+    "Patient data is scattered across too many systems",
+    "We need better reporting without more paperwork"
+  ],
+  finance: [
+    "Manual reconciliation is killing our close time",
+    "We need faster reporting for clients and regulators",
+    "We're spending more time on admin than advice"
+  ],
+  services: [
+    "Our team is buried in project admin",
+    "Client onboarding takes too long",
+    "We keep losing time to manual reporting"
+  ],
+  creative: [
+    "Briefs and feedback are all over the place",
+    "We spend more time on admin than creative work",
+    "Asset management is a mess"
+  ],
+  other: [
+    "We have repetitive tasks eating our team's time",
+    "We're growing but can't justify more hires yet",
+    "We tried automating before but it didn't stick"
+  ]
+};
+
+var INDUSTRY_TIME_DRAINS = {
+  ecommerce: ['Order processing', 'Inventory management', 'Customer emails', 'Returns & refunds', 'Supplier coordination', 'Reporting'],
+  health: ['Patient admin', 'Compliance & reporting', 'Referral management', 'Appointment scheduling', 'Record keeping', 'Billing'],
+  finance: ['Reconciliation', 'Client reporting', 'Onboarding & KYC', 'Compliance checks', 'Data entry', 'Portfolio admin'],
+  services: ['Client onboarding', 'Time tracking & invoicing', 'Project admin', 'Reporting', 'Proposal writing', 'Email management'],
+  creative: ['Brief management', 'Asset organisation', 'Client feedback', 'Invoicing', 'Project scheduling', 'Content approvals'],
+  other: ['Data entry', 'Email management', 'Reporting', 'Scheduling', 'Document processing', 'Manual tracking']
+};
+
+/* ── URL Parameter Reading ── */
+var params = new URLSearchParams(window.location.search);
+if (params.get('company')) companyAuditState.company.name = decodeURIComponent(params.get('company'));
+if (params.get('name')) companyAuditState.company.contactName = decodeURIComponent(params.get('name'));
+
+/* ── Utility Functions ── */
+
+function generateCompanyAuditId() {
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var id = '';
+  for (var i = 0; i < 6; i++) id += chars[Math.floor(Math.random() * chars.length)];
+  return 'CAU-' + id;
+}
+
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+function updateProgress(step) {
+  companyAuditState.currentStep = step;
+  var pct = Math.min((step / 9) * 100, 100);
+  var bar = document.getElementById('progress-bar');
+  bar.style.width = pct + '%';
+  if (pct >= 100) {
+    bar.style.height = '4px';
+    bar.style.boxShadow = '0 0 12px rgba(208,188,138,0.5)';
+    setTimeout(function() { bar.style.boxShadow = 'none'; bar.style.height = '3px'; }, 1500);
+  }
+}
+
+function showScreen(id) {
+  var el = document.getElementById('screen-' + id);
+  el.style.display = 'block';
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  requestAnimationFrame(function() {
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+  });
+  companyAuditState.currentScreen = id;
+  setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+}
+
+function hideScreen(id) {
+  var el = document.getElementById('screen-' + id);
+  el.style.transition = 'opacity 0.3s ease';
+  el.style.opacity = '0';
+  setTimeout(function() { el.style.display = 'none'; }, 300);
+}
+
+function enableBeforeUnload() {
+  window.onbeforeunload = function() { return ''; };
+}
+
+/* ── Shared: Validate minimum input lengths ── */
+function validateFields(checks, btn) {
+  var valid = true;
+  checks.forEach(function(c) {
+    var el = document.getElementById(c.id);
+    if (!el) return;
+    el.classList.remove('error');
+    var msg = el.parentNode.querySelector('.field-error[data-for="' + c.id + '"]');
+    if (msg) msg.remove();
+  });
+  checks.forEach(function(c) {
+    var el = document.getElementById(c.id);
+    if (!el) return;
+    var val = el.value.trim();
+    if (val.length < c.min) {
+      el.classList.add('error');
+      var msg = document.createElement('p');
+      msg.className = 'field-error';
+      msg.setAttribute('data-for', c.id);
+      msg.style.cssText = 'font-family:DM Sans,sans-serif;font-size:12px;color:#e55;margin:4px 0 0;';
+      msg.textContent = c.min <= 1 ? 'This field is required.' : 'Please write at least ' + c.min + ' characters.';
+      el.parentNode.insertBefore(msg, el.nextSibling);
+      valid = false;
+    }
+  });
+  if (!valid && btn) {
+    btn.style.animation = 'shakeButton 0.4s ease';
+    setTimeout(function() { btn.style.animation = ''; }, 400);
+  }
+  return valid;
+}
+
+/* ── Email function with fallback mode ── */
+async function sendCompanyAuditEmail(subject, fields, isConsolidated) {
+  if (companyAuditState.emailFallbackMode && !isConsolidated) {
+    console.warn('Email fallback mode \u2014 skipping per-section email:', subject);
+    return false;
+  }
+  var fullSubject = '[' + companyAuditState.companyAuditId + '] ' + subject;
+  var allFields = {
+    'Company Audit ID': companyAuditState.companyAuditId,
+    'Company': companyAuditState.company.name,
+    'Contact': companyAuditState.company.contactName,
+    'Email': companyAuditState.company.contactEmail
+  };
+  Object.keys(fields).forEach(function(key) {
+    allFields[key] = String(fields[key] || 'Not provided');
+  });
+  try {
+    var resp = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to: 'company-audit@pellucen.co.uk', subject: fullSubject, fields: allFields })
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    return true;
+  } catch (e) {
+    console.warn('Email send failed:', e.message);
+    if (!isConsolidated) {
+      companyAuditState.emailFallbackMode = true;
+      showAmberWarning();
+    }
+    return false;
+  }
+}
+
+function showAmberWarning() {
+  if (document.getElementById('email-warning')) return;
+  var warn = document.createElement('div');
+  warn.id = 'email-warning';
+  warn.style.cssText = 'background:#FEF3CD;border:1px solid #F0D78C;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-family:DM Sans,sans-serif;font-size:13px;color:#856404;';
+  warn.textContent = "Couldn\u2019t save this section \u2014 your final submission will include everything.";
+  var container = document.getElementById('badges-container');
+  container.parentNode.insertBefore(warn, container);
+}
+
+/* ── Screen transition helpers ── */
+function transitionScreens(fromId, toId, toStep) {
+  hideScreen(fromId);
+  setTimeout(function() {
+    showScreen(toId);
+    updateProgress(toStep);
+  }, 300);
+}
+
+function goBack(fromId, toId, toStep) {
+  var fromEl = document.getElementById('screen-' + fromId);
+  fromEl.style.display = 'none';
+  var toEl = document.getElementById('screen-' + toId);
+  toEl.style.display = 'block';
+  toEl.style.opacity = '1';
+  toEl.style.transform = 'translateY(0)';
+  companyAuditState.currentScreen = toId;
+  updateProgress(toStep);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── startCompanyAudit — transitions from intro to registration ── */
+function startCompanyAudit() {
+  if (typeof plausible !== 'undefined') plausible('Company Audit Started');
+  document.getElementById('screen-intro').style.display = 'none';
+  document.getElementById('company-audit-content').style.display = 'block';
+  window.scrollTo(0, 0);
+  showScreen('company');
+  updateProgress(1);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BUILD ALL SCREENS ON LOAD
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Section 3: Company Screen (Registration) ── */
+(function buildCompanyScreen() {
+  var screen = document.getElementById('screen-company');
+  screen.innerHTML = '<div class="glass-card">' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:22px;font-weight:700;color:#1A1A1C;margin:0 0 6px;">Let\u2019s get started</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;margin:0 0 24px;">This takes about 10 minutes. Your answers will shape the build spec we put together for you.</p>' +
+    '<label class="field-label" style="margin-top:0;">Company name</label>' +
+    '<input type="text" class="ca-input" id="reg-company" placeholder="e.g. Andinn Organics" value="' + escapeHtml(companyAuditState.company.name) + '">' +
+    '<label class="field-label">Your name</label>' +
+    '<input type="text" class="ca-input" id="reg-name" placeholder="e.g. Sarah Chen" value="' + escapeHtml(companyAuditState.company.contactName) + '">' +
+    '<label class="field-label">Email</label>' +
+    '<input type="email" class="ca-input" id="reg-email" placeholder="e.g. sarah@andinn.co.uk">' +
+    '<div id="reg-email-error" style="font-family:DM Sans,sans-serif;font-size:12px;color:#e55;margin-top:4px;display:none;">Please enter a valid email</div>' +
+    '<label class="field-label">Your role <span style="color:#7A7A84;font-weight:400;">(optional)</span></label>' +
+    '<input type="text" class="ca-input" id="reg-role" placeholder="e.g. Managing Director, Operations Lead">' +
+    '<label class="field-label">Industry</label>' +
+    '<div class="chip-group" id="reg-industry-chips"></div>' +
+    '<div id="reg-industry-error" style="font-family:DM Sans,sans-serif;font-size:12px;color:#e55;margin-top:4px;display:none;">Please select an industry</div>' +
+    '<button class="ca-btn ca-btn-ink" id="reg-btn" style="margin-top:24px;" onclick="handleCompanyReg()">Continue &rarr;</button>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;margin-top:10px;text-align:center;">You\u2019ll receive an audit number so your progress is never lost.</p>' +
+  '</div>';
+
+  // Populate industry chips
+  var container = document.getElementById('reg-industry-chips');
+  INDUSTRY_OPTIONS.forEach(function(ind) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = ind.label;
+    chip.dataset.key = ind.key;
+    chip.onclick = function() {
+      container.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      companyAuditState.company.industry = ind.key;
+      document.getElementById('reg-industry-error').style.display = 'none';
+    };
+    container.appendChild(chip);
+  });
+})();
+
+function handleCompanyReg() {
+  var companyEl = document.getElementById('reg-company');
+  var nameEl = document.getElementById('reg-name');
+  var emailEl = document.getElementById('reg-email');
+  var emailErr = document.getElementById('reg-email-error');
+  var industryErr = document.getElementById('reg-industry-error');
+  var btn = document.getElementById('reg-btn');
+
+  // Reset errors
+  [companyEl, nameEl, emailEl].forEach(function(el) { el.classList.remove('error'); });
+  emailErr.style.display = 'none';
+  industryErr.style.display = 'none';
+
+  var company = companyEl.value.trim();
+  var name = nameEl.value.trim();
+  var email = emailEl.value.trim();
+  var role = document.getElementById('reg-role').value.trim();
+  var valid = true;
+
+  if (!company) { companyEl.classList.add('error'); valid = false; }
+  if (!name) { nameEl.classList.add('error'); valid = false; }
+  if (!email || email.indexOf('@') < 1 || email.indexOf('.', email.indexOf('@')) < 0) {
+    emailEl.classList.add('error');
+    emailErr.style.display = 'block';
+    valid = false;
+  }
+  if (!companyAuditState.company.industry) {
+    industryErr.style.display = 'block';
+    valid = false;
+  }
+
+  if (!valid) {
+    btn.style.animation = 'shakeButton 0.4s ease';
+    setTimeout(function() { btn.style.animation = ''; }, 400);
+    return;
+  }
+
+  // Store
+  companyAuditState.company.name = company;
+  companyAuditState.company.contactName = name;
+  companyAuditState.company.contactEmail = email;
+  companyAuditState.company.contactRole = role;
+
+  // Generate ID
+  companyAuditState.companyAuditId = generateCompanyAuditId();
+
+  // Enable beforeunload
+  enableBeforeUnload();
+
+  // Disable button
+  btn.disabled = true;
+  btn.textContent = 'Starting audit...';
+
+  // Get industry label for email
+  var industryLabel = '';
+  INDUSTRY_OPTIONS.forEach(function(ind) {
+    if (ind.key === companyAuditState.company.industry) industryLabel = ind.label;
+  });
+
+  // Send registration email (fire and forget)
+  sendCompanyAuditEmail('Company Audit Started', {
+    'Started At': new Date().toLocaleString('en-GB'),
+    'Contact Role': role || 'Not provided',
+    'Industry': industryLabel
+  });
+
+  // Show nav pill
+  var pill = document.getElementById('nav-audit-id');
+  pill.textContent = companyAuditState.companyAuditId;
+  pill.style.display = 'inline-block';
+
+  // Fade out company screen
+  var companyScreen = document.getElementById('screen-company');
+  companyScreen.style.transition = 'opacity 0.3s ease';
+  companyScreen.style.opacity = '0';
+
+  setTimeout(function() {
+    companyScreen.style.display = 'none';
+
+    // Build and show audit ID banner
+    var banner = document.getElementById('ca-id-banner');
+    banner.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">' +
+      '<div>' +
+        '<div style="font-family:Outfit,sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.7);">YOUR AUDIT NUMBER</div>' +
+        '<div style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#fff;">' + escapeHtml(companyAuditState.companyAuditId) + '</div>' +
+      '</div>' +
+      '<div style="text-align:right;">' +
+        '<div style="font-family:DM Sans,sans-serif;font-size:12px;color:rgba(255,255,255,0.7);">' + escapeHtml(name) + '</div>' +
+        '<div style="font-family:DM Sans,sans-serif;font-size:12px;color:rgba(255,255,255,0.7);">' + escapeHtml(company) + '</div>' +
+      '</div>' +
+    '</div>';
+    banner.style.cssText = 'background:linear-gradient(135deg,#D0BC8A,#B0A070);border-radius:14px;padding:16px 24px;margin-bottom:24px;opacity:0;transform:translateY(-20px);transition:opacity 0.4s ease,transform 0.4s ease;';
+    banner.style.display = 'block';
+    requestAnimationFrame(function() {
+      banner.style.opacity = '1';
+      banner.style.transform = 'translateY(0)';
+    });
+
+    // Show team screen
+    showScreen('team');
+    updateProgress(2);
+  }, 300);
+}
+
+/* ── Section 4: Team Screen ── */
+(function buildTeamScreen() {
+  var screen = document.getElementById('screen-team');
+  screen.innerHTML = '<span class="back-link" onclick="goBackToCompany()">&larr; Back</span>' +
+    '<div class="glass-card">' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:22px;font-weight:700;color:#1A1A1C;margin:0 0 6px;">Your Team</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;margin:0 0 24px;">Help us understand the shape of your team.</p>' +
+
+    '<label class="field-label" style="margin-top:0;">How many people are in the team we\u2019d be working with?</label>' +
+    '<div class="chip-group" id="team-size-chips"></div>' +
+
+    '<label class="field-label">How does the team work day to day?</label>' +
+    '<div class="chip-group" id="team-setup-chips"></div>' +
+
+    '<label class="field-label">Do you have someone who handles tech problems?</label>' +
+    '<div class="chip-group" id="team-it-chips"></div>' +
+
+    '<button class="ca-btn ca-btn-ink" id="team-btn" style="margin-top:24px;opacity:0.5;cursor:not-allowed;" disabled onclick="handleTeam()">Continue &rarr;</button>' +
+  '</div>';
+
+  // Team size chips
+  var sizeOpts = ['Just me', '2\u20135 people', '6\u201320 people', '20+ people'];
+  var sizeContainer = document.getElementById('team-size-chips');
+  sizeOpts.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      sizeContainer.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      companyAuditState.team.size = opt;
+      // Enable button
+      var btn = document.getElementById('team-btn');
+      btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
+    };
+    sizeContainer.appendChild(chip);
+  });
+
+  // Work setup chips
+  var setupOpts = ['Mostly office-based', 'Mostly remote', 'Hybrid'];
+  var setupContainer = document.getElementById('team-setup-chips');
+  setupOpts.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      setupContainer.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      companyAuditState.team.workSetup = opt;
+    };
+    setupContainer.appendChild(chip);
+  });
+
+  // IT support chips
+  var itOpts = ['Dedicated IT person or team', 'Someone tech-savvy on the team', 'Not really \u2014 we figure it out'];
+  var itContainer = document.getElementById('team-it-chips');
+  itOpts.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      itContainer.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      companyAuditState.team.hasIT = opt;
+    };
+    itContainer.appendChild(chip);
+  });
+})();
+
+function goBackToCompany() {
+  goBack('team', 'company', 1);
+  // Re-enable the registration form
+  var btn = document.getElementById('reg-btn');
+  btn.disabled = false; btn.textContent = 'Continue \u2192';
+  // Repopulate fields from state
+  document.getElementById('reg-company').value = companyAuditState.company.name;
+  document.getElementById('reg-name').value = companyAuditState.company.contactName;
+  document.getElementById('reg-email').value = companyAuditState.company.contactEmail;
+  document.getElementById('reg-role').value = companyAuditState.company.contactRole || '';
+  // Re-select industry chip
+  if (companyAuditState.company.industry) {
+    document.querySelectorAll('#reg-industry-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', c.dataset.key === companyAuditState.company.industry);
+    });
+  }
+}
+
+function repopulateTeamScreen() {
+  // Re-select chips from state when navigating back
+  if (companyAuditState.team.size) {
+    document.querySelectorAll('#team-size-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', c.textContent === companyAuditState.team.size);
+    });
+    var btn = document.getElementById('team-btn');
+    btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
+  }
+  if (companyAuditState.team.workSetup) {
+    document.querySelectorAll('#team-setup-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', c.textContent === companyAuditState.team.workSetup);
+    });
+  }
+  if (companyAuditState.team.hasIT) {
+    document.querySelectorAll('#team-it-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', c.textContent === companyAuditState.team.hasIT);
+    });
+  }
+}
+
+function handleTeam() {
+  transitionScreens('team', 'trigger', 3);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION 5: TRIGGER SCREEN
+   ══════════════════════════════════════════════════════════════ */
+(function buildTriggerScreen() {
+  var industry = companyAuditState.company.industry || 'other';
+  var screen = document.getElementById('screen-trigger');
+  screen.innerHTML = '<span class="back-link" onclick="goBackTrigger()">&larr; Back</span>' +
+    '<div class="glass-card">' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:22px;font-weight:700;color:#1A1A1C;margin:0 0 6px;">What Brought You Here</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;margin:0 0 24px;">Understanding what prompted this helps us focus on what matters most.</p>' +
+
+    '<label class="field-label" style="margin-top:0;">What\u2019s happening in your business right now that made you start thinking about automation?</label>' +
+    '<div class="chip-group" id="trigger-chips" style="margin-bottom:12px;"></div>' +
+    '<textarea id="trigger-text" class="ca-textarea" rows="4" style="min-height:100px;" placeholder="Tell us in your own words, or pick a starting point above..."></textarea>' +
+
+    '<label class="field-label">Where does your team lose the most time? Pick up to 3.</label>' +
+    '<div class="chip-group" id="time-drain-chips"></div>' +
+
+    '<label class="field-label">Has your team tried any automation or AI tools before?</label>' +
+    '<div class="chip-group" id="previous-chips"></div>' +
+
+    '<div id="previous-detail-container" style="overflow:hidden;max-height:0;opacity:0;transition:max-height 0.4s ease,opacity 0.3s ease,margin 0.3s ease;margin-top:0;">' +
+    '<label class="field-label" id="previous-detail-label"></label>' +
+    '<textarea id="previous-detail" class="ca-textarea" rows="3" style="min-height:80px;"></textarea>' +
+    '</div>' +
+
+    '<button class="ca-btn ca-btn-ink" id="trigger-btn" style="margin-top:24px;" onclick="handleTrigger()">Continue &rarr;</button>' +
+  '</div>';
+
+  // Trigger chips (industry-specific, outline gold)
+  var triggerChips = INDUSTRY_TRIGGER_CHIPS[industry] || INDUSTRY_TRIGGER_CHIPS.other;
+  var triggerContainer = document.getElementById('trigger-chips');
+  triggerChips.forEach(function(text) {
+    var chip = document.createElement('div');
+    chip.className = 'chip chip-outline-gold';
+    chip.textContent = text;
+    chip.onclick = function() {
+      triggerContainer.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      document.getElementById('trigger-text').value = text;
+    };
+    triggerContainer.appendChild(chip);
+  });
+
+  // Deselect trigger chips if user types manually
+  document.getElementById('trigger-text').addEventListener('input', function() {
+    var chips = triggerContainer.querySelectorAll('.chip');
+    var val = this.value;
+    var anyMatch = false;
+    chips.forEach(function(c) {
+      if (c.textContent === val) anyMatch = true;
+    });
+    if (!anyMatch) {
+      chips.forEach(function(c) { c.classList.remove('selected'); });
+    }
+  });
+
+  // Time drain chips (industry-specific, multi-select, max 3)
+  var drains = INDUSTRY_TIME_DRAINS[industry] || INDUSTRY_TIME_DRAINS.other;
+  var drainContainer = document.getElementById('time-drain-chips');
+  drains.forEach(function(text) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = text;
+    chip.onclick = function() {
+      if (chip.classList.contains('selected')) {
+        chip.classList.remove('selected');
+        enforceMaxDrains();
+        return;
+      }
+      var selectedCount = drainContainer.querySelectorAll('.chip.selected').length;
+      if (selectedCount >= 3) return;
+      chip.classList.add('selected');
+      enforceMaxDrains();
+    };
+    drainContainer.appendChild(chip);
+  });
+
+  function enforceMaxDrains() {
+    var selectedCount = drainContainer.querySelectorAll('.chip.selected').length;
+    drainContainer.querySelectorAll('.chip').forEach(function(c) {
+      if (!c.classList.contains('selected') && selectedCount >= 3) {
+        c.style.opacity = '0.5';
+        c.style.cursor = 'not-allowed';
+      } else {
+        c.style.opacity = '1';
+        c.style.cursor = 'pointer';
+      }
+    });
+  }
+
+  // Previous attempts chips
+  var prevOpts = ['No, this is new territory', 'Yes, but it didn\u2019t work out', 'Yes, and some things are working'];
+  var prevContainer = document.getElementById('previous-chips');
+  prevOpts.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      prevContainer.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      companyAuditState.trigger.previousAttempts = opt;
+
+      var detailContainer = document.getElementById('previous-detail-container');
+      var detailLabel = document.getElementById('previous-detail-label');
+      if (opt === 'Yes, but it didn\u2019t work out') {
+        detailLabel.textContent = 'What happened? Understanding what went wrong helps us avoid the same mistakes.';
+        detailContainer.style.maxHeight = '300px';
+        detailContainer.style.opacity = '1';
+        detailContainer.style.marginTop = '0';
+      } else if (opt === 'Yes, and some things are working') {
+        detailLabel.textContent = 'What\u2019s working, and what isn\u2019t? We\u2019ll build around what you already have.';
+        detailContainer.style.maxHeight = '300px';
+        detailContainer.style.opacity = '1';
+        detailContainer.style.marginTop = '0';
+      } else {
+        detailContainer.style.maxHeight = '0';
+        detailContainer.style.opacity = '0';
+        detailContainer.style.marginTop = '0';
+      }
+    };
+    prevContainer.appendChild(chip);
+  });
+})();
+
+function goBackTrigger() {
+  goBack('trigger', 'team', 2);
+  repopulateTeamScreen();
+}
+
+function repopulateTriggerScreen() {
+  // Re-fill trigger textarea
+  if (companyAuditState.trigger.whatBroughtYou) {
+    document.getElementById('trigger-text').value = companyAuditState.trigger.whatBroughtYou;
+    var industry = companyAuditState.company.industry || 'other';
+    var triggerChips = INDUSTRY_TRIGGER_CHIPS[industry] || INDUSTRY_TRIGGER_CHIPS.other;
+    document.querySelectorAll('#trigger-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', triggerChips.indexOf(c.textContent) >= 0 && c.textContent === companyAuditState.trigger.whatBroughtYou);
+    });
+  }
+
+  // Re-select time drain chips + enforce max 3 visual
+  if (companyAuditState.trigger.timeDrains.length > 0) {
+    var drainContainer = document.getElementById('time-drain-chips');
+    drainContainer.querySelectorAll('.chip').forEach(function(c) {
+      c.classList.toggle('selected', companyAuditState.trigger.timeDrains.indexOf(c.textContent) >= 0);
+    });
+    var selectedCount = drainContainer.querySelectorAll('.chip.selected').length;
+    drainContainer.querySelectorAll('.chip').forEach(function(c) {
+      if (!c.classList.contains('selected') && selectedCount >= 3) {
+        c.style.opacity = '0.5'; c.style.cursor = 'not-allowed';
+      } else {
+        c.style.opacity = '1'; c.style.cursor = 'pointer';
+      }
+    });
+  }
+
+  // Re-select previous attempts chip + reveal detail if needed
+  if (companyAuditState.trigger.previousAttempts) {
+    document.querySelectorAll('#previous-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', c.textContent === companyAuditState.trigger.previousAttempts);
+    });
+    var opt = companyAuditState.trigger.previousAttempts;
+    var detailContainer = document.getElementById('previous-detail-container');
+    var detailLabel = document.getElementById('previous-detail-label');
+    if (opt === 'Yes, but it didn\u2019t work out') {
+      detailLabel.textContent = 'What happened? Understanding what went wrong helps us avoid the same mistakes.';
+      detailContainer.style.maxHeight = '300px'; detailContainer.style.opacity = '1';
+    } else if (opt === 'Yes, and some things are working') {
+      detailLabel.textContent = 'What\u2019s working, and what isn\u2019t? We\u2019ll build around what you already have.';
+      detailContainer.style.maxHeight = '300px'; detailContainer.style.opacity = '1';
+    }
+  }
+  if (companyAuditState.trigger.previousDetail) {
+    document.getElementById('previous-detail').value = companyAuditState.trigger.previousDetail;
+  }
+}
+
+function handleTrigger() {
+  companyAuditState.trigger.whatBroughtYou = document.getElementById('trigger-text').value.trim();
+
+  var drains = [];
+  document.querySelectorAll('#time-drain-chips .chip.selected').forEach(function(c) {
+    drains.push(c.textContent);
+  });
+  companyAuditState.trigger.timeDrains = drains;
+
+  companyAuditState.trigger.previousDetail = document.getElementById('previous-detail').value.trim();
+
+  transitionScreens('trigger', 'tools', 4);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION 6: TOOLS SCREEN
+   ══════════════════════════════════════════════════════════════ */
+(function buildToolsScreen() {
+  var industry = companyAuditState.company.industry || 'other';
+  var screen = document.getElementById('screen-tools');
+  screen.innerHTML = '<span class="back-link" onclick="goBackTools()">&larr; Back</span>' +
+    '<div class="glass-card">' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:22px;font-weight:700;color:#1A1A1C;margin:0 0 6px;">Your Current Tools</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;margin:0 0 24px;">Tell us everything your team uses \u2014 even the spreadsheets and WhatsApp groups.</p>' +
+
+    '<label class="field-label" style="margin-top:0;">Which platforms does your team use regularly?</label>' +
+    '<div class="chip-group" id="tools-platform-chips"></div>' +
+
+    '<label class="field-label">Anything else? The unglamorous stuff is often the most valuable.</label>' +
+    '<textarea id="tools-other" class="ca-textarea" rows="3" style="min-height:60px;" placeholder="e.g. A shared Google Sheet we use as a database, a WhatsApp group for approvals, sticky notes on monitors..."></textarea>' +
+
+    '<label class="field-label">Have you tried any tools or software that didn\u2019t stick? What happened?</label>' +
+    '<textarea id="tools-abandoned" class="ca-textarea" rows="3" style="min-height:60px;" placeholder="Optional \u2014 but it helps us understand what to avoid."></textarea>' +
+
+    '<label class="field-label">Is there a tool you\u2019ve always wished existed but never found?</label>' +
+    '<textarea id="tools-wishlist" class="ca-textarea" rows="3" style="min-height:60px;" placeholder="Optional \u2014 dream big."></textarea>' +
+
+    '<button class="ca-btn ca-btn-ink" id="tools-btn" style="margin-top:24px;" onclick="handleTools()">Continue &rarr;</button>' +
+  '</div>';
+
+  // Platform chips (industry-specific, multi-select)
+  var tools = INDUSTRY_TOOLS[industry] || INDUSTRY_TOOLS.other;
+  var chipContainer = document.getElementById('tools-platform-chips');
+  tools.forEach(function(name) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = name;
+    chip.onclick = function() {
+      chip.classList.toggle('selected');
+    };
+    chipContainer.appendChild(chip);
+  });
+})();
+
+function goBackTools() {
+  goBack('tools', 'trigger', 3);
+  repopulateTriggerScreen();
+}
+
+function repopulateToolsScreen() {
+  // Re-select platform chips
+  if (companyAuditState.tools.platforms.length > 0) {
+    document.querySelectorAll('#tools-platform-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', companyAuditState.tools.platforms.indexOf(c.textContent) >= 0);
+    });
+  }
+  if (companyAuditState.tools.otherTools) {
+    document.getElementById('tools-other').value = companyAuditState.tools.otherTools;
+  }
+  if (companyAuditState.tools.abandonedTools) {
+    document.getElementById('tools-abandoned').value = companyAuditState.tools.abandonedTools;
+  }
+  if (companyAuditState.tools.wishlist) {
+    document.getElementById('tools-wishlist').value = companyAuditState.tools.wishlist;
+  }
+}
+
+async function handleTools() {
+  // Store state
+  var platforms = [];
+  document.querySelectorAll('#tools-platform-chips .chip.selected').forEach(function(c) {
+    platforms.push(c.textContent);
+  });
+  companyAuditState.tools.platforms = platforms;
+  companyAuditState.tools.otherTools = document.getElementById('tools-other').value.trim();
+  companyAuditState.tools.abandonedTools = document.getElementById('tools-abandoned').value.trim();
+  companyAuditState.tools.wishlist = document.getElementById('tools-wishlist').value.trim();
+
+  // Send email
+  var btn = document.getElementById('tools-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  await sendCompanyAuditEmail('Section \u2014 Tools & Platforms', {
+    'Platforms': platforms.join(', ') || 'None selected',
+    'Other Tools': companyAuditState.tools.otherTools || 'Not provided',
+    'Abandoned Tools': companyAuditState.tools.abandonedTools || 'Not provided',
+    'Wishlist': companyAuditState.tools.wishlist || 'Not provided'
+  });
+
+  btn.disabled = false; btn.textContent = 'Continue \u2192';
+  transitionScreens('tools', 'workflows', 5);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION 7: WORKFLOWS SCREEN (Embedded Mapper + Friction)
+   ══════════════════════════════════════════════════════════════ */
+(function buildWorkflowsScreen() {
+  var screen = document.getElementById('screen-workflows');
+  screen.innerHTML = '<span class="back-link" onclick="goBackWorkflows()">&larr; Back</span>' +
+    '<div class="glass-card">' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:22px;font-weight:700;color:#1A1A1C;margin:0 0 6px;">Show Us a Workflow</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;margin:0 0 24px;">Describe one workflow that frustrates your team. We\u2019ll show you exactly what\u2019s automatable.</p>' +
+    '<div id="wf-mapper-area"></div>' +
+    '<div id="wf-friction-area" style="display:none;"></div>' +
+    '<button class="ca-btn ca-btn-ink" id="wf-continue-btn" style="margin-top:24px;display:none;" onclick="handleWorkflows()">Continue &rarr;</button>' +
+  '</div>';
+})();
+
+var wfPhase = 'input'; // input | loading | result | error | skipped
+var wfMapperResult = null;
+var wfErrorMsg = '';
+
+function renderWfMapper() {
+  var area = document.getElementById('wf-mapper-area');
+  var industry = companyAuditState.company.industry || 'other';
+  var chips = INDUSTRY_WORKFLOW_CHIPS[industry] || INDUSTRY_WORKFLOW_CHIPS.other || [];
+
+  if (wfPhase === 'input') {
+    area.innerHTML =
+      '<textarea class="ca-textarea" id="wf-input" style="min-height:120px;" placeholder="Describe a repetitive workflow in plain English \u2014 start to finish, including every tool and step."></textarea>' +
+      '<div class="chip-group" id="wf-quick-chips" style="margin-top:12px;"></div>' +
+      '<button class="ca-btn" id="wf-map-btn" style="margin-top:16px;background:linear-gradient(135deg,#D0BC8A,#B0A070);color:#fff;font-family:Outfit,sans-serif;font-weight:600;font-size:15px;border:none;border-radius:12px;padding:14px 24px;width:100%;cursor:not-allowed;opacity:0.5;" disabled onclick="mapCompanyWorkflow()">Map This Workflow &rarr;</button>' +
+      '<div style="text-align:center;margin-top:12px;"><span style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;cursor:pointer;text-decoration:underline;" onclick="skipWorkflowMapper()">Skip this step &rarr;</span></div>';
+
+    // Quick-start chips
+    var chipContainer = document.getElementById('wf-quick-chips');
+    chips.forEach(function(c) {
+      var chip = document.createElement('div');
+      chip.className = 'chip chip-outline-gold';
+      chip.textContent = c.label;
+      chip.onclick = function() {
+        chipContainer.querySelectorAll('.chip').forEach(function(ch) { ch.classList.remove('selected'); });
+        chip.classList.add('selected');
+        document.getElementById('wf-input').value = c.text;
+        enableWfMapBtn();
+      };
+      chipContainer.appendChild(chip);
+    });
+
+    // Enable/disable map button on input
+    var input = document.getElementById('wf-input');
+    input.addEventListener('input', function() {
+      enableWfMapBtn();
+      // Deselect chips if user edits text
+      var val = input.value;
+      var anyMatch = false;
+      chips.forEach(function(c) { if (c.text === val) anyMatch = true; });
+      if (!anyMatch) {
+        chipContainer.querySelectorAll('.chip').forEach(function(ch) { ch.classList.remove('selected'); });
+      }
+    });
+    input.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); mapCompanyWorkflow(); }
+    });
+
+    // Restore previous input if going back
+    if (companyAuditState.workflows.mapperInput) {
+      input.value = companyAuditState.workflows.mapperInput;
+      enableWfMapBtn();
+    }
+
+  } else if (wfPhase === 'loading') {
+    area.innerHTML = '<div style="text-align:center;padding:40px 0;">' +
+      '<div style="display:flex;justify-content:center;gap:8px;margin-bottom:16px;">' +
+        '<div style="width:10px;height:10px;border-radius:50%;background:#D0BC8A;animation:pulse 1.4s ease-in-out infinite;"></div>' +
+        '<div style="width:10px;height:10px;border-radius:50%;background:#D0BC8A;animation:pulse 1.4s ease-in-out infinite 0.2s;"></div>' +
+        '<div style="width:10px;height:10px;border-radius:50%;background:#D0BC8A;animation:pulse 1.4s ease-in-out infinite 0.4s;"></div>' +
+      '</div>' +
+      '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;">Analysing your workflow...</p>' +
+      '<div style="margin:16px auto;max-width:300px;">' +
+        '<div style="height:8px;border-radius:4px;background:rgba(208,188,138,0.15);margin-bottom:8px;overflow:hidden;"><div style="width:60%;height:100%;background:linear-gradient(90deg,rgba(208,188,138,0.3),rgba(208,188,138,0.6),rgba(208,188,138,0.3));background-size:200%;animation:shimmerText 1.5s ease-in-out infinite;"></div></div>' +
+        '<div style="height:8px;border-radius:4px;background:rgba(208,188,138,0.15);overflow:hidden;"><div style="width:40%;height:100%;background:linear-gradient(90deg,rgba(208,188,138,0.3),rgba(208,188,138,0.6),rgba(208,188,138,0.3));background-size:200%;animation:shimmerText 1.5s ease-in-out infinite 0.3s;"></div></div>' +
+      '</div>' +
+    '</div>';
+
+  } else if (wfPhase === 'result') {
+    renderWfResult();
+
+  } else if (wfPhase === 'error') {
+    area.innerHTML = '<div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">' +
+      '<span style="font-family:DM Sans,sans-serif;font-size:13px;color:#991B1B;">' + escapeHtml(wfErrorMsg || 'Analysis failed') + '</span>' +
+      '<span style="cursor:pointer;color:#991B1B;font-size:18px;" onclick="retryCompanyWorkflow()">&times;</span>' +
+    '</div>';
+    // Re-show input below the error
+    wfPhase = 'input';
+    setTimeout(function() { renderWfMapper(); }, 0);
+  }
+}
+
+function enableWfMapBtn() {
+  var btn = document.getElementById('wf-map-btn');
+  var input = document.getElementById('wf-input');
+  if (btn && input) {
+    var ready = input.value.trim().length >= 20;
+    btn.disabled = !ready;
+    btn.style.opacity = ready ? '1' : '0.5';
+    btn.style.cursor = ready ? 'pointer' : 'not-allowed';
+  }
+}
+
+async function mapCompanyWorkflow() {
+  var input = document.getElementById('wf-input');
+  var text = input.value.trim();
+  if (text.length < 20) return;
+
+  companyAuditState.workflows.mapperInput = text;
+  wfPhase = 'loading';
+  renderWfMapper();
+
+  var controller = new AbortController();
+  var timeout = setTimeout(function() { controller.abort(); }, 30000);
+  try {
+    var response = await fetch('/api/audit-map', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ workflow: text.slice(0, 2000), industry: companyAuditState.company.industry }),
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    if (!response.ok) {
+      var errData = await response.json().catch(function() { return {}; });
+      throw new Error(errData.error || 'Analysis failed');
+    }
+    var data = await response.json();
+    wfMapperResult = data;
+    companyAuditState.workflows.mapperResult = data;
+    wfPhase = 'result';
+    renderWfMapper();
+    showWfFriction(false);
+  } catch (err) {
+    clearTimeout(timeout);
+    wfErrorMsg = err.name === 'AbortError' ? 'Taking too long, try again.' : err.message;
+    wfPhase = 'error';
+    renderWfMapper();
+  }
+}
+
+function retryCompanyWorkflow() {
+  wfPhase = 'input';
+  renderWfMapper();
+}
+
+function skipWorkflowMapper() {
+  companyAuditState.workflows.mapperInput = document.getElementById('wf-input') ? document.getElementById('wf-input').value.trim() : '';
+  companyAuditState.workflows.mapperResult = null;
+  wfMapperResult = null;
+  wfPhase = 'skipped';
+  document.getElementById('wf-mapper-area').innerHTML =
+    '<div style="background:rgba(208,188,138,0.06);border:1px solid rgba(208,188,138,0.2);border-radius:12px;padding:16px;text-align:center;">' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;">Workflow mapping skipped. No problem \u2014 your team will map their own during the full audit.</p>' +
+    '</div>';
+  showWfFriction(true);
+}
+
+function renderWfResult() {
+  var area = document.getElementById('wf-mapper-area');
+  var data = wfMapperResult;
+  var summary = data.summary || {};
+  var steps = data.steps || [];
+  var recommendation = data.recommendation || {};
+  var autoSteps = summary.automatable_steps || 0;
+  var totalSteps = summary.total_steps || steps.length;
+  var pct = totalSteps > 0 ? Math.round((autoSteps / totalSteps) * 100) : 0;
+
+  var html = '<div style="margin-bottom:16px;"><span style="font-family:Outfit,sans-serif;font-size:16px;font-weight:700;color:#1A1A1C;">' + escapeHtml(data.workflow_name || 'Your Workflow') + '</span></div>';
+
+  // Stats bar
+  html += '<div style="display:flex;gap:12px;margin-bottom:16px;">';
+  html += '<div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.6);border-radius:10px;border:1px solid rgba(0,0,0,0.05);"><div style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#1A1A1C;" class="count-up" data-target="' + totalSteps + '">0</div><div style="font-family:DM Sans,sans-serif;font-size:11px;color:#7A7A84;">Total steps</div></div>';
+  html += '<div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.6);border-radius:10px;border:1px solid rgba(0,0,0,0.05);"><div style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#D0BC8A;" class="count-up" data-target="' + autoSteps + '">0</div><div style="font-family:DM Sans,sans-serif;font-size:11px;color:#7A7A84;">Automatable</div></div>';
+  html += '<div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.6);border-radius:10px;border:1px solid rgba(0,0,0,0.05);"><div style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#1A1A1C;" class="count-up" data-target="' + (summary.saveable_time_minutes || 0) + '">0</div><div style="font-family:DM Sans,sans-serif;font-size:11px;color:#7A7A84;">Minutes saved</div></div>';
+  html += '</div>';
+
+  // Percentage bar
+  html += '<div style="margin-bottom:20px;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;">' + pct + '% automatable</span></div>' +
+    '<div style="height:8px;border-radius:4px;background:rgba(0,0,0,0.06);overflow:hidden;"><div id="ca-pct-bar" style="height:100%;border-radius:4px;background:linear-gradient(90deg,#D0BC8A,#B0A070);width:0%;transition:width 1.2s ease 0.3s;"></div></div></div>';
+
+  // Build approval point lookup
+  var approvalPoints = {};
+  (data.approval_points || []).forEach(function(ap) {
+    approvalPoints[ap.after_step] = ap.reason;
+  });
+
+  // Flowchart
+  html += '<div class="flow-chart">';
+  steps.forEach(function(step, i) {
+    var stepNum = step.number || i + 1;
+    var cls = step.automatable ? 'flow-step flow-step--auto' : 'flow-step flow-step--manual';
+    html += '<div class="' + cls + '" style="animation:flowStepReveal 0.5s ease forwards;animation-delay:' + (i * 0.1) + 's;opacity:0;">' +
+      '<div class="flow-step-badge">' + stepNum + '</div>' +
+      '<div class="flow-step-title">' + escapeHtml(step.title) + '</div>' +
+      '<div class="flow-step-desc">' + escapeHtml(step.description) + '</div>' +
+      '<div class="flow-step-meta">' +
+        '<span class="flow-step-time">' + (step.time_minutes || '?') + ' min</span>' +
+        '<span class="flow-step-tag flow-step-tag--' + (step.automatable ? 'auto' : 'manual') + '">' + (step.automatable ? 'Automatable' : 'Manual') + '</span>' +
+      '</div>' +
+      (step.automatable ? '<div class="flow-step-method">' + escapeHtml(step.automation_method) + '</div>' : '') +
+    '</div>';
+    if (approvalPoints[stepNum]) {
+      html += '<div style="display:flex;align-items:center;gap:10px;margin:12px 0;padding:10px 14px;background:rgba(148,176,192,0.1);border-left:3px solid #94B0C0;border-radius:0 10px 10px 0;animation:flowStepReveal 0.5s ease forwards;animation-delay:' + ((i + 0.5) * 0.1) + 's;opacity:0;">' +
+        '<span style="font-size:16px;">&#9995;</span>' +
+        '<div><div style="font-family:Outfit,sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#94B0C0;">Employee approval</div>' +
+        '<div style="font-family:DM Sans,sans-serif;font-size:13px;color:#4A4A52;margin-top:2px;">' + escapeHtml(approvalPoints[stepNum]) + '</div></div>' +
+      '</div>';
+    }
+  });
+  html += '</div>';
+
+  // Quick win
+  if (recommendation.quick_win) {
+    html += '<div style="background:linear-gradient(135deg,rgba(208,188,138,0.15),rgba(208,188,138,0.08));border:1px solid rgba(208,188,138,0.3);border-radius:12px;padding:16px;margin-top:16px;">' +
+      '<div style="font-family:Outfit,sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#B0A070;margin-bottom:6px;">QUICK WIN</div>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:14px;color:#4A4A52;line-height:1.5;">' + escapeHtml(recommendation.quick_win) + '</div>' +
+    '</div>';
+  }
+
+  area.innerHTML = html;
+
+  // Animate count-ups and percentage bar
+  setTimeout(function() {
+    area.querySelectorAll('.count-up').forEach(function(el) {
+      var target = parseInt(el.dataset.target) || 0;
+      animateCount(el, 0, target, 800);
+    });
+    var bar = document.getElementById('ca-pct-bar');
+    if (bar) bar.style.width = pct + '%';
+  }, 50);
+}
+
+function animateCount(el, start, end, duration) {
+  var startTime = null;
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var progress = Math.min((timestamp - startTime) / duration, 1);
+    var eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(start + (end - start) * eased);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function showWfFriction(skipped) {
+  var frictionArea = document.getElementById('wf-friction-area');
+  var label = skipped
+    ? 'Tell us about your team\u2019s biggest time-wasters instead.'
+    : 'Beyond this workflow...';
+
+  frictionArea.innerHTML =
+    '<p style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;font-style:italic;margin-bottom:16px;">During the full audit, every member of your team maps their own workflows individually. The results are private to each person.</p>' +
+    '<div style="background:#F3F0EB;border-radius:12px;padding:20px;">' +
+    '<label class="field-label" style="margin-top:0;font-weight:600;">' + label + '</label>' +
+    '<label class="field-label">What\u2019s the single most repetitive task across your team?</label>' +
+    '<textarea id="wf-repetitive" class="ca-textarea" rows="3" style="min-height:80px;"></textarea>' +
+    '<label class="field-label">Are there things your team would do if they had more time, but can\u2019t because the manual work comes first?</label>' +
+    '<textarea id="wf-latent" class="ca-textarea" rows="3" style="min-height:80px;" placeholder="e.g. We\u2019d love to analyse customer trends but nobody has time to pull the data together."></textarea>' +
+    '</div>';
+
+  frictionArea.style.display = 'block';
+  frictionArea.style.opacity = '0';
+  frictionArea.style.transform = 'translateY(16px)';
+  requestAnimationFrame(function() {
+    frictionArea.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    frictionArea.style.opacity = '1';
+    frictionArea.style.transform = 'translateY(0)';
+  });
+
+  // Restore previous values if going back
+  if (companyAuditState.workflows.biggestRepetitiveTask) {
+    document.getElementById('wf-repetitive').value = companyAuditState.workflows.biggestRepetitiveTask;
+  }
+  if (companyAuditState.workflows.latentDemand) {
+    document.getElementById('wf-latent').value = companyAuditState.workflows.latentDemand;
+  }
+
+  // Show continue button
+  var btn = document.getElementById('wf-continue-btn');
+  btn.style.display = 'block';
+
+  // Scroll to friction area
+  setTimeout(function() { frictionArea.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+}
+
+function goBackWorkflows() {
+  goBack('workflows', 'tools', 4);
+  repopulateToolsScreen();
+}
+
+async function handleWorkflows() {
+  // Store friction answers
+  var repEl = document.getElementById('wf-repetitive');
+  var latEl = document.getElementById('wf-latent');
+  companyAuditState.workflows.biggestRepetitiveTask = repEl ? repEl.value.trim() : '';
+  companyAuditState.workflows.latentDemand = latEl ? latEl.value.trim() : '';
+
+  // Build email fields
+  var fields = {};
+  var data = companyAuditState.workflows.mapperResult;
+  if (data) {
+    var summary = data.summary || {};
+    var steps = data.steps || [];
+    fields['Workflow Input'] = companyAuditState.workflows.mapperInput || 'Not provided';
+    fields['Workflow Name'] = data.workflow_name || 'Unnamed';
+    fields['Total Steps'] = String(summary.total_steps || steps.length);
+    fields['Automatable Steps'] = String(summary.automatable_steps || 0);
+    fields['Total Minutes'] = String(summary.total_time_minutes || 0);
+    fields['Minutes Saveable'] = String(summary.saveable_time_minutes || 0);
+    // Steps breakdown
+    var breakdown = steps.map(function(s, i) {
+      return (s.number || i + 1) + '. ' + (s.title || '') + ' (' + (s.time_minutes || '?') + ' min, ' + (s.automatable ? 'Auto' : 'Manual') + ')';
+    }).join('\n');
+    fields['Steps Breakdown'] = breakdown;
+    fields['Quick Win'] = (data.recommendation || {}).quick_win || 'None';
+  } else {
+    fields['Workflow Mapping'] = 'Skipped';
+    fields['Workflow Input'] = companyAuditState.workflows.mapperInput || 'Not provided';
+  }
+  fields['Biggest Repetitive Task'] = companyAuditState.workflows.biggestRepetitiveTask || 'Not provided';
+  fields['Latent Demand'] = companyAuditState.workflows.latentDemand || 'Not provided';
+
+  // Send email
+  var btn = document.getElementById('wf-continue-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  await sendCompanyAuditEmail('Section \u2014 Workflows', fields);
+
+  btn.disabled = false; btn.textContent = 'Continue \u2192';
+  transitionScreens('workflows', 'data', 6);
+}
+
+// Initialise mapper on first show
+(function() {
+  renderWfMapper();
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION 8: DATA & COMPLIANCE SCREEN
+   ══════════════════════════════════════════════════════════════ */
+(function buildDataScreen() {
+  var industry = companyAuditState.company.industry || 'other';
+  var complianceOrder = INDUSTRY_COMPLIANCE_ORDER[industry] || INDUSTRY_COMPLIANCE_ORDER.other;
+  var screen = document.getElementById('screen-data');
+
+  screen.innerHTML = '<span class="back-link" onclick="goBackData()">&larr; Back</span>' +
+    '<div class="glass-card">' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:22px;font-weight:700;color:#1A1A1C;margin:0 0 6px;">Data & Compliance</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;margin:0 0 24px;">This shapes how we design the architecture \u2014 whether tools run locally on your machines, in the cloud, or a mix.</p>' +
+
+    /* 1. Data types */
+    '<label class="field-label" style="margin-top:0;">What types of data does your team work with?</label>' +
+    '<div class="chip-group" id="data-type-chips"></div>' +
+
+    /* 2. Data comfort cards */
+    '<label class="field-label">How does your team feel about where data goes?</label>' +
+    '<div id="data-comfort-cards"></div>' +
+
+    /* 3. Large files */
+    '<label class="field-label">Does your team work with particularly large files or datasets?</label>' +
+    '<div class="chip-group" id="data-files-chips"></div>' +
+
+    /* 4. Compliance */
+    '<label class="field-label">Every industry has its own rules. Do any of these apply to your business?</label>' +
+    '<div class="chip-group" id="data-compliance-chips"></div>' +
+    '<div id="compliance-other-container" style="overflow:hidden;max-height:0;opacity:0;transition:max-height 0.4s ease,opacity 0.3s ease;margin-top:0;">' +
+    '<input type="text" id="compliance-other-input" class="ca-input" placeholder="e.g. ITAR, SOX, PCI-DSS, sector-specific requirement..." style="margin-top:8px;">' +
+    '</div>' +
+
+    /* 5. Approval workflows */
+    '<label class="field-label">Are there approval or review steps in your team\u2019s workflows? Who signs off on what?</label>' +
+    '<textarea id="data-approvals" class="ca-textarea" rows="3" style="min-height:80px;" placeholder="e.g. All client proposals need director sign-off. Marketing content needs compliance review before publishing."></textarea>' +
+
+    '<button class="ca-btn ca-btn-ink" id="data-btn" style="margin-top:24px;" onclick="handleData()">Continue &rarr;</button>' +
+  '</div>';
+
+  /* 1. Data type chips (multi-select, "None of the above" mutually exclusive) */
+  var dataTypes = ['Customer personal data', 'Financial records', 'Medical or health data', 'Proprietary formulas or IP', 'Internal strategy documents', 'Supplier or partner data', 'Research data', 'None of the above \u2014 mostly routine business data'];
+  var dtContainer = document.getElementById('data-type-chips');
+  dataTypes.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      var isNone = opt.indexOf('None of the above') === 0;
+      if (isNone) {
+        // Deselect all others, toggle this
+        dtContainer.querySelectorAll('.chip').forEach(function(c) {
+          if (c !== chip) c.classList.remove('selected');
+        });
+        chip.classList.toggle('selected');
+      } else {
+        // Deselect "None of the above" if selected
+        dtContainer.querySelectorAll('.chip').forEach(function(c) {
+          if (c.textContent.indexOf('None of the above') === 0) c.classList.remove('selected');
+        });
+        chip.classList.toggle('selected');
+      }
+    };
+    dtContainer.appendChild(chip);
+  });
+
+  /* 2. Data comfort cards (single-select, large tappable) */
+  var comfortCards = [
+    { title: 'Keep it local', desc: 'Our data should stay on our machines. We\u2019d rather process everything locally.', sub: 'Best for sensitive data, regulated industries, or strong privacy preference.' },
+    { title: 'Flexible', desc: 'As long as it\u2019s encrypted and secure, we\u2019re open to cloud processing where it makes sense.', sub: 'Best for teams who want maximum performance and features.' },
+    { title: 'Not sure yet', desc: 'We\u2019d want to understand the options before deciding.', sub: 'No problem \u2014 we\u2019ll walk through this on the call.' }
+  ];
+  var comfortContainer = document.getElementById('data-comfort-cards');
+  comfortCards.forEach(function(card) {
+    var el = document.createElement('div');
+    el.className = 'comfort-card';
+    el.innerHTML = '<div style="font-family:Outfit,sans-serif;font-size:16px;font-weight:600;color:#1A1A1C;margin-bottom:4px;">' + escapeHtml(card.title) + '</div>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:14px;color:#4A4A52;line-height:1.5;margin-bottom:6px;">' + escapeHtml(card.desc) + '</div>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;font-style:italic;">' + escapeHtml(card.sub) + '</div>';
+    el.onclick = function() {
+      comfortContainer.querySelectorAll('.comfort-card').forEach(function(c) { c.classList.remove('selected'); });
+      el.classList.add('selected');
+      companyAuditState.data.comfort = card.title;
+    };
+    comfortContainer.appendChild(el);
+  });
+
+  /* 3. Large files chips (single-select) */
+  var fileOpts = ['No, mostly documents and spreadsheets', 'Sometimes \u2014 reports, images, or datasets up to a few hundred MB', 'Yes \u2014 large datasets, video, or files over 1GB'];
+  var filesContainer = document.getElementById('data-files-chips');
+  fileOpts.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      filesContainer.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      companyAuditState.data.largeFiles = opt;
+    };
+    filesContainer.appendChild(chip);
+  });
+
+  /* 4. Compliance chips (industry-ordered, multi-select, "None beyond GDPR" mutually exclusive) */
+  var compContainer = document.getElementById('data-compliance-chips');
+  complianceOrder.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      var isNone = opt === 'None beyond GDPR';
+      var isOther = opt.indexOf('Other regulation') === 0;
+      if (isNone) {
+        compContainer.querySelectorAll('.chip').forEach(function(c) {
+          if (c !== chip) c.classList.remove('selected');
+        });
+        chip.classList.toggle('selected');
+        // Hide other input
+        var otherContainer = document.getElementById('compliance-other-container');
+        otherContainer.style.maxHeight = '0'; otherContainer.style.opacity = '0';
+      } else {
+        // Deselect "None beyond GDPR"
+        compContainer.querySelectorAll('.chip').forEach(function(c) {
+          if (c.textContent === 'None beyond GDPR') c.classList.remove('selected');
+        });
+        chip.classList.toggle('selected');
+        // Show/hide other input
+        if (isOther) {
+          var otherContainer = document.getElementById('compliance-other-container');
+          if (chip.classList.contains('selected')) {
+            otherContainer.style.maxHeight = '80px'; otherContainer.style.opacity = '1';
+          } else {
+            otherContainer.style.maxHeight = '0'; otherContainer.style.opacity = '0';
+          }
+        }
+      }
+    };
+    compContainer.appendChild(chip);
+  });
+})();
+
+function goBackData() {
+  goBack('data', 'workflows', 5);
+  // Workflow screen state is preserved in wfPhase/wfMapperResult
+}
+
+function repopulateDataScreen() {
+  // Data types
+  if (companyAuditState.data.dataTypes.length > 0) {
+    document.querySelectorAll('#data-type-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', companyAuditState.data.dataTypes.indexOf(c.textContent) >= 0);
+    });
+  }
+  // Comfort cards
+  if (companyAuditState.data.comfort) {
+    document.querySelectorAll('#data-comfort-cards .comfort-card').forEach(function(c) {
+      var title = c.querySelector('div').textContent;
+      c.classList.toggle('selected', title === companyAuditState.data.comfort);
+    });
+  }
+  // Large files
+  if (companyAuditState.data.largeFiles) {
+    document.querySelectorAll('#data-files-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', c.textContent === companyAuditState.data.largeFiles);
+    });
+  }
+  // Compliance
+  if (companyAuditState.compliance.regulations.length > 0) {
+    document.querySelectorAll('#data-compliance-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', companyAuditState.compliance.regulations.indexOf(c.textContent) >= 0);
+    });
+    // Show other input if "Other regulation" is selected
+    var hasOther = companyAuditState.compliance.regulations.some(function(r) { return r.indexOf('Other regulation') === 0; });
+    if (hasOther) {
+      var otherContainer = document.getElementById('compliance-other-container');
+      otherContainer.style.maxHeight = '80px'; otherContainer.style.opacity = '1';
+    }
+  }
+  if (companyAuditState.compliance.regulationOther) {
+    document.getElementById('compliance-other-input').value = companyAuditState.compliance.regulationOther;
+  }
+  if (companyAuditState.compliance.approvalWorkflows) {
+    document.getElementById('data-approvals').value = companyAuditState.compliance.approvalWorkflows;
+  }
+  if (companyAuditState.data.dataTypeOther) {
+    // Not used here but safe
+  }
+}
+
+async function handleData() {
+  // Gather data types
+  var dataTypes = [];
+  document.querySelectorAll('#data-type-chips .chip.selected').forEach(function(c) {
+    dataTypes.push(c.textContent);
+  });
+  companyAuditState.data.dataTypes = dataTypes;
+
+  // Comfort already stored via onclick
+
+  // Large files already stored via onclick
+
+  // Compliance
+  var regulations = [];
+  document.querySelectorAll('#data-compliance-chips .chip.selected').forEach(function(c) {
+    regulations.push(c.textContent);
+  });
+  companyAuditState.compliance.regulations = regulations;
+  companyAuditState.compliance.regulationOther = document.getElementById('compliance-other-input').value.trim();
+  companyAuditState.compliance.approvalWorkflows = document.getElementById('data-approvals').value.trim();
+
+  // Send email
+  var btn = document.getElementById('data-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  var complianceText = regulations.join(', ') || 'None selected';
+  if (companyAuditState.compliance.regulationOther) {
+    complianceText += ' (Other: ' + companyAuditState.compliance.regulationOther + ')';
+  }
+
+  await sendCompanyAuditEmail('Section \u2014 Data & Compliance', {
+    'Data Types': dataTypes.join(', ') || 'None selected',
+    'Data Comfort': companyAuditState.data.comfort || 'Not answered',
+    'Large Files': companyAuditState.data.largeFiles || 'Not answered',
+    'Compliance': complianceText,
+    'Approval Workflows': companyAuditState.compliance.approvalWorkflows || 'Not provided'
+  });
+
+  btn.disabled = false; btn.textContent = 'Continue \u2192';
+  transitionScreens('data', 'collaboration', 7);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION 9: COLLABORATION SCREEN
+   ══════════════════════════════════════════════════════════════ */
+(function buildCollaborationScreen() {
+  var screen = document.getElementById('screen-collaboration');
+  var questions = [
+    { key: 'sharedData', group: 'Team Workflows', label: 'Do multiple team members ever need to work on the same dataset or document at the same time?' },
+    { key: 'approvalChains', group: 'Team Workflows', label: 'Does anyone need to see or approve another person\u2019s work before it goes out?' },
+    { key: 'mobileAccess', group: 'Access & Reach', label: 'Would anyone on the team need to access their tools from a phone or tablet?' },
+    { key: 'multiDevice', group: 'Access & Reach', label: 'Does anyone need to access their tools from more than one computer?' },
+    { key: 'publicOutputs', group: 'Access & Reach', label: 'Do any of your outputs need to be publicly accessible \u2014 for example, data on a website or shared with external partners?' }
+  ];
+
+  var html = '<span class="back-link" onclick="goBackCollab()">&larr; Back</span>' +
+    '<div class="glass-card">' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:22px;font-weight:700;color:#1A1A1C;margin:0 0 6px;">How Your Team Collaborates</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;margin:0 0 24px;">These questions help us design the right level of shared access.</p>';
+
+  var currentGroup = '';
+  questions.forEach(function(q) {
+    if (q.group !== currentGroup) {
+      currentGroup = q.group;
+      html += '<div style="font-family:Outfit,sans-serif;font-size:14px;font-weight:600;color:#1A1A1C;margin-top:20px;margin-bottom:12px;">' + escapeHtml(currentGroup) + '</div>';
+    }
+    html += '<div style="margin-bottom:16px;">' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:14px;color:#4A4A52;margin-bottom:8px;">' + escapeHtml(q.label) + '</div>' +
+      '<div class="chip-group" id="collab-' + q.key + '"></div>' +
+    '</div>';
+  });
+
+  html += '<button class="ca-btn ca-btn-ink" id="collab-btn" style="margin-top:24px;" onclick="handleCollab()">Continue &rarr;</button>' +
+    '</div>';
+
+  screen.innerHTML = html;
+
+  // Build chip rows
+  var chipOpts = ['Yes', 'No', 'Not sure'];
+  questions.forEach(function(q) {
+    var container = document.getElementById('collab-' + q.key);
+    chipOpts.forEach(function(opt) {
+      var chip = document.createElement('div');
+      chip.className = 'chip-sm';
+      chip.textContent = opt;
+      chip.onclick = function() {
+        container.querySelectorAll('.chip-sm').forEach(function(c) { c.classList.remove('selected'); });
+        chip.classList.add('selected');
+        companyAuditState.collaboration[q.key] = opt;
+      };
+      container.appendChild(chip);
+    });
+  });
+})();
+
+function goBackCollab() {
+  goBack('collaboration', 'data', 6);
+  repopulateDataScreen();
+}
+
+function repopulateCollabScreen() {
+  var keys = ['sharedData', 'approvalChains', 'mobileAccess', 'multiDevice', 'publicOutputs'];
+  keys.forEach(function(key) {
+    if (companyAuditState.collaboration[key]) {
+      document.querySelectorAll('#collab-' + key + ' .chip-sm').forEach(function(c) {
+        c.classList.toggle('selected', c.textContent === companyAuditState.collaboration[key]);
+      });
+    }
+  });
+}
+
+async function handleCollab() {
+  var btn = document.getElementById('collab-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  await sendCompanyAuditEmail('Section \u2014 Collaboration', {
+    'Shared Data': companyAuditState.collaboration.sharedData || 'Not answered',
+    'Approval Chains': companyAuditState.collaboration.approvalChains || 'Not answered',
+    'Mobile Access': companyAuditState.collaboration.mobileAccess || 'Not answered',
+    'Multi-Device': companyAuditState.collaboration.multiDevice || 'Not answered',
+    'Public Outputs': companyAuditState.collaboration.publicOutputs || 'Not answered'
+  });
+
+  btn.disabled = false; btn.textContent = 'Continue \u2192';
+  transitionScreens('collaboration', 'priorities', 8);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION 10: PRIORITIES SCREEN
+   ══════════════════════════════════════════════════════════════ */
+(function buildPrioritiesScreen() {
+  var screen = document.getElementById('screen-priorities');
+  screen.innerHTML = '<span class="back-link" onclick="goBackPriorities()">&larr; Back</span>' +
+    '<div class="glass-card">' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:22px;font-weight:700;color:#1A1A1C;margin:0 0 6px;">Priorities & Next Steps</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;margin:0 0 24px;">Last section. Help us understand what matters most.</p>' +
+
+    /* 1. Single priority */
+    '<label class="field-label" style="margin-top:0;">If we could only fix one thing, what should it be?</label>' +
+    '<textarea id="pri-single" class="ca-textarea" rows="3" style="min-height:80px;" placeholder="The single biggest pain point you want solved."></textarea>' +
+
+    /* 2. Success */
+    '<label class="field-label">What does success look like in three months?</label>' +
+    '<textarea id="pri-success" class="ca-textarea" rows="3" style="min-height:80px;" placeholder="e.g. My team gets 10 hours back per week. Or: everyone actually uses the tools."></textarea>' +
+
+    /* 3. Optimisation mode */
+    '<label class="field-label">What are you trying to achieve?</label>' +
+    '<div id="pri-mode-cards"></div>' +
+
+    /* 4. Budget */
+    '<label class="field-label">Do you have a budget range in mind?</label>' +
+    '<div class="chip-group" id="pri-budget-chips"></div>' +
+
+    /* 5. Timeline */
+    '<label class="field-label">Is there a deadline or event driving the timing?</label>' +
+    '<input type="text" id="pri-timeline" class="ca-input" placeholder="e.g. Product launch in June, seasonal rush starting September. Or: no rush.">' +
+
+    /* 6. Pilot interest */
+    '<label class="field-label">Would you be open to being featured as a case study in exchange for pilot pricing (25% off)?</label>' +
+    '<div class="chip-group" id="pri-pilot-chips"></div>' +
+
+    '<button class="ca-btn" id="pri-btn" style="margin-top:24px;background:linear-gradient(135deg,#D0BC8A,#B0A070);color:#fff;font-family:Outfit,sans-serif;font-weight:600;font-size:15px;border:none;border-radius:12px;padding:16px 24px;width:100%;cursor:pointer;" onclick="handlePriorities()">See My Results &rarr;</button>' +
+  '</div>';
+
+  /* 3. Optimisation mode cards */
+  var modes = [
+    { title: 'Make the whole team faster', desc: 'Automate the most common tasks across the team. Widest impact.', value: 'team' },
+    { title: 'Unblock a key bottleneck', desc: 'One person or process is slowing everyone else down. Fix that first.', value: 'dependency' },
+    { title: 'Supercharge a key role', desc: 'One role has the most to gain from AI tools. Go deep on that first.', value: 'individual' }
+  ];
+  var modeContainer = document.getElementById('pri-mode-cards');
+  modes.forEach(function(m) {
+    var el = document.createElement('div');
+    el.className = 'comfort-card';
+    el.style.padding = '16px';
+    el.innerHTML = '<div style="font-family:Outfit,sans-serif;font-size:15px;font-weight:600;color:#1A1A1C;margin-bottom:4px;">' + escapeHtml(m.title) + '</div>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:13px;color:#4A4A52;line-height:1.5;">' + escapeHtml(m.desc) + '</div>';
+    el.onclick = function() {
+      modeContainer.querySelectorAll('.comfort-card').forEach(function(c) { c.classList.remove('selected'); });
+      el.classList.add('selected');
+      companyAuditState.priorities.optimisationMode = m.value;
+    };
+    modeContainer.appendChild(el);
+  });
+
+  /* 4. Budget chips */
+  var budgetOpts = ['Under \u00a31,000', '\u00a31,000\u2013\u00a33,000', '\u00a33,000\u2013\u00a310,000', '\u00a310,000+', 'I\u2019d prefer to see options first'];
+  var budgetContainer = document.getElementById('pri-budget-chips');
+  budgetOpts.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      budgetContainer.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      companyAuditState.priorities.budget = opt;
+    };
+    budgetContainer.appendChild(chip);
+  });
+
+  /* 6. Pilot interest chips */
+  var pilotOpts = ['Yes \u2014 sounds great', 'Maybe \u2014 tell me more', 'No thanks'];
+  var pilotContainer = document.getElementById('pri-pilot-chips');
+  pilotOpts.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = function() {
+      pilotContainer.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
+      chip.classList.add('selected');
+      companyAuditState.priorities.pilotInterest = opt;
+    };
+    pilotContainer.appendChild(chip);
+  });
+})();
+
+function goBackPriorities() {
+  goBack('priorities', 'collaboration', 7);
+  repopulateCollabScreen();
+}
+
+function repopulatePrioritiesScreen() {
+  if (companyAuditState.priorities.singlePriority) {
+    document.getElementById('pri-single').value = companyAuditState.priorities.singlePriority;
+  }
+  if (companyAuditState.priorities.successThreeMonths) {
+    document.getElementById('pri-success').value = companyAuditState.priorities.successThreeMonths;
+  }
+  if (companyAuditState.priorities.optimisationMode) {
+    var modeMap = { team: 'Make the whole team faster', dependency: 'Unblock a key bottleneck', individual: 'Supercharge a key role' };
+    var label = modeMap[companyAuditState.priorities.optimisationMode];
+    document.querySelectorAll('#pri-mode-cards .comfort-card').forEach(function(c) {
+      c.classList.toggle('selected', c.querySelector('div').textContent === label);
+    });
+  }
+  if (companyAuditState.priorities.budget) {
+    document.querySelectorAll('#pri-budget-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', c.textContent === companyAuditState.priorities.budget);
+    });
+  }
+  if (companyAuditState.priorities.timeline) {
+    document.getElementById('pri-timeline').value = companyAuditState.priorities.timeline;
+  }
+  if (companyAuditState.priorities.pilotInterest) {
+    document.querySelectorAll('#pri-pilot-chips .chip').forEach(function(c) {
+      c.classList.toggle('selected', c.textContent === companyAuditState.priorities.pilotInterest);
+    });
+  }
+}
+
+async function handlePriorities() {
+  // Store state
+  companyAuditState.priorities.singlePriority = document.getElementById('pri-single').value.trim();
+  companyAuditState.priorities.successThreeMonths = document.getElementById('pri-success').value.trim();
+  companyAuditState.priorities.timeline = document.getElementById('pri-timeline').value.trim();
+
+  var btn = document.getElementById('pri-btn');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  // 1. Section email
+  var modeLabels = { team: 'Make the whole team faster', dependency: 'Unblock a key bottleneck', individual: 'Supercharge a key role' };
+  await sendCompanyAuditEmail('Section \u2014 Priorities', {
+    'Single Priority': companyAuditState.priorities.singlePriority || 'Not provided',
+    'Success in 3 Months': companyAuditState.priorities.successThreeMonths || 'Not provided',
+    'Optimisation Mode': modeLabels[companyAuditState.priorities.optimisationMode] || 'Not answered',
+    'Budget': companyAuditState.priorities.budget || 'Not answered',
+    'Timeline': companyAuditState.priorities.timeline || 'Not provided',
+    'Pilot Interest': companyAuditState.priorities.pilotInterest || 'Not answered'
+  });
+
+  // 2. Full consolidation email with ALL data
+  var s = companyAuditState;
+  var wfData = s.workflows.mapperResult;
+  var wfFields = {};
+  if (wfData) {
+    var summary = wfData.summary || {};
+    var steps = wfData.steps || [];
+    wfFields['Workflow Input'] = s.workflows.mapperInput || 'Not provided';
+    wfFields['Workflow Name'] = wfData.workflow_name || 'Unnamed';
+    wfFields['Total Steps'] = String(summary.total_steps || steps.length);
+    wfFields['Automatable Steps'] = String(summary.automatable_steps || 0);
+    wfFields['Total Minutes'] = String(summary.total_time_minutes || 0);
+    wfFields['Minutes Saveable'] = String(summary.saveable_time_minutes || 0);
+    wfFields['Quick Win'] = (wfData.recommendation || {}).quick_win || 'None';
+  } else {
+    wfFields['Workflow Mapping'] = 'Skipped';
+  }
+
+  var complianceText = s.compliance.regulations.join(', ') || 'None selected';
+  if (s.compliance.regulationOther) complianceText += ' (Other: ' + s.compliance.regulationOther + ')';
+
+  var allFields = {
+    /* Company */
+    'Company': s.company.name,
+    'Contact Name': s.company.contactName,
+    'Contact Email': s.company.contactEmail,
+    'Contact Role': s.company.contactRole || 'Not provided',
+    'Industry': s.company.industry || 'Not selected',
+    /* Team */
+    'Team Size': s.team.size || 'Not answered',
+    'Work Setup': s.team.workSetup || 'Not answered',
+    'IT Support': s.team.hasIT || 'Not answered',
+    /* Trigger */
+    'What Brought You': s.trigger.whatBroughtYou || 'Not provided',
+    'Time Drains': s.trigger.timeDrains.join(', ') || 'None selected',
+    'Previous Attempts': s.trigger.previousAttempts || 'Not answered',
+    'Previous Detail': s.trigger.previousDetail || 'Not provided',
+    /* Tools */
+    'Platforms': s.tools.platforms.join(', ') || 'None selected',
+    'Other Tools': s.tools.otherTools || 'Not provided',
+    'Abandoned Tools': s.tools.abandonedTools || 'Not provided',
+    'Wishlist': s.tools.wishlist || 'Not provided'
+  };
+
+  /* Workflow fields */
+  Object.keys(wfFields).forEach(function(k) { allFields[k] = wfFields[k]; });
+  allFields['Biggest Repetitive Task'] = s.workflows.biggestRepetitiveTask || 'Not provided';
+  allFields['Latent Demand'] = s.workflows.latentDemand || 'Not provided';
+
+  /* Data & Compliance */
+  allFields['Data Types'] = s.data.dataTypes.join(', ') || 'None selected';
+  allFields['Data Comfort'] = s.data.comfort || 'Not answered';
+  allFields['Large Files'] = s.data.largeFiles || 'Not answered';
+  allFields['Compliance'] = complianceText;
+  allFields['Approval Workflows'] = s.compliance.approvalWorkflows || 'Not provided';
+
+  /* Collaboration */
+  allFields['Shared Data'] = s.collaboration.sharedData || 'Not answered';
+  allFields['Approval Chains'] = s.collaboration.approvalChains || 'Not answered';
+  allFields['Mobile Access'] = s.collaboration.mobileAccess || 'Not answered';
+  allFields['Multi-Device'] = s.collaboration.multiDevice || 'Not answered';
+  allFields['Public Outputs'] = s.collaboration.publicOutputs || 'Not answered';
+
+  /* Priorities */
+  allFields['Single Priority'] = s.priorities.singlePriority || 'Not provided';
+  allFields['Success in 3 Months'] = s.priorities.successThreeMonths || 'Not provided';
+  allFields['Optimisation Mode'] = modeLabels[s.priorities.optimisationMode] || 'Not answered';
+  allFields['Budget'] = s.priorities.budget || 'Not answered';
+  allFields['Timeline'] = s.priorities.timeline || 'Not provided';
+  allFields['Pilot Interest'] = s.priorities.pilotInterest || 'Not answered';
+  allFields['Completed At'] = new Date().toLocaleString('en-GB');
+
+  await sendCompanyAuditEmail('Company Audit Complete', allFields, true);
+
+  if (typeof plausible !== 'undefined') plausible('Company Audit Completed');
+
+  // Remove beforeunload — safe to close now
+  window.onbeforeunload = null;
+
+  btn.disabled = false; btn.textContent = 'See My Results \u2192';
+  buildResultsScreen();
+  transitionScreens('priorities', 'results', 9);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION 11: RESULTS SCREEN (ROI + Audit Preview + Next Steps)
+   ══════════════════════════════════════════════════════════════ */
+function buildResultsScreen() {
+  var screen = document.getElementById('screen-results');
+  var s = companyAuditState;
+
+  /* ── ROI Calculation ── */
+  var teamMultiplier = { 'Just me': 1, '2\u20135 people': 3.5, '6\u201320 people': 13, '20+ people': 25 };
+  var members = teamMultiplier[s.team.size] || 3.5;
+  var hourlyRate = { ecommerce: 18, health: 22, finance: 35, services: 28, creative: 25, other: 22 };
+  var rate = hourlyRate[s.company.industry] || 22;
+  var hasMapper = s.workflows.mapperResult && s.workflows.mapperResult.summary;
+  var weeklyMinutes = hasMapper ? (s.workflows.mapperResult.summary.saveable_time_minutes || 0) * members : 0;
+  var weeklyHours = Math.round(weeklyMinutes / 60);
+  if (weeklyHours > 0 && weeklyHours < 2) weeklyHours = 2;
+  var annualSaving = weeklyHours * rate * 48;
+
+  var html = '';
+
+  /* ── Card 1: ROI Preview ── */
+  if (hasMapper && weeklyHours > 0) {
+    html += '<div class="roi-card">' +
+      '<div style="font-family:Outfit,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.7);margin-bottom:16px;">BASED ON WHAT YOU\u2019VE TOLD US</div>' +
+      '<div style="margin-bottom:20px;"><span class="roi-hours" style="font-family:Outfit,sans-serif;font-size:48px;font-weight:700;color:#fff;">' + weeklyHours + ' hours</span>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:16px;color:rgba(255,255,255,0.8);margin-top:4px;">saved per week across your team</div></div>' +
+      '<div style="margin-bottom:16px;"><span class="roi-saving" style="font-family:Outfit,sans-serif;font-size:36px;font-weight:700;color:#fff;">\u00a3' + annualSaving.toLocaleString() + '</span>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:14px;color:rgba(255,255,255,0.7);margin-top:4px;">estimated annual saving</div></div>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:12px;color:rgba(255,255,255,0.6);margin-top:16px;line-height:1.5;">Based on ' + members + ' team members, \u00a3' + rate + '/hour industry average, and the workflow you mapped. We\u2019ll refine these numbers during the full audit.</div>' +
+    '</div>';
+  } else {
+    html += '<div class="roi-card">' +
+      '<div style="font-family:Outfit,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.7);margin-bottom:12px;">YOUR ROI ESTIMATE</div>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:16px;color:rgba(255,255,255,0.9);line-height:1.6;">We\u2019ll calculate your potential ROI during the audit once your team has mapped their workflows.</div>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:13px;color:rgba(255,255,255,0.6);margin-top:12px;">Every team member maps their own workflows, so the numbers will reflect real time savings across real roles.</div>' +
+    '</div>';
+  }
+
+  /* ── Card 2: Audit Preview ── */
+  html += '<div class="glass-card" style="border-left:3px solid #D0BC8A;margin-bottom:20px;">' +
+    '<div style="font-family:Outfit,sans-serif;font-size:18px;font-weight:700;color:#1A1A1C;margin-bottom:8px;">See what your team will experience</div>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#4A4A52;line-height:1.6;margin:0 0 16px;">During the audit, each team member completes their own version of this questionnaire \u2014 with personalised workflow mapping, friction logging, and questions tailored to their role. Everything they share is encrypted and visible only to them.</p>' +
+    '<a href="/audit" target="_blank" style="display:inline-block;padding:12px 24px;border:1.5px solid rgba(208,188,138,0.4);border-radius:12px;color:#B0A070;font-family:Outfit,sans-serif;font-weight:600;font-size:14px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#D0BC8A\';this.style.background=\'rgba(208,188,138,0.08)\'" onmouseout="this.style.borderColor=\'rgba(208,188,138,0.4)\';this.style.background=\'transparent\'">Preview the Team Audit &rarr;</a>' +
+  '</div>';
+
+  /* ── Card 3: What Happens Next ── */
+  var steps = [
+    { title: 'We review your answers', desc: 'Before our next conversation, we\u2019ll analyse everything you\u2019ve told us alongside the industry data.' },
+    { title: 'Your team completes their audits', desc: 'We\u2019ll send each team member a personalised link. Their answers are private \u2014 visible only to them.' },
+    { title: 'We map the architecture', desc: 'Our Decision Engine combines your answers with your team\u2019s individual audits to produce a recommendation.' },
+    { title: 'You receive a build spec', desc: 'A one-page document: what we\u2019d build, which team members benefit most, estimated ROI, timeline, and cost.' },
+    { title: 'Your team holds the keys', desc: 'Every tool we build belongs to the person using it. Your company owns the data. Your team owns the tools.' }
+  ];
+
+  html += '<div class="glass-card" style="margin-bottom:20px;">' +
+    '<div style="font-family:Outfit,sans-serif;font-size:18px;font-weight:700;color:#1A1A1C;margin-bottom:20px;">What happens next</div>';
+
+  steps.forEach(function(step) {
+    html += '<div class="timeline-step">' +
+      '<div class="timeline-dot"></div>' +
+      '<div class="timeline-text">' +
+        '<div class="timeline-title">' + escapeHtml(step.title) + '</div>' +
+        '<div class="timeline-desc">' + escapeHtml(step.desc) + '</div>' +
+      '</div>' +
+    '</div>';
+  });
+
+  html += '<p style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;margin:20px 0 0;">Questions? Reply to the email we just sent, or reach us at info@pellucen.co.uk.</p>' +
+  '</div>';
+
+  /* ── Audit ID + Thank You ── */
+  html += '<div style="text-align:center;margin-top:24px;">' +
+    '<div style="font-family:Outfit,sans-serif;font-size:14px;font-weight:600;color:#B0A070;margin-bottom:8px;">' + escapeHtml(s.companyAuditId) + '</div>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;">Thank you, ' + escapeHtml(s.company.contactName) + '. We\u2019ll be in touch within 48 hours.</p>' +
+  '</div>';
+
+  screen.innerHTML = html;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   INTRO SCROLL ANIMATION — Full-screen slide fade in/out
+   ══════════════════════════════════════════════════════════════ */
+(function() {
+  var introSkipped = false;
+  var lastProgress = 0;
+  var SLIDE_COUNT = 5;
+
+  var logoAnchor = document.getElementById('intro-logo-anchor');
+  var logoSvg = document.getElementById('intro-logo-svg');
+  var slides = [];
+  for (var i = 1; i <= SLIDE_COUNT; i++) slides.push(document.getElementById('intro-slide-' + i));
+
+  /*
+   * Eased spin: slow start -> fast middle -> slow end.
+   * Uses smoothstep (3t^2 - 2t^3) so the logo feels organic.
+   */
+  function easedSpin(t) {
+    t = Math.min(Math.max(t, 0), 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  /*
+   * 3000vh scroll area, 5 slides = ~600vh per slide (4-8s reading time).
+   * Within each slice:
+   *   20% fade-in  (slow, gentle)
+   *   60% hold
+   *   20% fade-out (slow, gentle)
+   * Last slide: no fade-out.
+   */
+  function getSlideOpacity(slideIdx, p) {
+    var sliceSize = 1 / SLIDE_COUNT;
+    var start = slideIdx * sliceSize;
+    var fadeInEnd = start + sliceSize * 0.20;
+    var holdEnd = start + sliceSize * 0.80;
+    var fadeOutEnd = start + sliceSize;
+
+    if (slideIdx === SLIDE_COUNT - 1) {
+      if (p < start) return 0;
+      if (p < fadeInEnd) return (p - start) / (fadeInEnd - start);
+      return 1;
+    }
+
+    if (p < start) return 0;
+    if (p < fadeInEnd) return (p - start) / (fadeInEnd - start);
+    if (p < holdEnd) return 1;
+    if (p < fadeOutEnd) return 1 - (p - holdEnd) / (fadeOutEnd - holdEnd);
+    return 0;
+  }
+
+  function getIntroProgress() {
+    var area = document.getElementById('intro-scroll-area');
+    if (!area || area.offsetParent === null) return 1;
+    var max = area.offsetHeight - window.innerHeight;
+    return max <= 0 ? 1 : Math.min(Math.max(window.scrollY / max, 0), 1);
+  }
+
+  function skipToEnd() {
+    if (introSkipped) return;
+    introSkipped = true;
+    slides.forEach(function(s, i) {
+      if (s) { s.style.opacity = i === SLIDE_COUNT - 1 ? '1' : '0'; s.style.pointerEvents = i === SLIDE_COUNT - 1 ? 'auto' : 'none'; }
+    });
+    if (logoAnchor) logoAnchor.style.opacity = '1';
+    if (logoSvg) logoSvg.style.transform = 'rotate(720deg)';
+    var area = document.getElementById('intro-scroll-area');
+    if (area) window.scrollTo(0, area.offsetHeight - window.innerHeight);
+  }
+
+  function updateIntro() {
+    if (introSkipped) return;
+    var p = getIntroProgress();
+
+    if (Math.abs(p - lastProgress) > 0.25) {
+      skipToEnd();
+      return;
+    }
+    lastProgress = p;
+
+    // Eased rotation: slow -> fast -> slow (2 full rotations)
+    if (logoSvg) logoSvg.style.transform = 'rotate(' + (easedSpin(p) * 720) + 'deg)';
+
+    // Hide scroll hint once any scrolling has happened
+    var hint = document.getElementById('intro-scroll-hint');
+    if (hint && p > 0.005) { hint.style.animation = 'none'; hint.style.opacity = '0'; }
+
+    // Update each slide opacity
+    slides.forEach(function(slide, i) {
+      if (!slide) return;
+      var opacity = getSlideOpacity(i, p);
+      slide.style.opacity = String(opacity);
+      slide.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
+    });
+
+    requestAnimationFrame(updateIntro);
+  }
+
+  var introEl = document.getElementById('screen-intro');
+  if (introEl) {
+    introEl.addEventListener('click', function(e) {
+      if (e.target.id === 'intro-cta') return;
+      skipToEnd();
+    });
+  }
+
+  requestAnimationFrame(updateIntro);
+})();
+
+/* Sections 2-5 complete — intro, company, team, trigger screens built */
+
+</script>
+</body>
+</html>

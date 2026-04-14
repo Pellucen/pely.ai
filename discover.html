@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discover — Pellucen</title>
+<meta name="description" content="See how Pellucen's hyper-personalised AI agents could transform your team's productivity. Take 3 minutes to discover your automation potential.">
+<meta property="og:title" content="Discover what AI could do for your team — Pellucen">
+<meta property="og:description" content="95% of AI projects fail. Pellucen is different. Take 3 minutes to see what hyper-personalised AI agents could save your team.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pellucen.co.uk/discover">
+<meta property="og:image" content="https://pellucen.co.uk/og-image.png">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#F8F6F2">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-xqBqrFytfJUsaE7CxdEYX.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://plausible.io">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ── Base ── */
+body { margin: 0; background: #F8F6F2; min-height: 100vh; overflow-x: hidden; }
+
+/* ── Nav ── */
+.disc-nav {
+  padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+  position: relative; z-index: 10;
+}
+.disc-nav-left { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #1A1A1C; }
+.disc-nav-left span { font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 20px; letter-spacing: -0.3px; }
+
+/* ── Orbs ── */
+.disc-orb {
+  position: fixed; border-radius: 50%; pointer-events: none; filter: blur(80px); z-index: 0;
+}
+.disc-orb-gold { width: 500px; height: 500px; background: #D0BC8A; top: -10%; left: -8%; opacity: 0.25; animation: orbFloat 18s ease-in-out infinite; }
+.disc-orb-crystal { width: 450px; height: 450px; background: #94B0C0; bottom: -5%; right: -10%; opacity: 0.25; animation: orbFloat 18s ease-in-out infinite -6s; }
+.disc-orb-sand { width: 380px; height: 380px; background: #C49484; top: 55%; left: 55%; opacity: 0.2; animation: orbFloat 18s ease-in-out infinite -12s; }
+
+/* ── Footer ── */
+.disc-footer {
+  text-align: center; padding: 32px 20px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: #7A7A84; position: relative; z-index: 2;
+}
+.disc-footer a { color: #B0A070; text-decoration: none; }
+.disc-footer a:hover { text-decoration: underline; }
+
+/* ── Glassmorphism card ── */
+.glass-card {
+  background: rgba(255,255,255,0.45); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.25); border-radius: 16px; padding: 28px;
+}
+
+/* ── Inputs & Textareas ── */
+.disc-input, .disc-textarea {
+  display: block; width: 100%; box-sizing: border-box; background: #fff;
+  border: 1.5px solid rgba(0,0,0,0.08); border-radius: 10px; padding: 12px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 16px; color: #1A1A1C;
+  transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+}
+.disc-input:focus, .disc-textarea:focus {
+  border-color: #D0BC8A; box-shadow: 0 0 0 3px rgba(208,188,138,0.15);
+}
+.disc-textarea { resize: vertical; min-height: 100px; }
+.disc-input.error, .disc-textarea.error { border-color: #e55; }
+
+/* ── Chips ── */
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 8px 16px; border-radius: 20px; border: 1.5px solid rgba(0,0,0,0.08);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: #4A4A52;
+  cursor: pointer; background: #fff; transition: all 0.2s; user-select: none;
+}
+.chip:hover { border-color: rgba(208,188,138,0.5); }
+.chip.selected {
+  border-color: #D0BC8A; background: rgba(208,188,138,0.15);
+  color: #B0A070; font-weight: 600;
+}
+.chip.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+/* ── Buttons ── */
+.disc-btn {
+  display: block; width: 100%; padding: 16px 28px; border: none; border-radius: 12px;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  min-height: 48px;
+}
+.disc-btn:hover { transform: translateY(-2px); }
+.disc-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.disc-btn-ink { background: #0C0C0E; color: #fff; }
+.disc-btn-gold {
+  background: linear-gradient(135deg, #D0BC8A, #B0A070); color: #fff;
+  box-shadow: 0 0 16px rgba(208,188,138,0.25);
+}
+.disc-btn-outline {
+  background: transparent; border: 1.5px solid rgba(208,188,138,0.4);
+  color: #B0A070; font-size: 14px;
+}
+
+/* ── Completed badges ── */
+.completed-badge {
+  display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+  background: rgba(208,188,138,0.1); border: 1px solid rgba(208,188,138,0.3);
+  border-radius: 12px; margin-bottom: 12px; animation: fadeUp 0.5s ease forwards;
+}
+.badge-check {
+  width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #D0BC8A, #B0A070);
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.badge-label { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 500; color: #B0A070; }
+
+/* ── Section headers ── */
+.section-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%; background: #0C0C0E;
+  color: #fff; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px;
+  flex-shrink: 0;
+}
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.section-title { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 700; color: #1A1A1C; }
+.section-subtitle {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: #7A7A84;
+  margin-bottom: 24px;
+}
+
+/* ── Field labels ── */
+.field-label {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  color: #1A1A1C; margin-bottom: 8px; margin-top: 20px;
+}
+.field-hint {
+  font-family: 'DM Sans', sans-serif; font-size: 12px; color: #7A7A84;
+  margin-top: 6px;
+}
+
+/* ── Shimmer text ── */
+.shimmer-text {
+  background: linear-gradient(90deg, #1A1A1C 0%, #1A1A1C 40%, #D0BC8A 50%, #94B0C0 55%, #1A1A1C 60%, #1A1A1C 100%);
+  background-size: 200% 100%; background-clip: text; -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; animation: shimmerText 6s ease-in-out infinite;
+}
+.shimmer-text-gold {
+  background: linear-gradient(90deg, #B0A070 0%, #B0A070 40%, #D0BC8A 50%, #B0A070 60%, #B0A070 100%);
+  background-size: 200% 100%; background-clip: text; -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; animation: shimmerText 6s ease-in-out infinite;
+}
+
+/* ── Keyframes ── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes shimmerText { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(40px, -50px) scale(1.08); }
+  50% { transform: translate(-20px, 30px) scale(0.95); }
+  75% { transform: translate(30px, 20px) scale(1.04); }
+}
+@keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes shakeButton { 0% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } 100% { transform: translateX(0); } }
+@keyframes flowStepReveal { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 16px rgba(208,188,138,0.25); }
+  50% { box-shadow: 0 0 28px rgba(208,188,138,0.45); }
+}
+@keyframes hintBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
+/* ── Intro screen ── */
+#intro-logo-anchor {
+  position: absolute; top: 28%; left: 50%; transform: translate(-50%, -50%);
+  z-index: 2; pointer-events: none; text-align: center;
+}
+#intro-scroll-hint {
+  margin-top: 16px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+  color: #7A7A84; letter-spacing: 2px; text-transform: uppercase;
+  animation: hintBounce 2s ease-in-out infinite;
+  transition: opacity 0.6s;
+}
+.intro-slide {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  padding-top: 12vh;
+  box-sizing: border-box;
+  opacity: 0; pointer-events: none;
+}
+.intro-slide-inner {
+  max-width: 720px; text-align: center; padding: 0 32px;
+}
+.intro-slide h1 {
+  font-family: 'Outfit', sans-serif; font-size: 46px; font-weight: 700;
+  color: #1A1A1C; margin: 0 0 20px; line-height: 1.2;
+}
+.intro-slide p {
+  font-family: 'DM Sans', sans-serif; font-size: 22px; color: #4A4A52;
+  margin: 0; line-height: 1.6;
+}
+.intro-slide .intro-arrow {
+  font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 600;
+  color: #1A1A1C; margin: 0 0 20px; line-height: 1.4; text-align: left;
+}
+.intro-slide .arrow-icon { color: #D0BC8A; margin-right: 10px; }
+.intro-slide .intro-body {
+  font-family: 'DM Sans', sans-serif; font-size: 20px; color: #4A4A52;
+  line-height: 1.7; margin: 0 0 20px;
+}
+.intro-slide .intro-dim {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: #7A7A84;
+  line-height: 1.5; margin: 24px 0 0;
+}
+#intro-cta {
+  display: inline-block; max-width: 380px; width: 100%; padding: 16px 28px;
+  background: #0C0C0E; color: #fff; border: none; border-radius: 12px;
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px;
+  cursor: pointer; margin-top: 28px; transition: transform 0.2s, box-shadow 0.2s;
+  animation: glowPulse 3s infinite;
+}
+#intro-cta:hover { transform: translateY(-2px); box-shadow: 0 0 32px rgba(208,188,138,0.5); }
+
+/* ── Slider ── */
+.disc-slider-wrap { max-width: 100%; margin: 0 0 20px; }
+.disc-slider-row { display: flex; align-items: center; gap: 16px; }
+.disc-hours-slider {
+  flex: 1; -webkit-appearance: none; appearance: none;
+  height: 6px; border-radius: 3px;
+  background: linear-gradient(90deg, #D0BC8A, #C49484);
+  outline: none; cursor: pointer;
+}
+.disc-hours-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #0C0C0E; border: 3px solid #D0BC8A;
+  cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+}
+.disc-hours-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 16px rgba(208,188,138,0.4);
+}
+.disc-hours-slider::-moz-range-thumb {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #0C0C0E; border: 3px solid #D0BC8A;
+  cursor: pointer;
+}
+.disc-slider-value {
+  font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 600;
+  color: #1A1A1C; min-width: 64px; text-align: right;
+}
+.disc-slider-labels {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: #7A7A84; margin-top: 6px;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .disc-nav { padding: 16px 20px; }
+  .disc-nav-left span { font-size: 17px; }
+  #disc-content { padding: 16px 16px 60px !important; }
+  .intro-slide-inner { max-width: 100%; padding: 0 20px; }
+  .intro-slide h1 { font-size: 28px !important; }
+  .intro-slide p { font-size: 17px !important; }
+  .intro-slide .intro-arrow { font-size: 18px; }
+  .intro-slide .intro-body { font-size: 16px !important; }
+  #intro-logo-anchor svg { width: 60px; height: 60px; }
+  .glass-card { padding: 20px 16px; }
+  .disc-btn { min-height: 48px; }
+  .section-title { font-size: 20px; }
+  #roi-stats { flex-direction: column !important; }
+  .roi-count { font-size: 28px !important; }
+  /* Slider thumb: 44px touch target */
+  .disc-hours-slider::-webkit-slider-thumb { width: 44px; height: 44px; }
+  .disc-hours-slider::-moz-range-thumb { width: 44px; height: 44px; }
+  /* Pain stat reveal number */
+  #pain-annual-count { font-size: 36px !important; }
+  /* Mapper stats bar: stack on small screens */
+  #mapper-stats-bar { flex-direction: column !important; }
+  /* Done card CTA full-width */
+  #section-done .disc-btn { max-width: 100% !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="disc-nav">
+  <a href="https://pellucen.co.uk" class="disc-nav-left">
+    <svg width="28" height="28" viewBox="0 0 200 200" fill="none">
+      <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(0 100 100)" stroke="#D0BC8A" stroke-width="5" fill="#D0BC8A" fill-opacity="0.09"/>
+      <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(60 100 100)" stroke="#94B0C0" stroke-width="5" fill="#94B0C0" fill-opacity="0.09"/>
+      <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(120 100 100)" stroke="#C49484" stroke-width="5" fill="#C49484" fill-opacity="0.09"/>
+    </svg>
+    <span>Pellucen</span>
+  </a>
+</nav>
+
+<!-- Orbs -->
+<div class="disc-orb disc-orb-gold"></div>
+<div class="disc-orb disc-orb-crystal"></div>
+<div class="disc-orb disc-orb-sand"></div>
+
+<!-- ZONE 1: Full-width intro (visible on load) -->
+<div id="screen-intro">
+  <div id="intro-scroll-area" style="height: 3000vh; position: relative;">
+    <div id="intro-viewport" style="position: -webkit-sticky; position: sticky; top: 0; height: 100vh; overflow: hidden;">
+
+      <!-- Logo anchored above text -->
+      <div id="intro-logo-anchor">
+        <svg id="intro-logo-svg" width="80" height="80" viewBox="0 0 200 200" fill="none">
+          <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(0 100 100)" stroke="#D0BC8A" stroke-width="5" fill="#D0BC8A" fill-opacity="0.09"/>
+          <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(60 100 100)" stroke="#94B0C0" stroke-width="5" fill="#94B0C0" fill-opacity="0.09"/>
+          <rect x="78" y="42" width="44" height="116" rx="12" transform="rotate(120 100 100)" stroke="#C49484" stroke-width="5" fill="#C49484" fill-opacity="0.09"/>
+        </svg>
+        <div id="intro-scroll-hint">Scroll</div>
+      </div>
+
+      <!-- Slide 1: The Stat -->
+      <div class="intro-slide" id="intro-slide-1">
+        <div class="intro-slide-inner">
+          <h1 class="shimmer-text" style="font-size:42px;">Up to 95% of AI projects fail to deliver measurable business value.</h1>
+          <p style="margin-top:16px;"><a href="https://mlq.ai/media/quarterly_decks/v0.1_State_of_AI_in_Business_2025_Report.pdf" target="_blank" rel="noopener noreferrer" style="font-family:'DM Sans',sans-serif;font-size:13px;color:#7A7A84;text-decoration:underline;">MIT 2025</a></p>
+        </div>
+      </div>
+
+      <!-- Slide 2: The Diagnosis -->
+      <div class="intro-slide" id="intro-slide-2">
+        <div class="intro-slide-inner">
+          <p style="font-family:'DM Sans',sans-serif;font-size:26px;color:#1A1A1C;font-weight:500;line-height:1.5;">That&rsquo;s not a tech failure &mdash; it&rsquo;s an adoption and integration crisis.</p>
+        </div>
+      </div>
+
+      <!-- Slide 3: The Problem + Solution -->
+      <div class="intro-slide" id="intro-slide-3">
+        <div class="intro-slide-inner">
+          <p class="intro-body">When employees don&rsquo;t feel protected, they don&rsquo;t adopt.</p>
+          <p class="intro-body" style="margin-top:20px;">At Pellucen, we build hyper-personalised AI agents for your employees. And put the keys in their hands.</p>
+        </div>
+      </div>
+
+      <!-- Slide 4: The Reframe -->
+      <div class="intro-slide" id="intro-slide-4">
+        <div class="intro-slide-inner">
+          <p class="intro-body">So instead of feeling intimidated by AI, your team feels empowered to champion it.</p>
+        </div>
+      </div>
+
+      <!-- Slide 5: The Result -->
+      <div class="intro-slide" id="intro-slide-5">
+        <div class="intro-slide-inner">
+          <p class="intro-body">The result? Hyper integration is incentivised on the individual level, and company productivity reaps the benefits.</p>
+        </div>
+      </div>
+
+      <!-- Slide 6: Three Arrows -->
+      <div class="intro-slide" id="intro-slide-6">
+        <div class="intro-slide-inner">
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> We build the tools</p>
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Your company owns the data they work with</p>
+          <p class="intro-arrow"><span class="arrow-icon">&rarr;</span> Your employees own the keys</p>
+        </div>
+      </div>
+
+      <!-- Slide 7: CTA -->
+      <div class="intro-slide" id="intro-slide-7">
+        <div class="intro-slide-inner">
+          <h1 class="shimmer-text" style="font-size:30px;line-height:1.3;">This is the Pellucen Model</h1>
+          <p style="font-family:'DM Sans',sans-serif;font-size:16px;color:#7A7A84;margin-top:12px;">Take 3 minutes to discover what it could do for your team.</p>
+          <button id="intro-cta" onclick="startDiscovery()">Start Discovery &rarr;</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ZONE 2: Centred content (hidden until intro CTA) -->
+<div id="disc-content" style="max-width:640px; margin:0 auto; padding:20px 24px 80px; display:none; position:relative; z-index:2;">
+  <div id="screen-identity" style="display:none;"></div>
+  <div id="badges-container"></div>
+  <div id="section-pain" class="disc-section" style="display:none; opacity:0; transform:translateY(16px);"></div>
+  <div id="section-mapper" class="disc-section" style="display:none; opacity:0; transform:translateY(16px);"></div>
+  <div id="section-roi" class="disc-section" style="display:none; opacity:0; transform:translateY(16px);"></div>
+  <div id="section-next" class="disc-section" style="display:none; opacity:0; transform:translateY(16px);"></div>
+  <div id="section-done" class="disc-section" style="display:none; opacity:0; transform:translateY(16px);"></div>
+</div>
+
+<!-- Footer -->
+<div class="disc-footer">
+  <a href="https://pellucen.co.uk">pellucen.co.uk</a> &mdash; AI workflow automation, Manchester
+</div>
+
+<!-- Chatbot widget -->
+<div class="chatbot-panel" id="chatbot-panel">
+  <div class="chatbot-header">
+    <div class="chatbot-header-dot"></div>
+    <div>
+      <div class="chatbot-header-text">Pellucen AI</div>
+      <div class="chatbot-header-sub">Ask us anything about our services</div>
+    </div>
+  </div>
+  <div class="chatbot-messages" id="chatbot-messages"></div>
+  <div class="chatbot-input-bar">
+    <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Ask a question..." autocomplete="off">
+    <button class="chatbot-send" id="chatbot-send" aria-label="Send">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+<button class="chatbot-fab" id="chatbot-fab" aria-label="Chat with Pellucen AI">
+  <svg class="chatbot-fab-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+  <svg class="chatbot-fab-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+
+<!-- Cookie consent banner -->
+<div class="cookie-banner" id="cookie-banner" hidden>
+  <p>We use privacy-friendly analytics (Plausible) to understand how people use this site. No personal data is collected or shared.</p>
+  <div class="cookie-actions">
+    <button class="cookie-accept" id="cookie-accept">Got it</button>
+    <button class="cookie-decline" id="cookie-decline">No thanks</button>
+  </div>
+</div>
+
+<script src="main.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   PELLUCEN DISCOVERY FORM — Inline JS
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── State ── */
+var discState = {
+  currentScreen: 'intro',
+  completedSections: [],
+  identity: { name: '', company: '', email: '', industry: null, teamSize: null },
+  pain: { timeSinks: [], hoursPerWeek: 15 },
+  mapper: { input: '', result: null, minutesPerOccurrence: 30, weeklyTimeSaved: 0 },
+  roi: { hourlyRate: 35 },
+  next: { freedTime: '', anythingElse: '' }
+};
+
+/* ── Data Tables ── */
+
+var INDUSTRY_OPTIONS = [
+  { key: 'ecommerce', label: 'E-commerce & Retail' },
+  { key: 'health', label: 'Health & Wellness' },
+  { key: 'finance', label: 'Finance & Trading' },
+  { key: 'services', label: 'Professional Services' },
+  { key: 'creative', label: 'Creative / Agency' },
+  { key: 'other', label: 'Other' }
+];
+
+var TEAM_SIZE_OPTIONS = [
+  { key: 'solo', label: 'Just me', multiplier: 1 },
+  { key: 'small', label: '2\u20135 people', multiplier: 3.5 },
+  { key: 'medium', label: '6\u201320 people', multiplier: 13 },
+  { key: 'large', label: '20+ people', multiplier: 25 }
+];
+
+var TIME_SINK_OPTIONS = [
+  { key: 'data-entry', label: 'Manual data entry' },
+  { key: 'email', label: 'Email back-and-forth' },
+  { key: 'reporting', label: 'Reporting & spreadsheets' },
+  { key: 'scheduling', label: 'Scheduling & coordination' },
+  { key: 'chasing', label: 'Chasing approvals' },
+  { key: 'switching', label: 'Switching between tools' }
+];
+
+var INDUSTRY_WORKFLOW_CHIPS = {
+  ecommerce: [
+    { label: 'Order fulfilment', text: 'When a customer places an order on Shopify, I manually check stock in a spreadsheet, send a confirmation email, create a shipping label, update the spreadsheet, and notify the warehouse via Slack.' },
+    { label: 'Stock reconciliation', text: 'Every morning I compare stock levels across Shopify, Amazon, and our master spreadsheet, flag any discrepancies, adjust quantities, and email the warehouse about low-stock items.' },
+    { label: 'Returns processing', text: 'When a customer requests a return, I check the order in Shopify, verify the return window, email the customer a returns label, process the refund, update the spreadsheet, and restock the item.' }
+  ],
+  health: [
+    { label: 'Patient intake', text: 'A new patient is referred to us. I create their record in our patient system, verify their insurance details, send a welcome pack by email, schedule their first appointment, and notify the assigned clinician.' },
+    { label: 'Referral processing', text: 'When a referral comes in by email or fax, I enter the details into our patient system, check eligibility, send an acknowledgement to the referring clinic, and add the patient to the waiting list.' },
+    { label: 'Compliance reporting', text: 'Every month I pull data from three different systems, check it against regulatory requirements, create a compliance summary, format it into a report, and submit it to the relevant body.' }
+  ],
+  finance: [
+    { label: 'Trade reconciliation', text: 'After market close I download trade confirmations, match them against our internal records in a spreadsheet, flag any breaks, email the counterparty about discrepancies, and update our position report.' },
+    { label: 'Client onboarding', text: 'A new client signs our engagement letter. I run KYC checks, collect identity documents, enter their details into our system, set up their account, and send a welcome email with portal access.' },
+    { label: 'Portfolio reporting', text: 'Every week I pull position data from our trading platform, calculate P&L in a spreadsheet, generate charts, write a commentary, format it into a PDF, and email it to clients.' }
+  ],
+  services: [
+    { label: 'Client onboarding', text: 'A new client signs a proposal. I create their folder in Google Drive, add them to our CRM, send a welcome email with onboarding docs, schedule a kick-off call, and assign tasks to team members.' },
+    { label: 'Weekly reporting', text: 'Every Friday I pull data from three different tools into a spreadsheet, create charts, write a summary, format it into a PDF report, email it to stakeholders, and post highlights in the team Slack channel.' },
+    { label: 'Invoice processing', text: 'At the end of each month I pull timesheet data, calculate billable hours per client, create invoices in Xero, email them to clients, and update our revenue tracker spreadsheet.' }
+  ],
+  creative: [
+    { label: 'Brief intake', text: 'A new brief arrives by email. I create a project in our PM tool, set up the folder structure, brief the creative team in Slack, schedule a kick-off call, and add milestones to the timeline.' },
+    { label: 'Asset review', text: 'When creative work is ready for review, I download assets from the DAM, compile them into a presentation, share with the client, collect feedback by email, and translate it into revision notes for the team.' },
+    { label: 'Project invoicing', text: 'When a project wraps, I reconcile the time logged against the quoted scope, flag any overruns, create the final invoice in Xero, email it to the client, and archive the project files.' }
+  ],
+  other: [
+    { label: 'Request processing', text: 'When a new request comes in, I log it in a spreadsheet, verify the details, send an acknowledgement email, assign it to the right person, and update the tracker when it\'s complete.' },
+    { label: 'Weekly reporting', text: 'Every Friday I pull data from three different tools into a spreadsheet, create charts, write a summary, format it into a PDF report, email it to stakeholders, and post highlights in the team Slack channel.' },
+    { label: 'Client onboarding', text: 'A new client signs up. I create their account in our system, send a welcome email, set up their folder, schedule an onboarding call, and add them to our mailing list.' }
+  ]
+};
+
+/* ── URL Parameter Reading ── */
+var params = new URLSearchParams(window.location.search);
+if (params.get('company')) discState.identity.company = decodeURIComponent(params.get('company'));
+if (params.get('name')) discState.identity.name = decodeURIComponent(params.get('name'));
+
+/* ── Utility Functions ── */
+
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+function showSection(el) {
+  el.style.display = 'block';
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  requestAnimationFrame(function() {
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+  });
+}
+
+function animateCount(el, start, end, duration) {
+  var startTime = null;
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var progress = Math.min((timestamp - startTime) / duration, 1);
+    var eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(start + (end - start) * eased);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function validateFields(checks, btn) {
+  var valid = true;
+  checks.forEach(function(c) {
+    var el = document.getElementById(c.id);
+    if (!el) return;
+    el.classList.remove('error');
+    var msg = el.parentNode.querySelector('.field-error[data-for="' + c.id + '"]');
+    if (msg) msg.remove();
+  });
+  checks.forEach(function(c) {
+    var el = document.getElementById(c.id);
+    if (!el) return;
+    var val = el.value.trim();
+    if (val.length < c.min) {
+      el.classList.add('error');
+      var msg = document.createElement('p');
+      msg.className = 'field-error';
+      msg.setAttribute('data-for', c.id);
+      msg.style.cssText = 'font-family:DM Sans,sans-serif;font-size:12px;color:#e55;margin:4px 0 0;';
+      msg.textContent = c.min <= 1 ? 'This field is required.' : 'Please write at least ' + c.min + ' characters.';
+      el.parentNode.insertBefore(msg, el.nextSibling);
+      valid = false;
+    }
+  });
+  if (!valid && btn) {
+    btn.style.animation = 'shakeButton 0.4s ease';
+    setTimeout(function() { btn.style.animation = ''; }, 400);
+  }
+  return valid;
+}
+
+/* ── Email ── */
+async function sendDiscoveryEmail(fields) {
+  var fullSubject = '[Discovery] ' + (discState.identity.company || 'Unknown') + ' \u2014 ' + (discState.identity.name || 'Unknown');
+  var allFields = {
+    'Name': discState.identity.name,
+    'Company': discState.identity.company,
+    'Email': discState.identity.email,
+    'Industry': (INDUSTRY_OPTIONS.find(function(o) { return o.key === discState.identity.industry; }) || {}).label || 'Unknown',
+    'Team Size': (TEAM_SIZE_OPTIONS.find(function(o) { return o.key === discState.identity.teamSize; }) || {}).label || 'Unknown'
+  };
+  Object.keys(fields).forEach(function(key) {
+    allFields[key] = String(fields[key] || 'Not provided');
+  });
+  try {
+    var resp = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to: 'discover@pellucen.co.uk', subject: fullSubject, fields: allFields })
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    return true;
+  } catch (e) {
+    console.warn('Email send failed:', e.message);
+    return false;
+  }
+}
+
+async function sendClientSummaryEmail() {
+  var email = discState.identity.email;
+  if (!email) return false;
+
+  var hoursSavedWeek = discState.mapper.weeklyTimeSaved || 0;
+  var hoursSavedYear = hoursSavedWeek * 48;
+  var teamMultiplier = (TEAM_SIZE_OPTIONS.find(function(o) { return o.key === discState.identity.teamSize; }) || { multiplier: 1 }).multiplier;
+  var costSavedYear = Math.round(hoursSavedYear * discState.roi.hourlyRate * teamMultiplier);
+  var autoPct = 0;
+  var quickWin = '';
+  if (discState.mapper.result) {
+    var summary = discState.mapper.result.summary || {};
+    autoPct = summary.total_steps ? Math.round(((summary.automatable_steps || 0) / summary.total_steps) * 100) : 0;
+    quickWin = (discState.mapper.result.recommendation || {}).quick_win || '';
+  }
+
+  try {
+    var resp = await fetch('/api/send-summary', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: email,
+        name: discState.identity.name,
+        company: discState.identity.company,
+        workflowName: (discState.mapper.result || {}).workflow_name || '',
+        automationPct: autoPct,
+        weeklySaving: hoursSavedWeek,
+        annualSaving: '\u00a3' + costSavedYear.toLocaleString(),
+        quickWin: quickWin
+      })
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    return true;
+  } catch (e) {
+    console.warn('Client email failed:', e.message);
+    return false;
+  }
+}
+
+/* ── Section Completion Infrastructure ── */
+function completeDiscSection(sectionId, label) {
+  discState.completedSections.push(sectionId);
+
+  var section = document.getElementById('section-' + sectionId);
+  section.style.transition = 'opacity 0.3s ease';
+  section.style.opacity = '0';
+
+  setTimeout(function() {
+    section.style.display = 'none';
+
+    // Create badge
+    var badge = document.createElement('div');
+    badge.className = 'completed-badge';
+    badge.innerHTML = '<div class="badge-check">\u2713</div><span class="badge-label">' + escapeHtml(label) + ' \u2014 done</span>';
+    document.getElementById('badges-container').appendChild(badge);
+
+    // Determine next section
+    var order = ['pain', 'mapper', 'roi', 'next'];
+    var idx = order.indexOf(sectionId);
+    var nextId;
+    if (sectionId === 'next') {
+      nextId = 'done';
+    } else if (idx >= 0 && idx < order.length - 1) {
+      nextId = order[idx + 1];
+    }
+
+    if (nextId) {
+      var next = document.getElementById('section-' + nextId);
+      // Build next section content on demand
+      if (nextId === 'mapper') buildMapper();
+      if (nextId === 'roi') buildROI();
+      if (nextId === 'next') buildNextSteps();
+      if (nextId === 'done') buildDone();
+      showSection(next);
+      discState.currentScreen = nextId;
+      setTimeout(function() { next.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+    }
+  }, 300);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BUILD SCREENS ON LOAD
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Section 3: Quick Identity Screen ── */
+(function buildIdentity() {
+  var el = document.getElementById('screen-identity');
+  el.innerHTML = '<div class="glass-card">' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:22px;font-weight:700;color:#1A1A1C;margin:0 0 6px;">Let\u2019s learn about your team</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;margin:0 0 24px;">This takes about 3 minutes.</p>' +
+    '<label class="field-label" style="margin-top:0;">Your name</label>' +
+    '<input type="text" class="disc-input" id="id-name" placeholder="e.g. Sarah Chen" value="' + escapeHtml(discState.identity.name) + '">' +
+    '<label class="field-label">Company</label>' +
+    '<input type="text" class="disc-input" id="id-company" placeholder="e.g. Andinn Organics" value="' + escapeHtml(discState.identity.company) + '">' +
+    '<label class="field-label">Email</label>' +
+    '<input type="email" class="disc-input" id="id-email" placeholder="e.g. sarah@andinn.co.uk">' +
+    '<div id="id-email-error" style="font-family:DM Sans,sans-serif;font-size:12px;color:#e55;margin-top:4px;display:none;">Please enter a valid email</div>' +
+    '<label class="field-label">What\u2019s your industry?</label>' +
+    '<div class="chip-group" id="id-industry-chips"></div>' +
+    '<label class="field-label">How big is the team this would affect?</label>' +
+    '<div class="chip-group" id="id-team-chips"></div>' +
+    '<button class="disc-btn disc-btn-ink" id="id-btn" style="margin-top:24px;opacity:0.5;cursor:not-allowed;" disabled onclick="handleIdentity()">Continue &rarr;</button>' +
+  '</div>';
+
+  // Populate industry chips
+  var indContainer = document.getElementById('id-industry-chips');
+  INDUSTRY_OPTIONS.forEach(function(ind) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = ind.label;
+    chip.dataset.key = ind.key;
+    chip.onclick = function() { selectDiscIndustry(ind.key); };
+    indContainer.appendChild(chip);
+  });
+
+  // Populate team size chips
+  var teamContainer = document.getElementById('id-team-chips');
+  TEAM_SIZE_OPTIONS.forEach(function(ts) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = ts.label;
+    chip.dataset.key = ts.key;
+    chip.onclick = function() { selectDiscTeamSize(ts.key); };
+    teamContainer.appendChild(chip);
+  });
+})();
+
+var discSelectedIndustry = null;
+var discSelectedTeamSize = null;
+
+function updateIdentityButton() {
+  var btn = document.getElementById('id-btn');
+  if (discSelectedIndustry && discSelectedTeamSize) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  } else {
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'not-allowed';
+  }
+}
+
+function selectDiscIndustry(key) {
+  discSelectedIndustry = key;
+  var chips = document.querySelectorAll('#id-industry-chips .chip');
+  chips.forEach(function(c) { c.classList.toggle('selected', c.dataset.key === key); });
+  updateIdentityButton();
+}
+
+function selectDiscTeamSize(key) {
+  discSelectedTeamSize = key;
+  var chips = document.querySelectorAll('#id-team-chips .chip');
+  chips.forEach(function(c) { c.classList.toggle('selected', c.dataset.key === key); });
+  updateIdentityButton();
+}
+
+function handleIdentity() {
+  var nameEl = document.getElementById('id-name');
+  var companyEl = document.getElementById('id-company');
+  var emailEl = document.getElementById('id-email');
+  var emailErr = document.getElementById('id-email-error');
+  var btn = document.getElementById('id-btn');
+
+  // Reset errors
+  [nameEl, companyEl, emailEl].forEach(function(el) { el.classList.remove('error'); });
+  emailErr.style.display = 'none';
+
+  var name = nameEl.value.trim();
+  var company = companyEl.value.trim();
+  var email = emailEl.value.trim();
+  var valid = true;
+
+  if (!name) { nameEl.classList.add('error'); valid = false; }
+  if (!company) { companyEl.classList.add('error'); valid = false; }
+  if (!email || email.indexOf('@') < 1 || email.indexOf('.', email.indexOf('@')) < 0) {
+    emailEl.classList.add('error');
+    emailErr.style.display = 'block';
+    valid = false;
+  }
+
+  if (!valid) {
+    btn.style.animation = 'shakeButton 0.4s ease';
+    setTimeout(function() { btn.style.animation = ''; }, 400);
+    return;
+  }
+
+  // Store
+  discState.identity.name = name;
+  discState.identity.company = company;
+  discState.identity.email = email;
+  discState.identity.industry = discSelectedIndustry;
+  discState.identity.teamSize = discSelectedTeamSize;
+
+  // Enable beforeunload
+  window.onbeforeunload = function() { return ''; };
+
+  // Disable button
+  btn.disabled = true;
+  btn.textContent = 'Setting up...';
+
+  // Fade out identity
+  var identity = document.getElementById('screen-identity');
+  identity.style.transition = 'opacity 0.3s ease';
+  identity.style.opacity = '0';
+
+  setTimeout(function() {
+    identity.style.display = 'none';
+    // Show pain finder
+    var pain = document.getElementById('section-pain');
+    showSection(pain);
+    discState.currentScreen = 'pain';
+    setTimeout(function() { pain.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+  }, 300);
+}
+
+/* ── Section 4: Pain Finder ── */
+(function buildPainFinder() {
+  var el = document.getElementById('section-pain');
+  el.innerHTML = '<div class="glass-card">' +
+    '<div class="section-header"><div class="section-badge">1</div><div class="section-title">The Pain Finder</div></div>' +
+    '<p class="section-subtitle">Help us understand where your team\u2019s time goes.</p>' +
+    '<label class="field-label" style="margin-top:0;">What eats most of your team\u2019s time? <span style="color:#7A7A84;font-weight:400;">(Pick up to 3)</span></label>' +
+    '<div class="chip-group" id="pain-sink-chips"></div>' +
+    '<div id="pain-hours-wrap" style="display:none;opacity:0;transition:opacity 0.3s ease;margin-top:20px;">' +
+      '<label class="field-label" style="margin-top:0;">Roughly how many hours a week does your team lose to these repetitive tasks?</label>' +
+      '<div class="disc-slider-wrap">' +
+        '<div class="disc-slider-row">' +
+          '<input type="range" class="disc-hours-slider" id="pain-hours-slider" min="1" max="60" value="15" step="1">' +
+          '<output class="disc-slider-value" id="pain-hours-value">15 hrs</output>' +
+        '</div>' +
+        '<div class="disc-slider-labels"><span>1 hr</span><span>60 hrs</span></div>' +
+      '</div>' +
+    '</div>' +
+    '<button class="disc-btn disc-btn-ink" id="pain-btn" style="opacity:0.5;cursor:not-allowed;" disabled onclick="completePain()">Continue &rarr;</button>' +
+  '</div>';
+
+  // Populate time sink chips
+  var container = document.getElementById('pain-sink-chips');
+  TIME_SINK_OPTIONS.forEach(function(opt) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = opt.label;
+    chip.dataset.key = opt.key;
+    chip.onclick = function() { toggleTimeSink(chip); };
+    container.appendChild(chip);
+  });
+
+  // Hours slider interaction
+  var pSlider = document.getElementById('pain-hours-slider');
+  var pOutput = document.getElementById('pain-hours-value');
+  if (pSlider && pOutput) {
+    pSlider.addEventListener('input', function() {
+      pOutput.textContent = pSlider.value + ' hrs';
+    });
+  }
+})();
+
+var selectedTimeSinks = [];
+
+function toggleTimeSink(chip) {
+  var key = chip.dataset.key;
+  var idx = selectedTimeSinks.indexOf(key);
+  if (idx >= 0) {
+    selectedTimeSinks.splice(idx, 1);
+    chip.classList.remove('selected');
+  } else {
+    if (selectedTimeSinks.length >= 3) return;
+    selectedTimeSinks.push(key);
+    chip.classList.add('selected');
+  }
+
+  // Enable/disable overflow chips
+  var allChips = document.querySelectorAll('#pain-sink-chips .chip');
+  allChips.forEach(function(c) {
+    if (selectedTimeSinks.length >= 3 && !c.classList.contains('selected')) {
+      c.classList.add('disabled');
+    } else {
+      c.classList.remove('disabled');
+    }
+  });
+
+  // Show/hide hours slider
+  var hoursWrap = document.getElementById('pain-hours-wrap');
+  if (hoursWrap) {
+    if (selectedTimeSinks.length > 0) {
+      hoursWrap.style.display = 'block';
+      requestAnimationFrame(function() { hoursWrap.style.opacity = '1'; });
+    } else {
+      hoursWrap.style.opacity = '0';
+      setTimeout(function() { hoursWrap.style.display = 'none'; }, 300);
+    }
+  }
+
+  // Enable/disable button
+  var btn = document.getElementById('pain-btn');
+  if (selectedTimeSinks.length > 0) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  } else {
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'not-allowed';
+  }
+}
+
+function completePain() {
+  // Store selected time sinks
+  var sinkLabels = [];
+  selectedTimeSinks.forEach(function(key) {
+    var opt = TIME_SINK_OPTIONS.find(function(o) { return o.key === key; });
+    if (opt) sinkLabels.push(opt.label);
+  });
+  discState.pain.timeSinks = sinkLabels;
+
+  // Store hours slider
+  var slider = document.getElementById('pain-hours-slider');
+  if (slider) discState.pain.hoursPerWeek = parseInt(slider.value, 10);
+
+  completeDiscSection('pain', 'Pain Finder');
+}
+
+/* ── Section 5: Mini Workflow Mapper ── */
+function buildMapper() {
+  var el = document.getElementById('section-mapper');
+  var industry = discState.identity.industry;
+  var chips = INDUSTRY_WORKFLOW_CHIPS[industry] || INDUSTRY_WORKFLOW_CHIPS.other;
+
+  el.innerHTML = '<div class="glass-card">' +
+    '<div class="section-header"><div class="section-badge">2</div><div class="section-title">See It In Action</div></div>' +
+    '<p class="section-subtitle">Describe a workflow your team does regularly. Our AI will show you what\u2019s automatable.</p>' +
+    '<div id="mapper-input-area">' +
+      '<textarea class="disc-textarea" id="mapper-input" style="min-height:120px;" placeholder="Describe a workflow your team handles regularly"></textarea>' +
+      '<div class="chip-group" id="mapper-quick-chips" style="margin-top:12px;"></div>' +
+      '<label class="field-label" style="margin-top:20px;">How long does this task usually take each time?</label>' +
+      '<div class="disc-slider-wrap">' +
+        '<div class="disc-slider-row">' +
+          '<input type="range" class="disc-hours-slider" id="mapper-duration-slider" min="5" max="240" value="30" step="5">' +
+          '<output class="disc-slider-value" id="mapper-duration-value">30 min</output>' +
+        '</div>' +
+        '<div class="disc-slider-labels"><span>5 min</span><span>4 hrs</span></div>' +
+      '</div>' +
+      '<button class="disc-btn disc-btn-ink" id="mapper-btn" style="margin-top:16px;opacity:0.5;cursor:not-allowed;" disabled onclick="mapDiscWorkflow()">Map This Workflow</button>' +
+    '</div>' +
+    '<div id="mapper-loading" style="display:none;"></div>' +
+    '<div id="mapper-result" style="display:none;"></div>' +
+    '<div id="mapper-error" style="display:none;"></div>' +
+  '</div>';
+
+  // Quick-start chips
+  var chipContainer = document.getElementById('mapper-quick-chips');
+  chips.forEach(function(c) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.style.cssText = 'border-color:rgba(208,188,138,0.3);color:#B0A070;';
+    chip.textContent = c.label;
+    chip.onclick = function() {
+      document.getElementById('mapper-input').value = c.text;
+      chip.style.background = 'rgba(208,188,138,0.15)';
+      setTimeout(function() { chip.style.background = ''; }, 300);
+      enableDiscMapBtn();
+    };
+    chipContainer.appendChild(chip);
+  });
+
+  // Enable/disable on input
+  var input = document.getElementById('mapper-input');
+  input.addEventListener('input', enableDiscMapBtn);
+  input.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); mapDiscWorkflow(); }
+  });
+
+  // Duration slider interaction
+  var dSlider = document.getElementById('mapper-duration-slider');
+  var dOutput = document.getElementById('mapper-duration-value');
+  if (dSlider && dOutput) {
+    dSlider.addEventListener('input', function() {
+      var mins = parseInt(dSlider.value, 10);
+      if (mins >= 60) {
+        var h = Math.floor(mins / 60);
+        var m = mins % 60;
+        dOutput.textContent = m > 0 ? h + ' hr ' + m + ' min' : h + ' hr';
+      } else {
+        dOutput.textContent = mins + ' min';
+      }
+    });
+  }
+}
+
+function enableDiscMapBtn() {
+  var btn = document.getElementById('mapper-btn');
+  var input = document.getElementById('mapper-input');
+  if (btn && input) {
+    var ready = input.value.trim().length >= 80;
+    btn.disabled = !ready;
+    btn.style.opacity = ready ? '1' : '0.5';
+    btn.style.cursor = ready ? 'pointer' : 'not-allowed';
+  }
+}
+
+async function mapDiscWorkflow() {
+  var input = document.getElementById('mapper-input');
+  var text = input.value.trim();
+  if (text.length < 80) {
+    var btn = document.getElementById('mapper-btn');
+    if (!validateFields([{ id: 'mapper-input', min: 80, label: 'Workflow description' }], btn)) return;
+    return;
+  }
+
+  discState.mapper.input = text;
+
+  // Store duration
+  var durSlider = document.getElementById('mapper-duration-slider');
+  if (durSlider) discState.mapper.minutesPerOccurrence = parseInt(durSlider.value, 10);
+
+  // Show loading
+  document.getElementById('mapper-input-area').style.display = 'none';
+  document.getElementById('mapper-error').style.display = 'none';
+  var loading = document.getElementById('mapper-loading');
+  loading.style.display = 'block';
+  loading.innerHTML = '<div style="text-align:center;padding:40px 0;">' +
+    '<div style="display:flex;justify-content:center;gap:8px;margin-bottom:16px;">' +
+      '<div style="width:10px;height:10px;border-radius:50%;background:#D0BC8A;animation:pulse 1.4s ease-in-out infinite;"></div>' +
+      '<div style="width:10px;height:10px;border-radius:50%;background:#D0BC8A;animation:pulse 1.4s ease-in-out infinite 0.2s;"></div>' +
+      '<div style="width:10px;height:10px;border-radius:50%;background:#D0BC8A;animation:pulse 1.4s ease-in-out infinite 0.4s;"></div>' +
+    '</div>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#7A7A84;">Analysing your workflow...</p>' +
+    '<div style="margin:16px auto;max-width:300px;">' +
+      '<div style="height:8px;border-radius:4px;background:rgba(208,188,138,0.15);margin-bottom:8px;overflow:hidden;"><div style="width:60%;height:100%;background:linear-gradient(90deg,rgba(208,188,138,0.3),rgba(208,188,138,0.6),rgba(208,188,138,0.3));background-size:200%;animation:shimmerText 1.5s ease-in-out infinite;"></div></div>' +
+      '<div style="height:8px;border-radius:4px;background:rgba(208,188,138,0.15);overflow:hidden;"><div style="width:40%;height:100%;background:linear-gradient(90deg,rgba(208,188,138,0.3),rgba(208,188,138,0.6),rgba(208,188,138,0.3));background-size:200%;animation:shimmerText 1.5s ease-in-out infinite 0.3s;"></div></div>' +
+    '</div>' +
+  '</div>';
+
+  // API call with AbortController
+  var controller = new AbortController();
+  var timeout = setTimeout(function() { controller.abort(); }, 30000);
+  try {
+    var response = await fetch('/api/audit-map', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ workflow: text.slice(0, 2000), industry: discState.identity.industry }),
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    if (!response.ok) {
+      var errData = await response.json().catch(function() { return {}; });
+      throw new Error(errData.error || 'Analysis failed');
+    }
+    var data = await response.json();
+    discState.mapper.result = data;
+    loading.style.display = 'none';
+    renderDiscMapperResult(data);
+  } catch (err) {
+    clearTimeout(timeout);
+    loading.style.display = 'none';
+    showMapperError(err.name === 'AbortError' ? 'Taking too long, try again.' : err.message);
+  }
+}
+
+function showMapperError(msg) {
+  var errEl = document.getElementById('mapper-error');
+  errEl.style.display = 'block';
+  errEl.innerHTML = '<div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">' +
+    '<span style="font-family:DM Sans,sans-serif;font-size:13px;color:#991B1B;">' + escapeHtml(msg) + '</span>' +
+    '<span style="cursor:pointer;color:#991B1B;font-size:18px;" onclick="retryDiscMapper()">&times;</span>' +
+  '</div>';
+}
+
+function retryDiscMapper() {
+  document.getElementById('mapper-error').style.display = 'none';
+  document.getElementById('mapper-input-area').style.display = 'block';
+  var btn = document.getElementById('mapper-btn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  btn.style.cursor = 'pointer';
+}
+
+function renderDiscMapperResult(data) {
+  var resultEl = document.getElementById('mapper-result');
+  var summary = data.summary || {};
+  var steps = data.steps || [];
+  var recommendation = data.recommendation || {};
+  var autoSteps = summary.automatable_steps || 0;
+  var totalSteps = summary.total_steps || steps.length;
+  var pct = totalSteps > 0 ? Math.round((autoSteps / totalSteps) * 100) : 0;
+
+  var html = '<div style="margin-bottom:16px;"><span style="font-family:Outfit,sans-serif;font-size:16px;font-weight:700;color:#1A1A1C;">' + escapeHtml(data.workflow_name || 'Your Workflow') + '</span></div>';
+
+  // Stats bar
+  html += '<div id="mapper-stats-bar" style="display:flex;gap:12px;margin-bottom:16px;">';
+  html += '<div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.6);border-radius:10px;border:1px solid rgba(0,0,0,0.05);"><div style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#1A1A1C;" class="disc-count-up" data-target="' + totalSteps + '">0</div><div style="font-family:DM Sans,sans-serif;font-size:11px;color:#7A7A84;">Total steps</div></div>';
+  html += '<div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.6);border-radius:10px;border:1px solid rgba(0,0,0,0.05);"><div style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#D0BC8A;" class="disc-count-up" data-target="' + autoSteps + '">0</div><div style="font-family:DM Sans,sans-serif;font-size:11px;color:#7A7A84;">Automatable</div></div>';
+  html += '<div style="flex:1;text-align:center;padding:12px;background:rgba(255,255,255,0.6);border-radius:10px;border:1px solid rgba(0,0,0,0.05);"><div style="font-family:Outfit,sans-serif;font-size:24px;font-weight:700;color:#1A1A1C;" class="disc-count-up" data-target="' + (summary.saveable_time_minutes || 0) + '">0</div><div style="font-family:DM Sans,sans-serif;font-size:11px;color:#7A7A84;">Minutes saved</div></div>';
+  html += '</div>';
+
+  // Percentage bar
+  html += '<div style="margin-bottom:20px;"><div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;">' + pct + '% automatable</span></div>' +
+    '<div style="height:8px;border-radius:4px;background:rgba(0,0,0,0.06);overflow:hidden;"><div id="disc-pct-bar" style="height:100%;border-radius:4px;background:linear-gradient(90deg,#D0BC8A,#B0A070);width:0%;transition:width 1.2s ease 0.3s;"></div></div></div>';
+
+  // Build approval point lookup (keyed by after_step number)
+  var approvalPoints = {};
+  (data.approval_points || []).forEach(function(ap) {
+    approvalPoints[ap.after_step] = ap.reason;
+  });
+
+  // Flowchart
+  html += '<div class="flow-chart">';
+  steps.forEach(function(step, i) {
+    var stepNum = step.number || i + 1;
+    var cls = step.automatable ? 'flow-step flow-step--auto' : 'flow-step flow-step--manual';
+    html += '<div class="' + cls + '" style="animation:flowStepReveal 0.5s ease forwards;animation-delay:' + (i * 0.1) + 's;opacity:0;">' +
+      '<div class="flow-step-badge">' + stepNum + '</div>' +
+      '<div class="flow-step-title">' + escapeHtml(step.title) + '</div>' +
+      '<div class="flow-step-desc">' + escapeHtml(step.description) + '</div>' +
+      '<div class="flow-step-meta">' +
+        '<span class="flow-step-time">' + (step.time_minutes || '?') + ' min</span>' +
+        '<span class="flow-step-tag flow-step-tag--' + (step.automatable ? 'auto' : 'manual') + '">' + (step.automatable ? 'Automatable' : 'Manual') + '</span>' +
+      '</div>' +
+      (step.automatable ? '<div class="flow-step-method">' + escapeHtml(step.automation_method) + '</div>' : '') +
+    '</div>';
+    // Approval checkpoint after this step
+    if (approvalPoints[stepNum]) {
+      html += '<div style="display:flex;align-items:center;gap:10px;margin:12px 0;padding:10px 14px;background:rgba(148,176,192,0.1);border-left:3px solid #94B0C0;border-radius:0 10px 10px 0;animation:flowStepReveal 0.5s ease forwards;animation-delay:' + ((i + 0.5) * 0.1) + 's;opacity:0;">' +
+        '<span style="font-size:16px;">&#9995;</span>' +
+        '<div><div style="font-family:Outfit,sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#94B0C0;">Employee approval</div>' +
+        '<div style="font-family:DM Sans,sans-serif;font-size:13px;color:#4A4A52;margin-top:2px;">' + escapeHtml(approvalPoints[stepNum]) + '</div></div>' +
+      '</div>';
+    }
+  });
+  html += '</div>';
+
+  // Quick win
+  if (recommendation.quick_win) {
+    html += '<div style="background:linear-gradient(135deg,rgba(208,188,138,0.15),rgba(208,188,138,0.08));border:1px solid rgba(208,188,138,0.3);border-radius:12px;padding:16px;margin-top:16px;">' +
+      '<div style="font-family:Outfit,sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#B0A070;margin-bottom:6px;">QUICK WIN</div>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:14px;color:#4A4A52;line-height:1.5;">' + escapeHtml(recommendation.quick_win) + '</div>' +
+    '</div>';
+  }
+
+  // Savings calculation card
+  var taskMinutes = discState.mapper.minutesPerOccurrence;
+  var perOccurrenceSaved = Math.round(taskMinutes * pct / 100);
+  var hoursPerWeek = discState.pain.hoursPerWeek;
+  var weeklyHoursSaved = Math.round(hoursPerWeek * pct / 100);
+  discState.mapper.weeklyTimeSaved = weeklyHoursSaved;
+
+  html += '<div style="margin-top:24px;padding:20px;border:2px solid rgba(208,188,138,0.3);border-radius:14px;background:rgba(208,188,138,0.04);">' +
+    '<div style="font-family:Outfit,sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#B0A070;margin-bottom:12px;">YOUR SAVINGS</div>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#4A4A52;line-height:1.6;margin:0 0 12px;">This task currently takes <strong style="color:#1A1A1C;">' + taskMinutes + ' minutes</strong>. With automation, it could take <strong style="color:#1A1A1C;">' + (taskMinutes - perOccurrenceSaved) + ' minutes</strong> \u2014 saving <strong style="color:#B0A070;">' + perOccurrenceSaved + ' minutes each time</strong>.</p>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#4A4A52;line-height:1.6;margin:0 0 16px;">Your team loses <strong style="color:#1A1A1C;">' + hoursPerWeek + ' hours/week</strong> to repetitive work. At <strong style="color:#1A1A1C;">' + pct + '% automatable</strong>, that\u2019s:</p>' +
+    '<div style="text-align:center;padding:16px 0;">' +
+      '<div style="font-family:Outfit,sans-serif;font-size:42px;font-weight:700;color:#D0BC8A;" id="mapper-weekly-saved">0</div>' +
+      '<div style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;">hours saved every week</div>' +
+    '</div>' +
+  '</div>';
+
+  // Continue button
+  html += '<button class="disc-btn disc-btn-gold" style="margin-top:20px;" onclick="completeMapper()">Continue &rarr;</button>';
+
+  resultEl.innerHTML = html;
+  resultEl.style.display = 'block';
+
+  // Animate count-ups
+  setTimeout(function() {
+    resultEl.querySelectorAll('.disc-count-up').forEach(function(el) {
+      var target = parseInt(el.dataset.target) || 0;
+      animateCount(el, 0, target, 800);
+    });
+    var bar = document.getElementById('disc-pct-bar');
+    if (bar) bar.style.width = pct + '%';
+    // Animate weekly saved number
+    var weeklySavedEl = document.getElementById('mapper-weekly-saved');
+    if (weeklySavedEl) animateCount(weeklySavedEl, 0, weeklyHoursSaved, 1000);
+  }, 50);
+}
+
+function completeMapper() {
+  completeDiscSection('mapper', 'Workflow Mapped');
+}
+
+/* ── Section 6: ROI Calculator ── */
+function buildROI() {
+  var el = document.getElementById('section-roi');
+  var hoursSavedWeek = discState.mapper.weeklyTimeSaved || 1;
+  var teamOpt = TEAM_SIZE_OPTIONS.find(function(o) { return o.key === discState.identity.teamSize; }) || { multiplier: 1 };
+  var teamMultiplier = teamOpt.multiplier;
+  var hourlyRate = discState.roi.hourlyRate;
+  var hoursSavedYear = hoursSavedWeek * 48;
+  var costSavedYear = Math.round(hoursSavedYear * hourlyRate * teamMultiplier);
+
+  var mapperCard = '';
+  if (discState.mapper.result) {
+    var saveMin = (discState.mapper.result.summary || {}).saveable_time_minutes || 0;
+    var wfName = discState.mapper.result.workflow_name || 'Your workflow';
+    if (saveMin > 0) {
+      mapperCard = '<div style="background:rgba(208,188,138,0.08);border:1px solid rgba(208,188,138,0.25);border-radius:12px;padding:14px 18px;margin-bottom:20px;">' +
+        '<p style="font-family:DM Sans,sans-serif;font-size:14px;color:#4A4A52;margin:0;">Your \u2018' + escapeHtml(wfName) + '\u2019 workflow alone could save <strong style="color:#B0A070;">' + saveMin + ' minutes</strong> per run.</p>' +
+      '</div>';
+    }
+  }
+
+  el.innerHTML = '<div class="glass-card">' +
+    '<div class="section-header"><div class="section-badge">3</div><div class="section-title">Your ROI</div></div>' +
+    '<p class="section-subtitle">You\u2019ve seen what\u2019s automatable \u2014 now let\u2019s see what it\u2019s worth.</p>' +
+    mapperCard +
+    '<label class="field-label" style="margin-top:0;">Estimated hours your team could save each week</label>' +
+    '<div class="disc-slider-wrap">' +
+      '<div class="disc-slider-row">' +
+        '<input type="range" class="disc-hours-slider" id="roi-hours-slider" min="1" max="60" value="' + hoursSavedWeek + '" step="1">' +
+        '<output class="disc-slider-value" id="roi-hours-value">' + hoursSavedWeek + ' hrs</output>' +
+      '</div>' +
+      '<div class="disc-slider-labels"><span>1 hr</span><span>60 hrs</span></div>' +
+    '</div>' +
+    '<label class="field-label">Average employee pay per hour</label>' +
+    '<div class="disc-slider-wrap">' +
+      '<div class="disc-slider-row">' +
+        '<input type="range" class="disc-hours-slider" id="roi-rate-slider" min="10" max="150" value="' + hourlyRate + '" step="5">' +
+        '<output class="disc-slider-value" id="roi-rate-value">\u00a3' + hourlyRate + '/hr</output>' +
+      '</div>' +
+      '<div class="disc-slider-labels"><span>\u00a310/hr</span><span>\u00a3150/hr</span></div>' +
+    '</div>' +
+    '<div id="roi-stats-wrapper" style="border:2px solid rgba(208,188,138,0.3);border-radius:14px;padding:20px;background:rgba(208,188,138,0.04);margin-top:20px;">' +
+      '<div id="roi-stats" style="display:flex;gap:12px;">' +
+        '<div style="flex:1;text-align:center;padding:20px 12px;background:#fff;border-radius:12px;border:1px solid rgba(0,0,0,0.05);">' +
+          '<div id="roi-val-week" style="font-family:Outfit,sans-serif;font-size:36px;font-weight:700;color:#1A1A1C;">' + hoursSavedWeek + '</div>' +
+          '<div style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;">hours saved / week</div>' +
+        '</div>' +
+        '<div style="flex:1;text-align:center;padding:20px 12px;background:#fff;border-radius:12px;border:1px solid rgba(0,0,0,0.05);">' +
+          '<div id="roi-val-year" style="font-family:Outfit,sans-serif;font-size:36px;font-weight:700;color:#1A1A1C;">' + hoursSavedYear + '</div>' +
+          '<div style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;">hours saved / year</div>' +
+        '</div>' +
+        '<div style="flex:1;text-align:center;padding:20px 12px;background:#fff;border-radius:12px;border:1px solid rgba(0,0,0,0.05);">' +
+          '<div id="roi-val-cost" style="font-family:Outfit,sans-serif;font-size:36px;font-weight:700;color:#D0BC8A;">\u00a3' + costSavedYear.toLocaleString() + '</div>' +
+          '<div style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;">potential annual saving</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:12px;color:#7A7A84;font-style:italic;margin-top:12px;">Based on the automation percentage from your workflow analysis.</p>' +
+    '<button class="disc-btn disc-btn-gold" style="margin-top:24px;" onclick="completeROI()">Continue &rarr;</button>' +
+  '</div>';
+
+  // Live-update stats as either slider moves
+  var roiSlider = document.getElementById('roi-hours-slider');
+  var roiOutput = document.getElementById('roi-hours-value');
+  var rateSlider = document.getElementById('roi-rate-slider');
+  var rateOutput = document.getElementById('roi-rate-value');
+
+  roiSlider.addEventListener('input', function() {
+    var hrs = parseInt(roiSlider.value, 10);
+    roiOutput.textContent = hrs + ' hrs';
+    updateROIStats();
+  });
+
+  rateSlider.addEventListener('input', function() {
+    var rate = parseInt(rateSlider.value, 10);
+    rateOutput.textContent = '\u00a3' + rate + '/hr';
+    discState.roi.hourlyRate = rate;
+    updateROIStats();
+  });
+
+  // Initial count-up animation
+  animateROICountUp(hoursSavedWeek, hoursSavedYear, costSavedYear);
+}
+
+function updateROIStats() {
+  var hrsSlider = document.getElementById('roi-hours-slider');
+  var savedWeek = hrsSlider ? parseInt(hrsSlider.value, 10) : 1;
+  var teamOpt = TEAM_SIZE_OPTIONS.find(function(o) { return o.key === discState.identity.teamSize; }) || { multiplier: 1 };
+  var hourlyRate = discState.roi.hourlyRate;
+  var savedYear = savedWeek * 48;
+  var costYear = Math.round(savedYear * hourlyRate * teamOpt.multiplier);
+
+  var weekEl = document.getElementById('roi-val-week');
+  var yearEl = document.getElementById('roi-val-year');
+  var costEl = document.getElementById('roi-val-cost');
+  if (weekEl) weekEl.textContent = savedWeek;
+  if (yearEl) yearEl.textContent = savedYear.toLocaleString();
+  if (costEl) costEl.textContent = '\u00a3' + costYear.toLocaleString();
+}
+
+function animateROICountUp(weekTarget, yearTarget, costTarget) {
+  var weekEl = document.getElementById('roi-val-week');
+  var yearEl = document.getElementById('roi-val-year');
+  var costEl = document.getElementById('roi-val-cost');
+  if (!weekEl) return;
+
+  weekEl.textContent = '0';
+  yearEl.textContent = '0';
+  costEl.textContent = '\u00a30';
+
+  setTimeout(function() {
+    var startTime = null;
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / 1200, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      weekEl.textContent = Math.round(weekTarget * eased);
+      yearEl.textContent = Math.round(yearTarget * eased).toLocaleString();
+      costEl.textContent = '\u00a3' + Math.round(costTarget * eased).toLocaleString();
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }, 100);
+}
+
+function completeROI() {
+  // Store final slider values
+  var slider = document.getElementById('roi-hours-slider');
+  if (slider) discState.mapper.weeklyTimeSaved = parseInt(slider.value, 10);
+  var rateSlider = document.getElementById('roi-rate-slider');
+  if (rateSlider) discState.roi.hourlyRate = parseInt(rateSlider.value, 10);
+  completeDiscSection('roi', 'ROI Calculated');
+}
+
+/* ── Section 7: Next Steps + Final Submit + Done ── */
+function buildNextSteps() {
+  var el = document.getElementById('section-next');
+  var hoursSavedWeek = discState.mapper.weeklyTimeSaved || 1;
+
+  el.innerHTML = '<div class="glass-card">' +
+    '<div class="section-header"><div class="section-badge">4</div><div class="section-title">Next Steps</div></div>' +
+    '<p class="section-subtitle">Last bit \u2014 tell us what this would mean for your team.</p>' +
+    '<label class="field-label" style="margin-top:0;">If your team had ' + hoursSavedWeek + ' extra hours a week, what would you spend them on?</label>' +
+    '<textarea class="disc-textarea" id="next-freed" placeholder="e.g. We\u2019d finally have time to focus on growth instead of admin."></textarea>' +
+    '<label class="field-label">Anything else we should know?</label>' +
+    '<textarea class="disc-textarea" id="next-anything" style="min-height:80px;" placeholder="Optional \u2014 anything at all."></textarea>' +
+    '<button class="disc-btn disc-btn-gold" id="next-submit-btn" style="margin-top:24px;" onclick="handleFinalSubmit()">Submit Discovery &rarr;</button>' +
+  '</div>';
+}
+
+async function handleFinalSubmit() {
+  var btn = document.getElementById('next-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  // Store
+  discState.next.freedTime = (document.getElementById('next-freed') || {}).value || '';
+  discState.next.anythingElse = (document.getElementById('next-anything') || {}).value || '';
+
+  // Build comprehensive email fields
+  var industryLabel = (INDUSTRY_OPTIONS.find(function(o) { return o.key === discState.identity.industry; }) || {}).label || 'Unknown';
+  var teamLabel = (TEAM_SIZE_OPTIONS.find(function(o) { return o.key === discState.identity.teamSize; }) || {}).label || 'Unknown';
+  var hoursPerWeek = discState.pain.hoursPerWeek;
+  var hoursSavedWeek = discState.mapper.weeklyTimeSaved || 1;
+  var hoursSavedYear = hoursSavedWeek * 48;
+  var teamMultiplier = (TEAM_SIZE_OPTIONS.find(function(o) { return o.key === discState.identity.teamSize; }) || { multiplier: 1 }).multiplier;
+  var costSavedYear = Math.round(hoursSavedYear * discState.roi.hourlyRate * teamMultiplier);
+
+  var fields = {
+    'Industry': industryLabel,
+    'Team Size': teamLabel,
+    'Time Sinks': discState.pain.timeSinks.join(', ') || 'None selected',
+    'Hours Lost / Week': hoursPerWeek + ' hrs',
+    'Annual Hours Lost': (hoursPerWeek * 48) + ' hrs'
+  };
+
+  // Mapper data
+  if (discState.mapper.result) {
+    var data = discState.mapper.result;
+    var summary = data.summary || {};
+    var steps = data.steps || [];
+    var rec = data.recommendation || {};
+    var autoPct = summary.total_steps ? Math.round(((summary.automatable_steps || 0) / summary.total_steps) * 100) : 0;
+    fields['Workflow Name'] = data.workflow_name || 'Unnamed';
+    fields['Total Steps'] = summary.total_steps || steps.length;
+    fields['Automatable Steps'] = summary.automatable_steps || 0;
+    fields['Total Time (min)'] = summary.total_time_minutes || 0;
+    fields['Saveable Time (min)'] = summary.saveable_time_minutes || 0;
+    fields['Task Duration (per occurrence)'] = discState.mapper.minutesPerOccurrence + ' min';
+    fields['Automation %'] = autoPct + '%';
+    fields['Weekly Hours Saved (calculated)'] = hoursSavedWeek + ' hrs';
+    fields['Quick Win'] = rec.quick_win || 'None';
+    // Steps detail
+    var stepsDetail = steps.map(function(s, i) {
+      return (i + 1) + '. ' + (s.title || '') + ' (' + (s.time_minutes || '?') + ' min, ' + (s.automatable ? 'Automatable' : 'Manual') + ')';
+    }).join('\n');
+    fields['Steps Detail'] = stepsDetail;
+  }
+
+  // ROI
+  fields['Hourly Rate'] = '\u00a3' + discState.roi.hourlyRate;
+  fields['Hours Saved / Week'] = hoursSavedWeek;
+  fields['Hours Saved / Year'] = hoursSavedYear;
+  fields['Cost Saved / Year'] = '\u00a3' + costSavedYear.toLocaleString();
+
+  // Next steps
+  fields['Freed Time'] = discState.next.freedTime || 'Not provided';
+  fields['Anything Else'] = discState.next.anythingElse || 'Not provided';
+  fields['Completed At'] = new Date().toLocaleString('en-GB');
+
+  await Promise.all([
+    sendDiscoveryEmail(fields),
+    sendClientSummaryEmail()
+  ]);
+
+  if (typeof plausible !== 'undefined') plausible('Discovery Completed');
+
+  // Safe to close now
+  window.onbeforeunload = null;
+
+  // Hide next, show done
+  var nextEl = document.getElementById('section-next');
+  nextEl.style.transition = 'opacity 0.3s ease';
+  nextEl.style.opacity = '0';
+  setTimeout(function() {
+    nextEl.style.display = 'none';
+    buildDone();
+    var done = document.getElementById('section-done');
+    showSection(done);
+    discState.currentScreen = 'done';
+    setTimeout(function() { done.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+  }, 300);
+}
+
+function buildDone() {
+  var el = document.getElementById('section-done');
+  var name = escapeHtml(discState.identity.name);
+  var company = escapeHtml(discState.identity.company);
+  var teamMultiplier = (TEAM_SIZE_OPTIONS.find(function(o) { return o.key === discState.identity.teamSize; }) || { multiplier: 1 }).multiplier;
+  var hoursSavedWeek = discState.mapper.weeklyTimeSaved || 1;
+  var hoursSavedYear = hoursSavedWeek * 48;
+  var costSavedYear = Math.round(hoursSavedYear * discState.roi.hourlyRate * teamMultiplier);
+
+  el.innerHTML = '<div class="glass-card" style="text-align:center;box-shadow:0 0 24px rgba(208,188,138,0.15);border:1px solid rgba(208,188,138,0.3);">' +
+    '<div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#D0BC8A,#B0A070);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;color:#fff;">\u2713</div>' +
+    '<h2 style="font-family:Outfit,sans-serif;font-size:28px;font-weight:700;color:#1A1A1C;margin:0 0 12px;">Discovery complete</h2>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:16px;color:#4A4A52;margin:0 0 20px;max-width:420px;margin-left:auto;margin-right:auto;">Thank you, ' + name + '. We\u2019ll review your results and be in touch within 24 hours with a personalised recommendation for ' + company + '.</p>' +
+    '<p style="font-family:Outfit,sans-serif;font-size:16px;font-weight:600;color:#D0BC8A;margin:0 0 24px;">Your team could save up to \u00a3' + costSavedYear.toLocaleString() + ' per year.</p>' +
+    '<a href="https://pellucen.co.uk/#contact" class="disc-btn disc-btn-gold" style="display:block;text-decoration:none;text-align:center;max-width:320px;margin:0 auto;">Book a Call &rarr;</a>' +
+    '<a href="https://pellucen.co.uk/#contact" style="display:block;text-decoration:none;text-align:center;max-width:320px;margin:12px auto 0;padding:12px 24px;border-radius:12px;border:1px solid rgba(208,188,138,0.3);background:transparent;font-family:Outfit,sans-serif;font-size:14px;font-weight:600;color:#B0A070;">Book an Audit — from \u00a3400</a>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;margin-top:12px;">Or email us at info@pellucen.co.uk</p>' +
+    '<p style="font-family:DM Sans,sans-serif;font-size:13px;color:#7A7A84;margin-top:32px;">We build the tools. Your company owns the data. Your employees own the keys.</p>' +
+  '</div>';
+}
+
+/* ── Send Discovery Email (replacing stub) ── */
+
+/* ── Start Discovery: Transition from intro to identity ── */
+function startDiscovery() {
+  if (typeof plausible !== 'undefined') plausible('Discovery Started');
+  document.getElementById('screen-intro').style.display = 'none';
+  document.getElementById('disc-content').style.display = 'block';
+  window.scrollTo(0, 0);
+  var identity = document.getElementById('screen-identity');
+  showSection(identity);
+  discState.currentScreen = 'identity';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   INTRO SCROLL ANIMATION — 6-slide fade in/out
+   ══════════════════════════════════════════════════════════════ */
+(function() {
+  var introSkipped = false;
+  var lastProgress = 0;
+  var SLIDE_COUNT = 7;
+
+  var logoAnchor = document.getElementById('intro-logo-anchor');
+  var logoSvg = document.getElementById('intro-logo-svg');
+  var slides = [];
+  for (var i = 1; i <= SLIDE_COUNT; i++) slides.push(document.getElementById('intro-slide-' + i));
+
+  /*
+   * Eased spin: slow start → fast middle → slow end.
+   * Uses smoothstep (3t² - 2t³) so the logo feels organic.
+   */
+  function easedSpin(t) {
+    t = Math.min(Math.max(t, 0), 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  /*
+   * 3000vh scroll area, 6 slides = ~500vh per slide (4-6s reading time).
+   * Within each slice:
+   *   20% fade-in
+   *   60% hold
+   *   20% fade-out
+   * Last slide: no fade-out.
+   */
+  function getSlideOpacity(slideIdx, p) {
+    var sliceSize = 1 / SLIDE_COUNT;
+    var start = slideIdx * sliceSize;
+    var fadeInEnd = start + sliceSize * 0.20;
+    var holdEnd = start + sliceSize * 0.80;
+    var fadeOutEnd = start + sliceSize;
+
+    if (slideIdx === SLIDE_COUNT - 1) {
+      if (p < start) return 0;
+      if (p < fadeInEnd) return (p - start) / (fadeInEnd - start);
+      return 1;
+    }
+
+    if (p < start) return 0;
+    if (p < fadeInEnd) return (p - start) / (fadeInEnd - start);
+    if (p < holdEnd) return 1;
+    if (p < fadeOutEnd) return 1 - (p - holdEnd) / (fadeOutEnd - holdEnd);
+    return 0;
+  }
+
+  function getIntroProgress() {
+    var area = document.getElementById('intro-scroll-area');
+    if (!area || area.offsetParent === null) return 1;
+    var max = area.offsetHeight - window.innerHeight;
+    return max <= 0 ? 1 : Math.min(Math.max(window.scrollY / max, 0), 1);
+  }
+
+  function skipToEnd() {
+    if (introSkipped) return;
+    introSkipped = true;
+    slides.forEach(function(s, i) {
+      if (s) { s.style.opacity = i === SLIDE_COUNT - 1 ? '1' : '0'; s.style.pointerEvents = i === SLIDE_COUNT - 1 ? 'auto' : 'none'; }
+    });
+    if (logoAnchor) logoAnchor.style.opacity = '1';
+    if (logoSvg) logoSvg.style.transform = 'rotate(720deg)';
+    var area = document.getElementById('intro-scroll-area');
+    if (area) window.scrollTo(0, area.offsetHeight - window.innerHeight);
+  }
+
+  function updateIntro() {
+    if (introSkipped) return;
+    var p = getIntroProgress();
+
+    if (Math.abs(p - lastProgress) > 0.25) {
+      skipToEnd();
+      return;
+    }
+    lastProgress = p;
+
+    // Eased rotation: slow → fast → slow (2 full rotations)
+    if (logoSvg) logoSvg.style.transform = 'rotate(' + (easedSpin(p) * 720) + 'deg)';
+
+    // Hide scroll hint once any scrolling has happened
+    var hint = document.getElementById('intro-scroll-hint');
+    if (hint && p > 0.005) { hint.style.animation = 'none'; hint.style.opacity = '0'; }
+
+    // Update each slide opacity
+    slides.forEach(function(slide, i) {
+      if (!slide) return;
+      var opacity = getSlideOpacity(i, p);
+      slide.style.opacity = String(opacity);
+      slide.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
+    });
+
+    requestAnimationFrame(updateIntro);
+  }
+
+  var introEl = document.getElementById('screen-intro');
+  if (introEl) {
+    introEl.addEventListener('click', function(e) {
+      if (e.target.id === 'intro-cta') return;
+      skipToEnd();
+    });
+  }
+
+  requestAnimationFrame(updateIntro);
+})();
+
+</script>
+</body>
+</html>
