@@ -105,25 +105,26 @@ function onScroll() {
 addEventListener('scroll', onScroll);
 
 // Contact form — submit via fetch then redirect to /thank-you
-const contactForm = document.querySelector('.contact-form');
-if (contactForm) {
-  contactForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    const data = new FormData(contactForm);
-    fetch(contactForm.action, {
-      method: 'POST',
-      body: data,
-      headers: { Accept: 'application/json' },
+contactForm.addEventListener('submit', function (e) {
+  e.preventDefault();
+  const data = new FormData(contactForm);
+  
+  fetch('/api/send-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      to: 'info@pellucen.co.uk', // Where you want to receive it
+      subject: 'New Website Enquiry',
+      fields: {
+        Name: data.get('name'),
+        Email: data.get('email'),
+        Message: data.get('message')
+      }
     })
-      .then(() => {
-        if (typeof plausible !== 'undefined') plausible('Contact Form Submit');
-        window.location.href = '/thank-you';
-      })
-      .catch(() => {
-        window.location.href = '/thank-you';
-      });
+  }).then(() => {
+    window.location.href = '/thank-you';
   });
-}
+});
 
 // Hero orb mouse tracking
 const hero = document.querySelector('.hero');
