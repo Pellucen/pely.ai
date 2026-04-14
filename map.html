@@ -596,41 +596,50 @@
     return div.innerHTML;
   }
 
-  // Lead capture email
+// Lead capture email
   document.getElementById('map-lead-send').addEventListener('click', function() {
     const name = document.getElementById('map-lead-name').value.trim();
     const email = document.getElementById('map-lead-email').value.trim();
     if (!email) return;
 
     this.disabled = true;
-    try {
-      var formData = new FormData();
-      formData.append('_subject', 'Workflow mapped' + (name ? ' — ' + name : ''));
-      formData.append('_captcha', 'false');
-      formData.append('_template', 'table');
-      formData.append('Business Name', name || 'Not provided');
-      formData.append('Email', email);
-      formData.append('Workflow Input', lastWorkflowInput);
-      if (lastResultData) {
-        formData.append('Workflow Name', lastResultData.workflow_name || '');
-        var s = lastResultData.summary || {};
-        formData.append('Total Steps', s.total_steps || '');
-        formData.append('Automatable Steps', s.automatable_steps || '');
-        formData.append('Total Minutes', s.total_time_minutes || '');
-        formData.append('Minutes Saveable', s.saveable_time_minutes || '');
-        var steps = (lastResultData.steps || []).map(function(st) {
-          return st.number + '. ' + st.title + (st.automatable ? ' [AUTO]' : ' [MANUAL]') + ' (' + st.time_minutes + ' min)';
-        }).join('\n');
-        formData.append('Steps Breakdown', steps);
-        if (lastResultData.recommendation) {
-          formData.append('Recommended Service', lastResultData.recommendation.service || '');
-          formData.append('Quick Win', lastResultData.recommendation.quick_win || '');
-        }
+    
+    // Build the fields object instead of FormData
+    const emailFields = {
+      'Business Name': name || 'Not provided',
+      'Email': email,
+      'Workflow Input': lastWorkflowInput,
+      'Completed At': new Date().toLocaleString('en-GB')
+    };
+
+    if (lastResultData) {
+      emailFields['Workflow Name'] = lastResultData.workflow_name || '';
+      var s = lastResultData.summary || {};
+      emailFields['Total Steps'] = s.total_steps || '';
+      emailFields['Automatable Steps'] = s.automatable_steps || '';
+      emailFields['Total Minutes'] = s.total_time_minutes || '';
+      emailFields['Minutes Saveable'] = s.saveable_time_minutes || '';
+      
+      var stepsBreakdown = (lastResultData.steps || []).map(function(st) {
+        return st.number + '. ' + st.title + (st.automatable ? ' [AUTO]' : ' [MANUAL]') + ' (' + st.time_minutes + ' min)';
+      }).join('\n');
+      emailFields['Steps Breakdown'] = stepsBreakdown;
+      
+      if (lastResultData.recommendation) {
+        emailFields['Recommended Service'] = lastResultData.recommendation.service || '';
+        emailFields['Quick Win'] = lastResultData.recommendation.quick_win || '';
       }
-      formData.append('Completed At', new Date().toLocaleString('en-GB'));
-      fetch('https://formsubmit.co/ajax/map@pely.ai', {
+    }
+
+    try {
+      fetch('/api/send-email', {
         method: 'POST',
-        body: formData
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: 'info@pely.ai', // <-- Where you want to receive it
+          subject: 'Workflow mapped' + (name ? ' — ' + name : ''),
+          fields: emailFields
+        })
       });
     } catch (e) { /* silent fail */ }
 

@@ -105,26 +105,44 @@ function onScroll() {
 addEventListener('scroll', onScroll);
 
 // Contact form — submit via fetch then redirect to /thank-you
-contactForm.addEventListener('submit', function (e) {
-  e.preventDefault();
-  const data = new FormData(contactForm);
-  
-  fetch('/api/send-email', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      to: 'info@pellucen.co.uk', // Where you want to receive it
-      subject: 'New Website Enquiry',
-      fields: {
-        Name: data.get('name'),
-        Email: data.get('email'),
-        Message: data.get('message')
+// Contact form — submit via fetch then redirect to /thank-you
+const contactForm = document.querySelector('.contact-form');
+
+if (contactForm) {
+  contactForm.addEventListener('submit', function (e) {
+    e.preventDefault(); // This stops FormSubmit from taking over
+    const data = new FormData(contactForm);
+    
+    // Optional: Change button text so users know it's sending
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+    }
+    
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: 'info@pely.ai', // <-- Change to your personal Gmail if preferred!
+        subject: 'New Website Enquiry',
+        fields: {
+          Name: data.get('name'),
+          Email: data.get('email'),
+          Message: data.get('message')
+        }
+      })
+    }).then(() => {
+      window.location.href = '/thank-you';
+    }).catch(err => {
+      console.error("Email failed:", err);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Error - Try Again';
       }
-    })
-  }).then(() => {
-    window.location.href = '/thank-you';
+    });
   });
-});
+}
 
 // Hero orb mouse tracking
 const hero = document.querySelector('.hero');
@@ -824,26 +842,32 @@ if (hero) {
 
   // ── Send quiz results via email ──
 
+// ── Send quiz results via email ──
   function sendQuizEmail(data) {
     try {
-      var formData = new FormData();
-      formData.append('_subject', 'Quiz completed' + (data.businessName ? ' — ' + data.businessName : ''));
-      formData.append('_captcha', 'false');
-      formData.append('_template', 'table');
-      formData.append('Business Name', data.businessName || 'Not provided');
-      formData.append('Industry', data.industry);
-      formData.append('Team Size', data.teamSize);
-      formData.append('Time Sinks', data.timeSinks);
-      formData.append('Current Tools', data.tools);
-      formData.append('Hours Lost Per Week', data.hoursPerWeek);
-      formData.append('Estimated Hours Saveable', data.hoursSaved);
-      formData.append('Recommendation', data.recommendation);
-      if (data.specificPain) formData.append('Specific Pain Point', data.specificPain);
-      if (data.idealTool) formData.append('Ideal Solution', data.idealTool);
-      formData.append('Completed At', new Date().toLocaleString('en-GB'));
-      fetch('https://formsubmit.co/ajax/quiz@pely.ai', {
+      const emailFields = {
+        'Business Name': data.businessName || 'Not provided',
+        'Industry': data.industry,
+        'Team Size': data.teamSize,
+        'Time Sinks': data.timeSinks,
+        'Current Tools': data.tools,
+        'Hours Lost Per Week': data.hoursPerWeek,
+        'Estimated Hours Saveable': data.hoursSaved,
+        'Recommendation': data.recommendation,
+        'Completed At': new Date().toLocaleString('en-GB')
+      };
+      
+      if (data.specificPain) emailFields['Specific Pain Point'] = data.specificPain;
+      if (data.idealTool) emailFields['Ideal Solution'] = data.idealTool;
+
+      fetch('/api/send-email', {
         method: 'POST',
-        body: formData
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: 'info@pely.ai', // <-- Where you want to receive it
+          subject: 'Quiz completed' + (data.businessName ? ' — ' + data.businessName : ''),
+          fields: emailFields
+        })
       });
     } catch (e) { /* silent fail */ }
   }
