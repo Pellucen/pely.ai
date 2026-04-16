@@ -118,9 +118,9 @@ export default async function handler(req, res) {
           'Authorization': `Bearer ${cerebrasKey}`
         },
         body: JSON.stringify({
-          model: 'zai-glm-4.7', // Highly recommended for speed, comparable to Haiku
+          model: 'qwen-3-235b-a22b-instruct-2507', // Highly recommended for speed, comparable to Haiku
           messages: cerebrasMessages,
-          max_completion_tokens: 300 
+          max_tokens: 1000 
         })
       });
 

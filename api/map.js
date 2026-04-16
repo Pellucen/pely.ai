@@ -103,7 +103,7 @@ Rules:
             'Authorization': `Bearer ${cerebrasKey}`
           },
           body: JSON.stringify({
-            model: 'zai-glm-4.7', 
+            model: 'qwen-3-235b-a22b-instruct-2507', 
             messages: [
               { role: 'system', content: systemPrompt },
               { role: 'user', content: workflow }

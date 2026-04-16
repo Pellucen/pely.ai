@@ -68,7 +68,7 @@ Estimated hours saveable: ${hours}/week${dynamicContext}`;
           'Authorization': `Bearer ${cerebrasKey}`
         },
         body: JSON.stringify({
-          model: 'zai-glm-4.7', // Larger model since we originally used Sonnet here
+          model: 'qwen-3-235b-a22b-instruct-2507', // Larger model since we originally used Sonnet here
           messages: [{ role: 'user', content: prompt }],
           max_completion_tokens: 200 
         })

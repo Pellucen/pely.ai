@@ -314,12 +314,12 @@ async function guessName(email, anthropicKey, cerebrasKey) {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            model: 'zai-glm-4.7', // Requested fallback model
+            model: 'qwen-3-235b-a22b-instruct-2507', // Requested fallback model
             messages: [
               { role: 'system', content: "Extract the first name from this email prefix. Output ONLY the capitalised first name. If you can't find a real name, output exactly: SKIP" },
               { role: 'user', content: parts[0] }
             ],
-            max_tokens: 30
+            max_tokens: 100
           }),
           signal: AbortSignal.timeout(5000)
         });
