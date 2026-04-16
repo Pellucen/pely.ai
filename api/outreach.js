@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
   const { recipients } = req.body || {};
   const subject = req.body?.subject || "Quick thought on {{company}}'s workflows";
-  const body = req.body?.body || "We build encrypted, hyper-personalised AI agents to help 10x every person on your team — and give them the keys to their own system. Not replacing anyone, just handling the repetitive bits so your people can focus on the work that actually matters.";
+  const body = req.body?.body || "We build custom, branded app dashboards for small businesses, giving you a single hub to control modular AI agents built specifically for your workflows. You can add as many agents as you like to handle your repetitive admin, data entry, or outreach. It’s about giving you and your team ten pairs of hands. Easy";
   const cta_text = req.body?.cta_text || 'Book a call';
   const cta_url = req.body?.cta_url || 'https://pely.ai/#contact';
   const scheduledAt = req.body?.scheduledAt || null;
@@ -105,7 +105,7 @@ export default async function handler(req, res) {
         </div>
         <p style="font-size:14px;color:#4A4A52;line-height:1.6;margin:0 0 20px;">Take our free 2-minute discovery to see exactly where AI could save your team time — no commitment, just clarity.</p>
         <div style="text-align:center;">
-          <a href="https://pely.ai/#discover" style="display:inline-block;background:linear-gradient(135deg,#D0BC8A,#B0A070);color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:10px;">Start your discovery</a>
+          <a href="https://pely.ai/discover" style="display:inline-block;background:linear-gradient(135deg,#D0BC8A,#B0A070);color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:10px;">Start your discovery</a>
         </div>
       </div>
 
