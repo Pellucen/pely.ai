@@ -59,33 +59,75 @@ Rules:
 - quick_win should reference a specific step by name
 - approval_points: identify 1-3 critical moments in the workflow where a human should review or approve before continuing. These are high-stakes checkpoints — e.g. before dispatching an order, before sending a client-facing document, before submitting a regulatory filing, before confirming a financial transaction, before acting on patient data. Use after_step to reference the step number after which approval should happen. Only include genuinely important checkpoints, not every manual step.`;
 
+    let text = '';
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1500,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: workflow }]
-      })
-    });
+    try {
+      // 1. TRY ANTHROPIC FIRST
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1500,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: workflow }]
+        })
+      });
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error('Anthropic API error:', err);
-      return res.status(502).json({ error: 'API request failed' });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`Anthropic failed with status: ${response.status}. Details: ${err}`);
+      }
+
+      const data = await response.json();
+      text = data.content?.[0]?.text || '';
+
+    } catch (anthropicError) {
+      console.warn('Anthropic API failed, falling back to Cerebras:', anthropicError.message);
+
+      // 2. FALLBACK TO CEREBRAS
+      const cerebrasKey = process.env.CEREBRAS_API_KEY;
+      if (!cerebrasKey) {
+        return res.status(500).json({ error: 'Primary API failed and no fallback configured.' });
+      }
+
+      try {
+        const cerebrasResponse = await fetch('https://api.cerebras.ai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${cerebrasKey}`
+          },
+          body: JSON.stringify({
+            model: 'zai-glm-4.7', 
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: workflow }
+            ],
+            max_tokens: 1500
+          })
+        });
+
+        if (!cerebrasResponse.ok) {
+          const err = await cerebrasResponse.text();
+          console.error('Cerebras fallback also failed:', err);
+          return res.status(502).json({ error: 'Both primary and fallback APIs failed' });
+        }
+
+        const cerebrasData = await cerebrasResponse.json();
+        text = cerebrasData.choices?.[0]?.message?.content || '';
+      } catch (cerebrasError) {
+        console.error('Cerebras fallback error:', cerebrasError.message);
+        return res.status(500).json({ error: 'Internal error during fallback' });
+      }
     }
 
-    const data = await response.json();
-    let text = data.content?.[0]?.text || '';
-
-    // Strip markdown fences if present
-    text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+    // Strip markdown fences if present (using `{3}` to prevent markdown parser breaks)
+    text = text.replace(/^`{3}(?:json)?\s*/i, '').replace(/\s*`{3}$/i, '').trim();
 
     let parsed;
     try {

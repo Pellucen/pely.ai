@@ -67,9 +67,11 @@ export default async function handler(req, res) {
 
   // Limit conversation length to prevent abuse
   const trimmedMessages = messages.slice(-20);
+  let text = '';
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    // 1. TRY ANTHROPIC FIRST
+    const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -84,18 +86,59 @@ export default async function handler(req, res) {
       })
     });
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error('Anthropic API error:', err);
-      return res.status(502).json({ error: 'API request failed' });
+    if (!anthropicResponse.ok) {
+      const err = await anthropicResponse.text();
+      throw new Error(`Anthropic failed with status: ${anthropicResponse.status}. Details: ${err}`);
     }
 
-    const data = await response.json();
-    const text = data.content?.[0]?.text || '';
+    const data = await anthropicResponse.json();
+    text = data.content?.[0]?.text || '';
 
-    return res.status(200).json({ text });
-  } catch (err) {
-    console.error('Chat proxy error:', err);
-    return res.status(500).json({ error: 'Internal error' });
+  } catch (anthropicError) {
+    console.warn('Anthropic API failed, falling back to Cerebras:', anthropicError.message);
+
+    // 2. FALLBACK TO CEREBRAS
+    const cerebrasKey = process.env.CEREBRAS_API_KEY;
+    if (!cerebrasKey) {
+      console.error('No Cerebras API key configured for fallback.');
+      return res.status(500).json({ error: 'Primary API failed and no fallback configured.' });
+    }
+
+    try {
+      // Cerebras/OpenAI expects the system prompt inside the messages array
+      const cerebrasMessages = [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...trimmedMessages
+      ];
+
+      const cerebrasResponse = await fetch('https://api.cerebras.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${cerebrasKey}`
+        },
+        body: JSON.stringify({
+          model: 'zai-glm-4.7', // Highly recommended for speed, comparable to Haiku
+          messages: cerebrasMessages,
+          max_completion_tokens: 300 
+        })
+      });
+
+      if (!cerebrasResponse.ok) {
+        const err = await cerebrasResponse.text();
+        console.error('Cerebras fallback also failed:', err);
+        return res.status(502).json({ error: 'Both primary and fallback APIs failed' });
+      }
+
+      const cerebrasData = await cerebrasResponse.json();
+      text = cerebrasData.choices?.[0]?.message?.content || '';
+      
+    } catch (cerebrasError) {
+      console.error('Cerebras fallback request threw an error:', cerebrasError.message);
+      return res.status(500).json({ error: 'Internal error during fallback' });
+    }
   }
+
+  // 3. RETURN WHICHEVER ONE SUCCEEDED
+  return res.status(200).json({ text });
 }

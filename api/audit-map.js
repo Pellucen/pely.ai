@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -18,7 +17,6 @@ export default async function handler(req, res) {
 
   const trimmedWorkflow = workflow.trim().slice(0, 2000);
 
-  // System prompt — identical to api/map.js with optional industry line
   let systemPrompt = `You are a senior AI automation consultant at Pely.ai, a Manchester-based company that builds AI workflow tools for small businesses. The user will describe a business workflow. Parse it into discrete steps and analyse which can be automated.
 
 Return ONLY valid JSON (no markdown fences, no commentary) in this exact structure:
@@ -67,7 +65,10 @@ Rules:
     systemPrompt += `\n- The user works in the ${industry.trim()} sector. Tailor automation_method suggestions to tools and platforms common in this industry.`;
   }
 
+  let text = '';
+
   try {
+    // 1. TRY ANTHROPIC FIRST
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -85,39 +86,72 @@ Rules:
 
     if (!response.ok) {
       const errBody = await response.text().catch(() => '');
-      console.error('Claude API error:', response.status, errBody);
-      return res.status(502).json({ error: 'Analysis service temporarily unavailable. Please try again.' });
+      throw new Error(`Anthropic failed with status: ${response.status}. Details: ${errBody}`);
     }
 
     const data = await response.json();
+    text = data.content?.[0]?.text || '';
 
-    // Extract text from response
-    const text = data.content && data.content[0] && data.content[0].text;
-    if (!text) {
-      return res.status(502).json({ error: 'Empty response from analysis service.' });
+  } catch (anthropicError) {
+    console.warn('Anthropic API failed, falling back to Cerebras:', anthropicError.message);
+
+    // 2. FALLBACK TO CEREBRAS
+    const cerebrasKey = process.env.CEREBRAS_API_KEY;
+    if (!cerebrasKey) {
+      return res.status(502).json({ error: 'Analysis service temporarily unavailable. Please try again.' });
     }
 
-    // Strip markdown fences if present
-    const cleaned = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-
-    // Parse JSON
-    let parsed;
     try {
-      parsed = JSON.parse(cleaned);
-    } catch (parseErr) {
-      console.error('JSON parse error:', parseErr.message, 'Raw:', cleaned.slice(0, 200));
-      return res.status(502).json({ error: 'Could not parse analysis results. Please try again.' });
+      const cerebrasResponse = await fetch('https://api.cerebras.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${cerebrasKey}`
+        },
+        body: JSON.stringify({
+          model: 'zai-glm-4.7', 
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: trimmedWorkflow }
+          ],
+          max_tokens: 1500
+        })
+      });
+
+      if (!cerebrasResponse.ok) {
+        const err = await cerebrasResponse.text();
+        console.error('Cerebras fallback also failed:', err);
+        return res.status(502).json({ error: 'Both primary and fallback APIs failed. Please try again.' });
+      }
+
+      const cerebrasData = await cerebrasResponse.json();
+      text = cerebrasData.choices?.[0]?.message?.content || '';
+    } catch (cerebrasError) {
+      console.error('Cerebras fallback error:', cerebrasError.message);
+      return res.status(500).json({ error: 'Internal error during fallback' });
     }
-
-    // Validate structure
-    if (!parsed.steps || !Array.isArray(parsed.steps) || parsed.steps.length === 0) {
-      return res.status(502).json({ error: 'Invalid analysis structure. Please try again.' });
-    }
-
-    return res.status(200).json(parsed);
-
-  } catch (err) {
-    console.error('Internal error:', err.message);
-    return res.status(500).json({ error: 'Internal server error. Please try again.' });
   }
+
+  if (!text) {
+    return res.status(502).json({ error: 'Empty response from analysis service.' });
+  }
+
+  // Strip markdown fences safely using hex codes to prevent regex parsing errors
+  const cleaned = text.replace(/^\x60{3}(?:json)?\s*/i, '').replace(/\s*\x60{3}$/i, '').trim();
+
+  // Parse JSON
+  let parsed;
+  try {
+    parsed = JSON.parse(cleaned);
+  } catch (parseErr) {
+    console.error('JSON parse error:', parseErr.message, 'Raw:', cleaned.slice(0, 200));
+    return res.status(502).json({ error: 'Could not parse analysis results. Please try again.' });
+  }
+
+  // Validate structure
+  if (!parsed.steps || !Array.isArray(parsed.steps) || parsed.steps.length === 0) {
+    return res.status(502).json({ error: 'Invalid analysis structure. Please try again.' });
+  }
+
+  return res.status(200).json(parsed);
 }

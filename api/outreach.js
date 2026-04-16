@@ -21,10 +21,11 @@ export default async function handler(req, res) {
   }
 
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const cerebrasKey = process.env.CEREBRAS_API_KEY;
 
   const { recipients } = req.body || {};
   const subject = req.body?.subject || "Quick thought on {{company}}'s workflows";
-  const body = req.body?.body || "We build custom, branded app dashboards for small businesses, giving you a single hub to control modular AI agents built specifically for your workflows. You can add as many agents as you like to handle your repetitive admin, data entry, or outreach. It’s about giving you and your team ten pairs of hands. Easy";
+  const body = req.body?.body || "We help independent professionals and small teams scale their output without scaling their payroll. We build you a custom, incredibly simple app dashboard and populate it with modular AI agents tailored to your exact workflows. Whether you need an agent to handle order processing, client outreach, or data entry, you can add as many capabilities as you need to get the operational capacity of a much larger team.";
   const cta_text = req.body?.cta_text || 'Book a call';
   const cta_url = req.body?.cta_url || 'https://pely.ai/#contact';
   const scheduledAt = req.body?.scheduledAt || null;
@@ -38,8 +39,8 @@ export default async function handler(req, res) {
 
   // Generate personalised intros and guess names in parallel
   const [intros, guessedNames] = await Promise.all([
-    Promise.all(recipients.map((r) => generateIntro(r, anthropicKey))),
-    Promise.all(recipients.map((r) => r.name ? Promise.resolve(r.name) : guessName(r.email, anthropicKey)))
+    Promise.all(recipients.map((r) => generateIntro(r, anthropicKey, cerebrasKey))),
+    Promise.all(recipients.map((r) => r.name ? Promise.resolve(r.name) : guessName(r.email, anthropicKey, cerebrasKey)))
   ]);
 
   const emails = recipients.map((r, i) => {
@@ -105,7 +106,7 @@ export default async function handler(req, res) {
         </div>
         <p style="font-size:14px;color:#4A4A52;line-height:1.6;margin:0 0 20px;">Take our free 2-minute discovery to see exactly where AI could save your team time — no commitment, just clarity.</p>
         <div style="text-align:center;">
-          <a href="https://pely.ai/discover" style="display:inline-block;background:linear-gradient(135deg,#D0BC8A,#B0A070);color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:10px;">Start your discovery</a>
+          <a href="https://pely.ai/#discover" style="display:inline-block;background:linear-gradient(135deg,#D0BC8A,#B0A070);color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:10px;">Start your discovery</a>
         </div>
       </div>
 
@@ -144,9 +145,9 @@ export default async function handler(req, res) {
 </html>`.trim();
 
     const email = {
-      from: 'Pely.ai <hello@pely.ai>',
+      from: 'Pely.ai <info@pely.ai>',
       to: [r.email],
-      reply_to: 'outreach@pely.ai',
+      reply_to: 'info@josephrigby.com',
       subject: personalSubject,
       html
     };
@@ -182,8 +183,8 @@ export default async function handler(req, res) {
   }
 }
 
-async function generateIntro(recipient, anthropicKey) {
-  if (!anthropicKey) return '';
+async function generateIntro(recipient, anthropicKey, cerebrasKey) {
+  if (!anthropicKey && !cerebrasKey) return '';
 
   const domain = (recipient.email || '').split('@')[1];
   if (!domain) return '';
@@ -207,6 +208,7 @@ async function generateIntro(recipient, anthropicKey) {
   if (!siteText) return '';
 
   const company = recipient.company || domain;
+  let text = '';
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -228,15 +230,37 @@ async function generateIntro(recipient, anthropicKey) {
       signal: AbortSignal.timeout(10000)
     });
 
-    if (resp.ok) {
-      const data = await resp.json();
-      const text = data.content?.[0]?.text?.trim();
-      if (text && text !== 'SKIP' && text.length < 200) return text;
-    }
-  } catch {
-    // LLM call failed — fall back gracefully
+    if (!resp.ok) throw new Error('Anthropic failed');
+    const data = await resp.json();
+    text = data.content?.[0]?.text?.trim();
+
+  } catch (err) {
+    if (!cerebrasKey) return '';
+    try {
+      const cResp = await fetch('https://api.cerebras.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${cerebrasKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'zai-glm-4.7', // Requested fallback model
+          messages: [
+            { role: 'system', content: "You output ONLY a single sentence. No explanations, no caveats, no questions, no preamble. If you cannot write a good sentence, output exactly: SKIP" },
+            { role: 'user', content: `Write one sentence (max 30 words) for a cold outreach email from Pely.ai (workflow automation). The sentence should reference something specific about ${company}'s business and hint at where automation could help. Based on their website:\n\n${siteText}` }
+          ],
+          max_tokens: 150
+        }),
+        signal: AbortSignal.timeout(10000)
+      });
+      if (cResp.ok) {
+        const cData = await cResp.json();
+        text = cData.choices?.[0]?.message?.content?.trim();
+      }
+    } catch (e) {}
   }
 
+  if (text && text !== 'SKIP' && text.length < 200) return text;
   return '';
 }
 
@@ -246,7 +270,7 @@ const GENERIC_PREFIXES = new Set([
   'mail', 'no-reply', 'noreply', 'postmaster', 'webmaster'
 ]);
 
-async function guessName(email, anthropicKey) {
+async function guessName(email, anthropicKey, cerebrasKey) {
   if (!email) return '';
   const prefix = email.split('@')[0].toLowerCase();
   if (GENERIC_PREFIXES.has(prefix)) return '';
@@ -257,8 +281,9 @@ async function guessName(email, anthropicKey) {
     return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
   }
 
-  // Single chunk (e.g. "samueldrigby") — ask Haiku
-  if (anthropicKey && parts.length === 1 && parts[0].length > 3) {
+  // Single chunk (e.g. "samueldrigby") — ask LLM
+  if ((anthropicKey || cerebrasKey) && parts.length === 1 && parts[0].length > 3) {
+    let text = '';
     try {
       const resp = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -275,12 +300,36 @@ async function guessName(email, anthropicKey) {
         }),
         signal: AbortSignal.timeout(5000)
       });
-      if (resp.ok) {
-        const data = await resp.json();
-        const text = data.content?.[0]?.text?.trim();
-        if (text && text !== 'SKIP' && text.length < 20) return text;
-      }
-    } catch {}
+      if (!resp.ok) throw new Error('Anthropic failed');
+      const data = await resp.json();
+      text = data.content?.[0]?.text?.trim();
+
+    } catch (err) {
+      if (!cerebrasKey) return '';
+      try {
+        const cResp = await fetch('https://api.cerebras.ai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${cerebrasKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'zai-glm-4.7', // Requested fallback model
+            messages: [
+              { role: 'system', content: "Extract the first name from this email prefix. Output ONLY the capitalised first name. If you can't find a real name, output exactly: SKIP" },
+              { role: 'user', content: parts[0] }
+            ],
+            max_tokens: 30
+          }),
+          signal: AbortSignal.timeout(5000)
+        });
+        if (cResp.ok) {
+          const cData = await cResp.json();
+          text = cData.choices?.[0]?.message?.content?.trim();
+        }
+      } catch (e) {}
+    }
+    if (text && text !== 'SKIP' && text.length < 20) return text;
   }
 
   return '';
